@@ -22,6 +22,17 @@ Int_t           fCurrent; //!current Tree number in a TChain
 int iDBG=1;
 
 
+float DeltaR(float eta1, float phi1, float eta2, float phi2) {
+
+  float dR=0.;
+  float deta = std::fabs(eta1-eta2);
+  float dphi = std::fabs(phi1-phi2);
+  if(dphi>3.14159) dphi = 2.*3.14159-dphi;
+  dR=std::sqrt(deta*deta+dphi*dphi);
+
+  return dR;
+}
+
 
 
 int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* outputfilename,
@@ -515,12 +526,57 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	hpt2ko->Fill((*jet_pt)[1]);
 	hpt3ko->Fill((*jet_pt)[2]);
 	hpt4ko->Fill((*jet_pt)[3]);
+
       }
 
       // jet plots
+      vector<bool> matchdkq(NNNjet);;
+      vector<bool> matchdq(NNNjet);
+      float dr;
       for(int i=0;i<NNNjet;i++) {
 	if(basicjet[i]) {
 	  if((*jet_pt)[i]>50 ) {
+	    matchdkq[i]=false;
+	    matchdq[i]=false;
+	    if(firstdkq>0) {
+              dr=DeltaR((*jet_eta)[i],(*jet_phi)[i],(*gp_eta)[firstdkq],(*gp_phi)[firstdkq]);
+	      if(dr<0.4) {
+		matchdkq[i]=true;
+	        if(iDBG>0) std::cout<<" matched jet "<<i<<" with dark quark dR="<<dr<<std::endl;
+	       }
+	    }
+
+
+	    if(firstadkq>0) {
+	      dr=DeltaR((*jet_eta)[i],(*jet_phi)[i],(*gp_eta)[firstadkq],(*gp_phi)[firstadkq]);
+	      if(dr<0.4) {
+		matchdkq[i]=true;
+	        if(iDBG>0) std::cout<<" matched jet "<<i<<" anti with dark quark dr="<<dr<<std::endl;
+	      }
+	    }
+
+
+	    if(firstdq>0) {
+	      dr=DeltaR((*jet_eta)[i],(*jet_phi)[i],(*gp_eta)[firstdq],(*gp_phi)[firstdq]);
+	      if(dr<0.4) {
+		matchdq[i]=true;
+	      if(iDBG>0) std::cout<<" matched jet "<<i<<" with down quark dr="<<dr<<std::endl;
+	      }
+	    }
+
+
+	    if(firstdq>0) {
+	      dr=DeltaR((*jet_eta)[i],(*jet_phi)[i],(*gp_eta)[firstadq],(*gp_phi)[firstadq]);
+	      if(dr<0.4) {
+		matchdq[i]=true;
+	        if(iDBG>0) std::cout<<" matched jet "<<i<<" with antidown quark dr="<<dr<<std::endl;
+	      }
+	    }
+	    if(iDBG>0) std::cout<<" matchdkq matchdq are "<<matchdkq[i]<<" "<<matchdq[i]<<std::endl;
+
+	    if(matchdkq[i]&&matchdq[i]) std::cout<<"danger danger match both dark and down quark"<<std::endl;
+
+
 	    haMgj->Fill((*jet_alphaMax)[i]);
 	    if(iDBG>0) {
 	    if((*jet_alphaMax)[i]<0.015) {
@@ -542,7 +598,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    if(emerging[i]) {
 	      hjpta->Fill((*jet_pt)[i]);
 	    }
-	  }}
+	  }  // end pT 50
+	}  // end basic jet
       }
 
       //N-1 plots
