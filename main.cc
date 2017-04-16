@@ -113,7 +113,8 @@ int main(int argc, char *argv[])
     const int dnbin=1; 
     float dxsec[dnbin]={18.45}; // fb 
     int dnfiles[dnbin]={1}; 
-    if(imode==4) aaname = "/home/eno/em8/EmergingJetAnalysis/ProcessMC3/";
+    if(imode==4) aaname = "/home/eno/em8/ProcessMC3/";
+    //    std::string dbinnames[dnbin]={"debugmodelB80"};
     std::string dbinnames[dnbin]={"debugmodelB74"};
 
 

@@ -7,13 +7,15 @@
 int dolog=0;
 void Overlay() 
 { 
+  char* hname ="hdjettrkip";
+
   //  TFile *f1 = new TFile("SumHistsQQCD.root");
   //TFile *f2 = new TFile("SumHistsWMCtSkim.root");  
   //TFile *f3 = new TFile("SumHistsWSkim.root");  
-  TFile *f1 = new TFile("SumHistsQCD.root");
+  TFile *f1 = new TFile("SumHists74.root");
   //TFile *f2 = new TFile("SumHistsModelA.root");  
   //TFile *f2 = new TFile("SumHistsDATA.root");  
-  TFile *f2 = new TFile("SumHistsModelB.root");  
+  TFile *f2 = new TFile("SumHists80.root");  
 
  
   gStyle->SetOptStat(0);
@@ -87,16 +89,28 @@ void Overlay()
 
 
   std::cout<<"getting first"<<std::endl;
-  TH1F *A_pt = static_cast<TH1F*>(f1->Get("hmass")->Clone());
-  A_pt->SetDirectory(0);
-  A_pt->Rebin(25);
+ TH1F *A_pt = static_cast<TH1F*>(f1->Get(hname)->Clone());
+ A_pt->SetDirectory(0);
   double aaA = A_pt->Integral();
 std::cout<<" first entries is "<<aaA<<std::endl;
-//A_pt->Scale(1./aaA);
+  A_pt->Scale(1./aaA);
 
-  A_pt->GetYaxis()->SetTitle("number in 0.08 fb-1");  
+
+  std::cout<<"getting second"<<std::endl;
+  TH1F *B_pt = static_cast<TH1F*>(f2->Get(hname)->Clone());
+  B_pt->SetDirectory(0);
+  //  B_pt->Rebin(25);
+  double aaB = B_pt->Integral();
+std::cout<<" second entries is "<<aaB<<std::endl;
+  B_pt->Scale(1/aaB);
+
+
+  float max = std::max(A_pt->GetMaximum(),B_pt->GetMaximum());
+  A_pt->SetMaximum(max*1.3);
+
+  A_pt->GetYaxis()->SetTitle("percent ");  
   A_pt->GetYaxis()->SetTitleSize(0.05);  
-  A_pt->GetXaxis()->SetTitle("mass betweem emerging and non-emerging");  
+  A_pt->GetXaxis()->SetTitle("alpha max");  
   A_pt->GetXaxis()->SetTitleSize(0.05);  
 
 
@@ -106,13 +120,6 @@ std::cout<<" first entries is "<<aaA<<std::endl;
   A_pt->SetStats(0);
   A_pt->Draw("");
 
-  std::cout<<"getting second"<<std::endl;
-  TH1F *B_pt = static_cast<TH1F*>(f2->Get("hmass")->Clone());
-  B_pt->SetDirectory(0);
-  B_pt->Rebin(25);
-  double aaB = B_pt->Integral();
-std::cout<<" second entries is "<<aaB<<std::endl;
-//B_pt->Scale(1/aaB);
   
 
   B_pt->SetLineColor(2);
@@ -144,8 +151,8 @@ C_pt->Scale(1/aaC);
  // lgd->AddEntry(C_pt, "data W to mu", "l");
 
 
-  lgd->AddEntry(A_pt, "QCD MC", "l");
-  lgd->AddEntry(B_pt, "Model B", "l");
+  lgd->AddEntry(A_pt, "modelB 74", "l");
+  lgd->AddEntry(B_pt, "ModelB 80", "l");
   //lgd->AddEntry(C_pt, "ModelBx500", "l");
 
  lgd->Draw();
