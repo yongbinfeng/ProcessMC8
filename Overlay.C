@@ -8,6 +8,7 @@ int dolog=0;
 void Overlay() 
 { 
   char* hname ="hdjettrkip";
+  char* atitle = "2D impact";
 
   //  TFile *f1 = new TFile("SumHistsQQCD.root");
   //TFile *f2 = new TFile("SumHistsWMCtSkim.root");  
@@ -110,7 +111,7 @@ std::cout<<" second entries is "<<aaB<<std::endl;
 
   A_pt->GetYaxis()->SetTitle("percent ");  
   A_pt->GetYaxis()->SetTitleSize(0.05);  
-  A_pt->GetXaxis()->SetTitle("alpha max");  
+  A_pt->GetXaxis()->SetTitle(atitle);  
   A_pt->GetXaxis()->SetTitleSize(0.05);  
 
 
