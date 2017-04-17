@@ -19,7 +19,7 @@ TTree          *fChain;   //!pointer to the analyzed TTree or TChain
 Int_t           fCurrent; //!current Tree number in a TChain                       
 
 
-int iDBG=1;
+int iDBG=0;
 
 
 float DeltaR(float eta1, float phi1, float eta2, float phi2) {
@@ -934,26 +934,26 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
       // require at least N emerging jets
     if(Cnem) {
-      std::cout<<"PASS without almost"<<std::endl;
-      std::cout<<"n emerging nealmost emergin is "<<nemerging<<" "<<nalmostemerging<<std::endl;
-      std::cout<<Canem<<std::endl;
+      if(iDBG>0) std::cout<<"PASS without almost"<<std::endl;
+      if(iDBG>0) std::cout<<"n emerging nealmost emergin is "<<nemerging<<" "<<nalmostemerging<<std::endl;
+      if(iDBG>0) std::cout<<Canem<<std::endl;
 
 
 
       if(otfile) count->Fill("emerging",1);
       if(otfile) acount->Fill(7.5);
       if(Canem) {
-	std::cout<<"PASS with almost"<<std::endl;
+	if(iDBG>0) std::cout<<"PASS with almost"<<std::endl;
 
         if(otfile) count->Fill("almostemerging",1);
         if(otfile) acount->Fill(8.5);
 
 
           npass+=1;
-	  std::cout<<"passing run lumi event filename is "<<run<<" "<<lumi<<" "<<event<<" "<<inputfilename<<std::endl;
+	  if(iDBG>0) std::cout<<"passing run lumi event filename is "<<run<<" "<<lumi<<" "<<event<<" "<<inputfilename<<std::endl;
 	  for(int i=0;i<4;i++) {
-	    std::cout<<"  for jet "<<i<<" pt eta nef cfe ntrkpt1 alphamax r0"<<std::endl;
-	    std::cout<<"     "<<(*jet_pt)[i]<<" "<<(*jet_eta)[i]<<" "<<(*jet_nef)[i]<<" "<<(*jet_cef)[i]<<" "<<jet_ntrkpt1[i]<<" "<<(*jet_alphaMax)[i]<<" "<<r0[i]<<" "<<std::endl;
+	    if(iDBG>0) std::cout<<"  for jet "<<i<<" pt eta nef cfe ntrkpt1 alphamax r0"<<std::endl;
+	    if(iDBG>0) std::cout<<"     "<<(*jet_pt)[i]<<" "<<(*jet_eta)[i]<<" "<<(*jet_nef)[i]<<" "<<(*jet_cef)[i]<<" "<<jet_ntrkpt1[i]<<" "<<(*jet_alphaMax)[i]<<" "<<r0[i]<<" "<<std::endl;
 	  }
           if(otfile) {
 	    H_T3->Fill(HT);   
@@ -976,8 +976,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
     
 
-    std::cout<<"npass  event is "<<npass<<" "<<event<<std::endl;
-    std::cout<<"nemerging nalmostemerging "<<nemerging<<" "<<nalmostemerging<<std::endl;
+	  if(iDBG>0) std::cout<<"npass  event is "<<npass<<" "<<event<<std::endl;
+	  if(iDBG>0) std::cout<<"nemerging nalmostemerging "<<nemerging<<" "<<nalmostemerging<<std::endl;
 
     }}}}}}}}
 
