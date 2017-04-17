@@ -189,7 +189,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
   TH2F *aMip,*haMvjpt,*haMvHT,*haMvnvtx,*aMbh,
     *adkwvd0,*adkwviz,
-    *adwvd0,*adwviz,*adk2Dr0,*ad2Dr0
+    *adwvd0,*adwviz,*adk2Dr0,*ad2Dr0,*hdkipphi,*hdipphi
   ;
 
   if(otfile) {
@@ -295,6 +295,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   adwviz = new TH2F("adwviz","weight versus 3Dip down quark jets",100,-1.2,1.2,100,0.,6.);
   adk2Dr0 = new TH2F("adk2Dr0"," 2dIP reco vs 2D matched gen part creation pont tracks dark jets",100,0.,2.,100,0.,0.4);
   ad2Dr0 = new TH2F("ad2Dr0"," 2dIP reco vs 2D matched gen part creation pont tracks down jets",100,0.,2.,100,0.,0.4);
+  hdkipphi = new TH2F("hdkipphi","2Dip v phi dark quarks",100,-3.2,3.2,100,0.,0.4);
+  hdipphi = new TH2F("hdipphi","2Dip v phi down quarks",100,-3.2,3.2,100,0.,0.4);
 
 
   }
@@ -692,6 +694,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		  hdkjettrkip->Fill(track_ipXYs[itrack]);
 		  hdkjettrkips->Fill(track_ipXYSigs[itrack]);
 		  hdkjettrkw->Fill(track_vertex_weights[itrack]);
+		  hdkipphi->Fill(track_phis[itrack],track_ipXYs[itrack]);
 		  adkwvd0->Fill(track_vertex_weights[itrack],track_ipXYs[itrack]);
 		  adkwviz->Fill(track_vertex_weights[itrack],track_ipZs[itrack]);
 		  //find gen particle that best matches
@@ -740,6 +743,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		  hdjettrkw->Fill(track_vertex_weights[itrack]);
 		  adwvd0->Fill(track_vertex_weights[itrack],track_ipXYs[itrack]);
 		  adwviz->Fill(track_vertex_weights[itrack],track_ipZs[itrack]);
+		  hdipphi->Fill(track_phis[itrack],track_ipXYs[itrack]);
 
 		  //find gen particle that best matches
 		  float dR=99999.;
@@ -1090,6 +1094,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
     adk2Dr0->Write();
     ad2Dr0->Write();
+
+    hdkipphi->Write();
+    hdipphi->Write();
 
     myfile.Close();
   }

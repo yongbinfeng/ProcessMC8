@@ -114,8 +114,8 @@ int main(int argc, char *argv[])
     float dxsec[dnbin]={18.45}; // fb 
     int dnfiles[dnbin]={1}; 
     if(imode==4) aaname = "/home/eno/em8/ProcessMC3/";
-    //std::string dbinnames[dnbin]={"debugmodelB80"};
-    std::string dbinnames[dnbin]={"debugmodelB74"};
+    std::string dbinnames[dnbin]={"debugmodelB80"};
+    //std::string dbinnames[dnbin]={"debugmodelB74"};
 
 
     // Wjets data sample
