@@ -222,7 +222,7 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
         "hmedipXYSigEJ","hmedipXYSignEJ","hmeanipXYSigEJ","hmeanipXYSignEJ","hmedipXYEJ","hmedipXYnEJ","hmeanipXYEJ","hmeanipXYnEJ",
 	"hdkjetam","hdkjetmeanip","hdkjetntr","hdkjetmaxip","hdkjettrkip","hdkjettrkips","hdkjettrgip","hdkjettrkdr",
 	"hdkjettrkw",
-	"hdjetam","hdjetmeanip","hdjetntr","hdjetmaxip","hdjettrkip","hdjettrkips","hdkjettrgip","hdjettrkdr",
+	"hdjetam","hdjetmeanip","hdjetntr","hdjetmaxip","hdjettrkip","hdjettrkips","hdjettrgip","hdjettrkdr",
 	"hdjettrkw"
     };
     vector<double> outnorm(nbin);
@@ -231,11 +231,11 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
         vv[i]=HistMan(goalintlum,histnames[i],norm,outnorm,nbin,xsec,nfiles,binnames,donorm);
     }
 
-    const int nhist2=9;
+    const int nhist2=11;
     std::vector<TH2F*> vv2(nhist2);
     std::string histnames2[nhist2]={
       "aMip","haMvjpt","haMvHT","haMvnvtx","aMbh","adkwvd0","adwvd0",
-"adkwviz","adwviz"
+      "adkwviz","adwviz","adk2Dr0","ad2Dr0"
     };
     vector<double> outnorm2(nbin);
     for(int i=0;i<nhist2;i++) {

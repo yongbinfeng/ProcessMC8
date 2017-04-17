@@ -189,7 +189,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
   TH2F *aMip,*haMvjpt,*haMvHT,*haMvnvtx,*aMbh,
     *adkwvd0,*adkwviz,
-    *adwvd0,*adwviz
+    *adwvd0,*adwviz,*adk2Dr0,*ad2Dr0
   ;
 
   if(otfile) {
@@ -268,7 +268,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hdkjettrkip = new TH1F("hdkjettrkip","2d ip tracks in dark quark jets",100,0.,2.);
   hdkjettrkips = new TH1F("hdkjettrkips","2d ip sig tracks in dark quark jets",100,0.,5.);
   hdkjettrkw = new TH1F("hdkjettrkw","track pv weight in dark quark jets",100,-1.2,1.2);
-  hdkjettrgip = new TH1F("hdkjettrgip","gen r0 charged part in dark quark jets",100,0.,10.);
+  hdkjettrgip = new TH1F("hdkjettrgip","gen r0 charged part in dark quark jets",100,0.,5.);
   hdkjettrkdr = new TH1F("hdkjettrkdr","gen trk dr charged part in dark quark jets",100,0.,1.);
 
   hdjetam = new TH1F("hdjetam","alphamax down quark jets ",100,0.,1.);
@@ -278,7 +278,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hdjettrkip = new TH1F("hdjettrkip","2d ip tracks in down quark jets",100,0.,2.);
   hdjettrkips = new TH1F("hdjettrkips","2d ip sig tracks in down quark jets",100,0.,5.);
   hdjettrkw = new TH1F("hdjettrkw","track pv weight in down quark jets",100,-1.2,1.2);
-  hdjettrgip = new TH1F("hdjettrgip","gen r0 charged part in down quark jets",100,0.,10.);
+  hdjettrgip = new TH1F("hdjettrgip","gen r0 charged part in down quark jets",100,0.,5.);
   hdjettrkdr = new TH1F("hdjettrkdr","gen trk dr charged part in down quark jets",100,0.,1.);
 
 
@@ -293,7 +293,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   adwvd0 = new TH2F("adwvd0","weight versus ip down quark jets",100,-1.2,1.2,100,0.,6.);
   adkwviz = new TH2F("adkwviz","weight versus 3Dip dark quark jets",100,-1.2,1.2,100,0.,6.);
   adwviz = new TH2F("adwviz","weight versus 3Dip down quark jets",100,-1.2,1.2,100,0.,6.);
-
+  adk2Dr0 = new TH2F("adk2Dr0"," 2dIP reco vs 2D matched gen part creation pont tracks dark jets",100,0.,2.,100,0.,0.4);
+  ad2Dr0 = new TH2F("ad2Dr0"," 2dIP reco vs 2D matched gen part creation pont tracks down jets",100,0.,2.,100,0.,0.4);
 
 
   }
@@ -697,9 +698,11 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		  float dR=99999.;
 		  int ipnt=0;
                   for(Int_t j=0; j<(*gp_index).size(); j++) {
-		    if((*gp_status)[j]==0 ) { //stable
+		    //		    if(iDBG>0) std::cout<<" gen particle "<<j<<" has status charge "<<(*gp_status)[j]<<" "<<(*gp_charge)[j]<<std::endl;
+		    if((*gp_status)[j]==1 ) { //stable
 		      if((*gp_charge)[j]!=0) {  //charged
                         dr=DeltaR((*gp_eta)[j],(*gp_phi)[j],track_etas[itrack],track_phis[itrack]);
+			//			if(iDBG>0) std::cout<<" dr is "<<dr<<std::endl;
 			if(dr<dR) {
 			  dR=dr;
 			  ipnt=j;
@@ -707,13 +710,17 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		      }
 		    }
 		  }  // end loop gen part
+		  if(iDBG>0) std::cout<<" track "<<itrack<<" matches gen part "<<ipnt<<std::endl;
 		  if(ipnt>0) {
 		    hdkjettrkdr->Fill(dR);
 		    if(dR<0.01) {
-		      hdkjettrgip->Fill(sqrt(
+		      float aaa =sqrt(
                        (*gp_vx)[ipnt]*(*gp_vx)[ipnt]
 		      +(*gp_vy)[ipnt]*(*gp_vy)[ipnt]
-		     			   ));
+		     			   );
+
+		      adk2Dr0->Fill(aaa,track_ipXYs[itrack]);
+		      hdkjettrgip->Fill(aaa);
 		    }
 		  }
 		}// end track source
@@ -738,7 +745,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		  float dR=99999.;
 		  int ipnt=0;
                   for(Int_t j=0; j<(*gp_index).size(); j++) {
-		    if((*gp_status)[j]==0 ) { //stable
+		    if((*gp_status)[j]==1 ) { //stable
 		      if((*gp_charge)[j]!=0) {  //charged
                         dr=DeltaR((*gp_eta)[j],(*gp_phi)[j],track_etas[itrack],track_phis[itrack]);
 			if(dr<dR) {
@@ -748,13 +755,17 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		      }
 		    }
 		  }  // end loop gen part
+		  if(iDBG>0) std::cout<<" track "<<itrack<<" matches gen part "<<ipnt<<std::endl;
+
 		  if(ipnt>0) {
 		    hdjettrkdr->Fill(dR);
 		    if(dR<0.01) {
-		      hdjettrgip->Fill(sqrt(
-                     (*gp_vx)[ipnt]*(*gp_vx)[ipnt]
-		    +(*gp_vy)[ipnt]*(*gp_vy)[ipnt]
-					   ));
+                      float aaa = sqrt(
+                       (*gp_vx)[ipnt]*(*gp_vx)[ipnt]
+		       +(*gp_vy)[ipnt]*(*gp_vy)[ipnt]);
+
+		      ad2Dr0->Fill(aaa,track_ipXYs[itrack]);
+		      hdjettrgip->Fill(aaa);
 		    }
 		  }
 
@@ -1076,6 +1087,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     adwvd0->Write();
     adkwviz->Write();
     adwviz->Write();
+
+    adk2Dr0->Write();
+    ad2Dr0->Write();
 
     myfile.Close();
   }

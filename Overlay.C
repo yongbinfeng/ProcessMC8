@@ -4,11 +4,11 @@
 #include "TH1.h"
 #include "TH1F.h"
 
-int dolog=0;
+int dolog=1;
 void Overlay() 
 { 
   char* hname ="hdjettrkip";
-  char* atitle = "2D impact";
+  char* atitle = "2D ip of tracks associated to jets";
 
   //  TFile *f1 = new TFile("SumHistsQQCD.root");
   //TFile *f2 = new TFile("SumHistsWMCtSkim.root");  
