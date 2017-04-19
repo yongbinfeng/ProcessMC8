@@ -19,7 +19,7 @@ TTree          *fChain;   //!pointer to the analyzed TTree or TChain
 Int_t           fCurrent; //!current Tree number in a TChain                       
 
 
-int iDBG=0;
+int iDBG=10;
 
 
 float DeltaR(float eta1, float phi1, float eta2, float phi2) {
@@ -236,8 +236,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hnHitsnm1 = new TH1F("hnHitsnm1","number Hits n-1",40,0.,40.);
   hntrk1nm1 = new TH1F("hntrk1nm1","number tracks pt>1 n-1",50,0.,50.);
   hnemnm1 = new TH1F("hnemnm1","N emerging jets n-1",10,0.,10.);
-  hipXYEJ = new TH1F("hipXYEJ","impact parameter  tracks of emerging jets",300,-1.,1.);
-  hipXYnEJ = new TH1F("hipXYnEJ","impact parameter  tracks of not emerging jets",300,-1.,1.);
+  hipXYEJ = new TH1F("hipXYEJ","impact parameter  tracks of emerging jets",300,0,0.2);
+  hipXYnEJ = new TH1F("hipXYnEJ","impact parameter  tracks of not emerging jets",300,0.,0.2);
   htvw = new TH1F("htvw","track vertex weight ",15,-5.,10.);
   htvwEJ= new TH1F("htvwEJ","track vertex weight Emerging Jets ",15,-5.,10.);
   hipXYSigEJ = new TH1F("hipXYSigEJ","ip sig emerging jets",100,0.,10.);
@@ -307,15 +307,20 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
   // loop over events
   for (Int_t i=0; i<nentries; i++) {
-    if(iDBG>0) std::cout<<"***event "<<event<<std::endl;
  
     if(!hasPre) eventCountPreTrigger->Fill(1.5); 
     
     if(otfile) count->Fill("All",1);  // count number of events
     if(otfile) acount->Fill(0.5);
     tt->GetEntry(i);
+
+
+
+
+    if(iDBG>0) std::cout<<"***run event lumi "<<run<<" "<<event<<" "<<lumi<<std::endl;
+
     if(iDBG>0) {
-      std::cout<<"event number is "<<event<<" number of vertex is "<<nVtx<<std::endl;
+      std::cout<<" number of vertex is "<<nVtx<<std::endl;
       std::cout<<"pv position is "<<pv_x<<","<<pv_y<<","<<pv_z<<std::endl;
     }
 
@@ -377,6 +382,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     vector<float> jet_pz((*jet_index).size());
     if(otfile) hnjet->Fill((*jet_index).size()+0.5);
     int NNNjet = (*jet_index).size();
+    if(iDBG>0) std::cout<<std::endl<<" number of jets is "<<NNNjet<<std::endl;
+    if(iDBG>0) std::cout<<" pt eta phi alphamax"<<std::endl;
     for(Int_t j=0; j<NNNjet; j++) {
       if(iDBG>0) std::cout<<"jet j = "<<j<<std::endl;
       jet_theta[j]=2.*atan(exp(-(*jet_eta)[j]));
@@ -390,12 +397,19 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       if(otfile) hjetchf->Fill((*jet_chf)[j]);
       if(otfile) if(j<4) heta2->Fill((*jet_eta)[j]);
       if(otfile) halpha->Fill((*jet_alphaMax)[j]);
+
+      if(iDBG>0) {
+	std::cout<<"   jet "<<j<<" "<<(*jet_pt)[j]<<" "<<(*jet_eta)[j]<<" "<<(*jet_phi)[j]<<" "<<(*jet_alphaMax)[j]<<std::endl;
+      }
+
       //      calculate  number of tracks with pt > 1
       jet_ntrkpt1[j]=0;
       jet_meanip[j]=0.;
       if(r0.size()>0) r0[j]=0.;
       if(r1.size()>0) r1[j]=0.;
       vector<float> track_pts = track_pt->at(j);
+      vector<float> track_etas = track_eta->at(j);
+      vector<float> track_phis = track_phi->at(j);
       vector<int> track_sources = track_source->at(j);
       vector<float> track_vertex_weights = track_vertex_weight->at(j);
       vector<float> track_ipXYs = track_ipXY->at(j);
@@ -404,13 +418,16 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       vector<float> sort_ip(track_pts.size());
       for(int it=0;it<track_pts.size();it++) sort_ip[it]=0;
       jntrack[j]=0;
+      if(iDBG>0) std::cout<<"  with tracks "<<std::endl;
+      if(iDBG>0) std::cout<<"  pt eta phi weight ipzy ipz"<<std::endl;
       for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
 	if(track_sources[itrack]==0) {
+	  if(iDBG>0) {
+	    std::cout<<"  "<<itrack<<" "<<track_pts[itrack]<<" "<<track_etas[itrack]<<" "<<track_phis[itrack]<<" "<<track_vertex_weights[itrack]<<" "<<track_ipXYs[itrack]<<" "<<track_ipZs[itrack]<<std::endl;
+	  }
 	  sort_ip[jntrack[j]]=fabs(track_ipXYs[itrack]);
 	  if(otfile) htvw->Fill(track_vertex_weights[itrack]);
-	  if(iDBG>0) std::cout<<"track vertex weight is "<<track_vertex_weights[itrack]<<std::endl;
 	  if(track_pts[itrack]>1) jet_ntrkpt1[j]+=1;
-	  if(iDBG>0) std::cout<<" track "<<itrack<<" ip "<<track_ipXYs[itrack]<<" iz "<<track_ipZs[itrack]<<std::endl;
 	  jet_meanip[j]=jet_meanip[j]+fabs(track_ipXYs[itrack]);
 	  jntrack[j]++;
 	}
@@ -536,12 +553,18 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     bool C4jet=true;
     if(NNNjet<3) C4jet=false;
     // HT
-    double HT = (*jet_pt)[0]+(*jet_pt)[1]+(*jet_pt)[2]+(*jet_pt)[3];
+    //    double HT = (*jet_pt)[0]+(*jet_pt)[1]+(*jet_pt)[2]+(*jet_pt)[3];
+    double HT=0.;
+    for(int i=0;i<std::min(NNNjet,3);i++) {
+      HT+=(*jet_pt)[i];
+    }
+
+
     if(otfile) H_T->Fill(HT);
-    if(otfile) hpt1->Fill((*jet_pt)[0]);
-    if(otfile) hpt2->Fill((*jet_pt)[1]);
-    if(otfile) hpt3->Fill((*jet_pt)[2]);
-    if(otfile) hpt4->Fill((*jet_pt)[3]);
+    if(otfile&&NNNjet>0) hpt1->Fill((*jet_pt)[0]);
+    if(otfile&&NNNjet>1) hpt2->Fill((*jet_pt)[1]);
+    if(otfile&&NNNjet>2) hpt3->Fill((*jet_pt)[2]);
+    if(otfile&&NNNjet>3) hpt4->Fill((*jet_pt)[3]);
     bool CHT=true;
     if(HT<HTcut) CHT=false;
     // jet pt
@@ -549,10 +572,14 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     bool Cpt2=false;
     bool Cpt3=false;
     bool Cpt4=false;
-    if(((*jet_pt)[0]>pt1cut)&&(fabs((*jet_eta)[0])<jetacut)) Cpt1=true;
-    if(((*jet_pt)[1]>pt2cut)&&(fabs((*jet_eta)[1])<jetacut)) Cpt2=true;
-    if(((*jet_pt)[2]>pt3cut)&&(fabs((*jet_eta)[2])<jetacut)) Cpt3=true;
-    if(((*jet_pt)[3]>pt4cut)&&(fabs((*jet_eta)[3])<jetacut)) Cpt4=true;
+    if(NNNjet>0) {
+      if(((*jet_pt)[0]>pt1cut)&&(fabs((*jet_eta)[0])<jetacut)) Cpt1=true;}
+    if(NNNjet>1) {
+      if(((*jet_pt)[1]>pt2cut)&&(fabs((*jet_eta)[1])<jetacut)) Cpt2=true;}
+    if(NNNjet>2) {
+      if(((*jet_pt)[2]>pt3cut)&&(fabs((*jet_eta)[2])<jetacut)) Cpt3=true;}
+    if(NNNjet>3) {
+      if(((*jet_pt)[3]>pt4cut)&&(fabs((*jet_eta)[3])<jetacut)) Cpt4=true;}
     // number emerging jets
     bool Cnem = true;
     if(nemerging<NemergingCut) Cnem=false;
