@@ -239,7 +239,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hnemnm1 = new TH1F("hnemnm1","N emerging jets n-1",10,0.,10.);
   hipXYEJ = new TH1F("hipXYEJ","impact parameter  tracks of emerging jets",300,0,0.2);
   hipXYnEJ = new TH1F("hipXYnEJ","impact parameter  tracks of not emerging jets",300,0.,0.2);
-  htvw = new TH1F("htvw","track vertex weight ",15,-5.,10.);
+  htvw = new TH1F("htvw","track vertex weight ",150,-5.,1.);
   htvwEJ= new TH1F("htvwEJ","track vertex weight Emerging Jets ",15,-5.,10.);
   hipXYSigEJ = new TH1F("hipXYSigEJ","ip sig emerging jets",100,0.,10.);
   hipXYSignEJ = new TH1F("hipXYSignEJ","ip sig not emerging jets",100,0.,10.);
