@@ -63,7 +63,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
   TTree *tt = (TTree*)f->Get("emJetAnalyzer/emJetTree");
 
-  Int_t nVtx, event, lumi, run, nTrueInt, nTracks;
+  Int_t nVtx, event, lumi, run, nTrueInt, nTracks, pv_indexInColl;
   Float_t met_pt, met_phi;
 
   //pv
@@ -98,6 +98,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   vector<vector<float> > *track_eta = 0;
   vector<vector<float> > *track_phi = 0;
   vector<vector<int> > *track_source = 0;
+  vector<vector<int> > *track_quality = 0;
   vector<vector<int> > *track_index = 0;
   vector<vector<int> > *track_jet_index = 0;
   vector<vector<int> > *track_vertex_index = 0;
@@ -139,6 +140,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   tt->SetBranchAddress("pv_x",&pv_x);
   tt->SetBranchAddress("pv_y",&pv_y);
   tt->SetBranchAddress("pv_z",&pv_z);
+  tt->SetBranchAddress("pv_indexInColl",&pv_indexInColl);
 
   // general event information
   tt->SetBranchAddress("event",&event);
@@ -163,6 +165,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   tt->SetBranchAddress("track_eta",&track_eta);
   tt->SetBranchAddress("track_phi",&track_phi);
   tt->SetBranchAddress("track_source",&track_source);
+  tt->SetBranchAddress("track_quality",&track_quality);
   tt->SetBranchAddress("track_index",&track_index);
   tt->SetBranchAddress("track_jet_index",&track_jet_index);
   tt->SetBranchAddress("track_algo",&track_algo);
@@ -411,6 +414,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       vector<float> track_etas = track_eta->at(j);
       vector<float> track_phis = track_phi->at(j);
       vector<int> track_sources = track_source->at(j);
+      vector<int> track_qualitys = track_quality->at(j);
       vector<float> track_vertex_weights = track_vertex_weight->at(j);
       vector<float> track_ipXYs = track_ipXY->at(j);
       vector<float> track_ipZs = track_ipZ->at(j);
@@ -421,7 +425,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       if(iDBG>0) std::cout<<"  with tracks "<<std::endl;
       if(iDBG>0) std::cout<<"  pt eta phi weight ipzy ipz"<<std::endl;
       for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	if(track_sources[itrack]==0) {
+	if((track_sources[itrack]==0)&&(track_qualitys[itrack]&4>0)) {
 	  if(iDBG>0) {
 	    std::cout<<"  "<<itrack<<" "<<track_pts[itrack]<<" "<<track_etas[itrack]<<" "<<track_phis[itrack]<<" "<<track_vertex_weights[itrack]<<" "<<track_ipXYs[itrack]<<" "<<track_ipZs[itrack]<<std::endl;
 	  }
@@ -463,6 +467,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
         vector<float> track_ipXYs = track_ipXY->at(ij);
         vector<float> track_ipXYSigs = track_ipXYSig->at(ij);
         vector<int> track_sources = track_source->at(ij);
+        vector<int> track_qualitys = track_quality->at(ij);
         vector<float> track_vertex_weights = track_vertex_weight->at(ij);
 	if(otfile) hjetcut->Fill(0.5);
 
@@ -515,7 +520,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		if(otfile) hmeanipXYEJ->Fill(jet_meanip[ij]);
 		if(jet_meanip[ij]>r0[ij]) std::cout<<"DANGER DANGER"<<std::endl;
                 for (unsigned itrack=0; itrack<track_ipXYs.size(); itrack++) {
-	          if(track_sources[itrack]==0) {
+	          if((track_sources[itrack]==0)&&(track_qualitys[itrack]&4>0)) {
 		    if(otfile) hipXYEJ->Fill(track_ipXYs[itrack]);
 		    if(otfile) hipXYSigEJ->Fill(track_ipXYSigs[itrack]);
 		    if(otfile) htvwEJ->Fill(track_vertex_weights[itrack]);
@@ -530,7 +535,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	  if(otfile) hmaxipXYnEJ->Fill(r0[ij]);
 	  if(otfile) hmeanipXYnEJ->Fill(jet_meanip[ij]);
                 for (unsigned itrack=0; itrack<track_ipXYs.size(); itrack++) {
-	          if(track_sources[itrack]==0) {
+	          if((track_sources[itrack]==0)&&(track_qualitys[itrack]&4>0)) {
 		    if(otfile) hipXYnEJ->Fill(track_ipXYs[itrack]);
 		    if(otfile) hipXYSignEJ->Fill(track_ipXYSigs[itrack]);
 	           }
@@ -549,9 +554,14 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     // now start the event selections
       // *************************************************************
 
+
+      bool PVPT0=true;
+      if(pv_indexInColl!=0) PVPT0=false;
+
+
     // require at least 4 jets
     bool C4jet=true;
-    if(NNNjet<3) C4jet=false;
+    if(NNNjet<4) C4jet=false;
     // HT
     //    double HT = (*jet_pt)[0]+(*jet_pt)[1]+(*jet_pt)[2]+(*jet_pt)[3];
     double HT=0.;
@@ -599,7 +609,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     if(otfile) {
 
       // kine only plots
-      if(C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4) {
+      if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4) {
 	hHTko->Fill(HT);
 	hpt1ko->Fill((*jet_pt)[0]);
 	hpt2ko->Fill((*jet_pt)[1]);
@@ -621,6 +631,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
         vector<float> track_ipZs = track_ipZ->at(i);
         vector<float> track_ipXYSigs = track_ipXYSig->at(i);
         vector<int> track_sources = track_source->at(i);
+        vector<int> track_qualitys = track_quality->at(i);
         vector<float> track_vertex_weights = track_vertex_weight->at(i);
 
 
@@ -695,7 +706,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    float ptall=0.;
 	    float ptpr=0.;
             for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	      if(track_sources[itrack]==0) {
+	      if((track_sources[itrack]==0)&&track_qualitys[itrack]&4>0) {
 		ptall=ptall+track_pts[itrack];
 		if(track_vertex_weights[itrack]>0) {
 		  ptpr=ptpr+track_pts[itrack];
@@ -717,7 +728,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      hdkjetmaxip->Fill(r0[i]);
 	      
               for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	        if(track_sources[itrack]==0) {
+	        if((track_sources[itrack]==0)&(track_qualitys[itrack]&4>0)) {
 		  hdkjettrkip->Fill(track_ipXYs[itrack]);
 		  hdkjettrkips->Fill(track_ipXYSigs[itrack]);
 		  hdkjettrkw->Fill(track_vertex_weights[itrack]);
@@ -764,7 +775,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      hdjetmaxip->Fill(r0[i]);
 	      
               for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	        if(track_sources[itrack]==0) {
+	        if((track_sources[itrack]==0)&&(track_qualitys[itrack]&4>0)) {
 		  hdjettrkip->Fill(track_ipXYs[itrack]);
 		  hdjettrkips->Fill(track_ipXYSigs[itrack]);
 		  hdjettrkw->Fill(track_vertex_weights[itrack]);
@@ -809,14 +820,14 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       }
 
       //N-1 plots
-    if(C4jet&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem) hHTnm1->Fill(HT);
-    if(C4jet&&CHT&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem) hpt1nm1->Fill((*jet_pt)[0]);
-    if(C4jet&&CHT&&Cpt1&&Cpt3&&Cpt4&&Cnem&&Canem) hpt2nm1->Fill((*jet_pt)[1]);
-    if(C4jet&&CHT&&Cpt1&&Cpt2&&Cpt4&&Cnem&&Canem) hpt3nm1->Fill((*jet_pt)[2]);
-    if(C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cnem&&Canem) hpt4nm1->Fill((*jet_pt)[3]);
-    if(C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem) hnemnm1->Fill(nemerging);
-    if(C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem) {
-      for(int i=0;i<3;i++) {
+    if(PVPT0&&C4jet&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem) hHTnm1->Fill(HT);
+    if(PVPT0&&C4jet&&CHT&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem) hpt1nm1->Fill((*jet_pt)[0]);
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt3&&Cpt4&&Cnem&&Canem) hpt2nm1->Fill((*jet_pt)[1]);
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt4&&Cnem&&Canem) hpt3nm1->Fill((*jet_pt)[2]);
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cnem&&Canem) hpt4nm1->Fill((*jet_pt)[3]);
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem) hnemnm1->Fill(nemerging);
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem) {
+      for(int i=0;i<4;i++) {
 	if(basicjet[i]) {
 	  halphanm1->Fill((*jet_alphaMax)[i]);
 	  aMip->Fill((*jet_alphaMax)[i],r0[i]);
@@ -837,6 +848,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    }
             vector<float> track_pts = track_pt->at(i);
             vector<int> track_sources = track_source->at(i);
+            vector<int> track_qualitys = track_quality->at(i);
             vector<float> track_vertex_weights = track_vertex_weight->at(i);
             vector<float> track_ipXYs = track_ipXY->at(i);
             vector<float> track_ipZs = track_ipZ->at(i);
@@ -846,7 +858,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
             vector<int> track_nPxlLayerss = track_nPxlLayers->at(i);
             vector<int> track_nHitss = track_nHits->at(i);
             for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	      if(track_sources[itrack]==0) {
+	      if((track_sources[itrack]==0)&&(track_qualitys[itrack]&4>0)) {
 		if(iDBG>0) {
 			std::cout<<"    track pt is "<<track_pts[itrack]
 			 <<" ipxy is "<<track_ipXYs[itrack]
@@ -871,9 +883,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     }
 
 
-    if(C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&nalmostemerging>=2) {
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&nalmostemerging>=2) {
     if(otfile) H_T4->Fill(HT);
-      for(int i=0;i<3;i++) {
+      for(int i=0;i<4;i++) {
 	if(almostemerging[i]) {
 	  if(((*jet_alphaMax)[i]<alphaMaxcut)) {
 	    hnmaxipnm1->Fill(r0[i]);
@@ -882,8 +894,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       }
     }
 
-    if(C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&nalmostemerging>=1) {
-      for(int i=0;i<3;i++) {
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&nalmostemerging>=1) {
+      for(int i=0;i<4;i++) {
 	if(almostemerging[i]) {
 	  if(((*jet_alphaMax)[i]<alphaMaxcut)) {
 	    hn2maxipnm1->Fill(r0[i]);
@@ -898,7 +910,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 
       // make plots for fake rate studes
-    if(C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem) {
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem) {
       for(Int_t j=0; j<NNNjet; j++) {
 	if(basicjet[j]) {
 	  hjptfrb->Fill((*jet_pt)[j]);
@@ -912,7 +924,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       }
     }
       // check without Canem
-    if(C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4) {
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4) {
       for(Int_t j=0; j<NNNjet; j++) {
 	if(basicjet[j]) {
 	  hjptfrbc->Fill((*jet_pt)[j]);
@@ -929,7 +941,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
     // apply cuts sequentially
 
-    if(iDBG>0) std::cout<<"c4jet cht cpt1 cpt2 cpt3 cpt4 cnem "<<C4jet<<" "<<CHT<<" "<<Cpt1<<" "<<Cpt2<<" "<<Cpt3<<" "<<Cpt4<<" "<<Cnem<<std::endl;
+    if(iDBG>0) std::cout<<"pvpt0 c4jet cht cpt1 cpt2 cpt3 cpt4 cnem "<<PVPT0<<" "<<C4jet<<" "<<CHT<<" "<<Cpt1<<" "<<Cpt2<<" "<<Cpt3<<" "<<Cpt4<<" "<<Cnem<<std::endl;
+
 
     if(C4jet) {
     if(otfile) count->Fill("4 jets",1);
@@ -961,6 +974,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     if(otfile) count->Fill("jet pt4",1);
     if(otfile) acount->Fill(6.5);
 
+    if(PVPT0) {
+    if(otfile) count->Fill("pv 0",1);
+    if(otfile) acount->Fill(7.5);
 
 
       // require at least N emerging jets
@@ -972,7 +988,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 
       if(otfile) count->Fill("emerging",1);
-      if(otfile) acount->Fill(7.5);
+      if(otfile) acount->Fill(8.5);
       if(Canem) {
 	if(iDBG>0) std::cout<<"PASS with almost"<<std::endl;
 
@@ -1010,7 +1026,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	  if(iDBG>0) std::cout<<"npass  event is "<<npass<<" "<<event<<std::endl;
 	  if(iDBG>0) std::cout<<"nemerging nalmostemerging "<<nemerging<<" "<<nalmostemerging<<std::endl;
 
-    }}}}}}}}
+      }}}}}}}}}
+
+
+
 
   }  // end of loop over events
 
@@ -1110,6 +1129,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     //2d
     aMip->Write();
     haMvjpt->Write();
+
     haMvHT->Write();
     haMvnvtx->Write();
     aMbh->Write();
@@ -1143,6 +1163,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   delete track_pt;
   delete track_eta;
   delete track_source;
+  delete track_quality;
   delete track_index;
   delete track_jet_index;
   delete track_vertex_index;

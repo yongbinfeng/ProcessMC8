@@ -46,7 +46,7 @@ vector<int> EMJscan(const char* inputfilename,
 
   Int_t nVtx, event;
   Float_t met_pt, met_phi;
-
+  int pv_indexInColl;
 
   vector<int> *jet_index=new vector<int>;
   vector<int> *jet_source=new vector<int>;
@@ -73,6 +73,7 @@ vector<int> EMJscan(const char* inputfilename,
 
   //for ntuple
   tt->SetBranchAddress("nVtx",&nVtx);
+  tt->SetBranchAddress("pv_indexInColl",&pv_indexInColl);
   tt->SetBranchAddress("event",&event);
   tt->SetBranchAddress("met_pt",&met_pt);
   tt->SetBranchAddress("met_phi",&met_phi);
@@ -141,8 +142,11 @@ vector<int> EMJscan(const char* inputfilename,
      }  // end of loop over jets
 
     // require at least 4 jets
-    if((*jet_index).size()<3) std::cout<<"DANGER DANGER"<<std::endl;
-    if((*jet_index).size()<3) continue;
+    //if((*jet_index).size()<4) std::cout<<"DANGER DANGER"<<std::endl;
+    if((*jet_index).size()<4) continue;
+
+    // require the highest sumpt vertex be the 0th
+    if(pv_indexInColl !=0) continue;
 
 
     double HT = (*jet_pt)[0]+(*jet_pt)[1]+(*jet_pt)[2]+(*jet_pt)[3];

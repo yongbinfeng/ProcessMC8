@@ -6,6 +6,7 @@
 #include <TChain.h>
 #include <TFile.h>
 
+#include <fstream>
 #include "vector"
 #include "vector"
 using std::vector;
@@ -46,7 +47,7 @@ std::string bbname = "./";
 
 
 //void QCDhists() 
-void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* binnames,std::string aaname,std::string ohname, int dooptk, int doopta, bool hasPre,bool donorm, bool blind, bool b16003) 
+void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* binnames,std::string* aaname,std::string ohname, int dooptk, int doopta, bool hasPre,bool donorm, bool blind, bool b16003) 
 {
 
     std::string inputfile;
@@ -95,18 +96,29 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
 
     std::cout<<"making histograms for each file in each bin"<<std::endl;
     for(int i=0;i<nbin;i++) {  // for each bin
-        for(int j=0;j<nfiles[i];j++) { //for each file for that bin
+
+      std::ifstream inputconfig(aaname[i]);
+      std::cout<<"input config file is: "<<aaname[i]<<std::endl;
+      int linecounter = 0;
+      while(std::getline(inputconfig,inputfile))
+        {
+	  std::cout<<"input file is "<<inputfile<<std::endl;
+          outputfile=bbname+"histos"+binnames[i]+"_"+std::to_string(linecounter)+".root";
+          std::cout<<"output file is "<<outputfile<<std::endl;
+
+	  //        for(int j=0;j<nfiles[i];j++) { //for each file for that bin
             //inputfile=aaname+binnames[i]+"/"+binnames[i]+"_"+std::to_string(j+1)+"_0.ntpl.root";
-            inputfile=aaname+binnames[i]+"/"+binnames[i]+"_"+std::to_string(j+1)+"_0.histo.root";
-            std::cout<<"input file is "<<inputfile<<std::endl;
-            outputfile=bbname+"histos"+binnames[i]+"_"+std::to_string(j)+".root";
-            std::cout<<"output file is "<<outputfile<<std::endl;
+            //inputfile=aaname+binnames[i]+"/"+binnames[i]+"_"+std::to_string(j+1)+"_0.histo.root";
+            //std::cout<<"input file is "<<inputfile<<std::endl;
+            //outputfile=bbname+"histos"+binnames[i]+"_"+std::to_string(j)+".root";
+
             int itmp;
             if(!b16003) {
                 itmp = EMJselect(true,hasPre,inputfile.c_str(),outputfile.c_str(),DHTcut, Dpt1cut,Dpt2cut,Dpt3cut,Dpt4cut,Djetacut,Dalphacut,DmaxIPcut,0.9,0.9,Dntrk1,Dnemcut,blind);
             } else {
                 itmp = EMJ16003(true,hasPre,inputfile.c_str(),outputfile.c_str());
             }
+	    linecounter +=1;
         }
     }
 
@@ -125,10 +137,15 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
     vector < vector <int> > nnpass(iicut,vector<int>(nbin,0));
     if(dooptk==1) {
         for(int i=0;i<nbin;i++) {  // for each bin
-            for(int j=0;j<nfiles[i];j++) { //for each file for that bin
+	  //for(int j=0;j<nfiles[i];j++) { //for each file for that bin
                 //inputfile=aaname+binnames[i]+"/"+binnames[i]+"_"+std::to_string(j+1)+"_0.ntpl.root";
-                inputfile=aaname+binnames[i]+"/"+binnames[i]+"_"+std::to_string(j+1)+"_0.histo.root";
-                std::cout<<"input file is "<<inputfile<<std::endl;
+	  //    inputfile=aaname+binnames[i]+"/"+binnames[i]+"_"+std::to_string(j+1)+"_0.histo.root";
+	  //    std::cout<<"input file is "<<inputfile<<std::endl;
+	  std::ifstream inputconfig(aaname[i]);
+	  std::cout<<"input config file is: "<<aaname[i]<<std::endl;
+	  while(std::getline(inputconfig,inputfile))
+	    {
+	      std::cout<<"kinScan: input file is "<<inputfile<<std::endl;
 
 
                 vector<int> npass = EMJscan(inputfile.c_str(),
@@ -162,11 +179,20 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
             std::cout<<" cut value is "<<acut2<<std::endl;
             for(int i=0;i<nbin;i++) ipass[k][i]=0;
             for(int i=0;i<nbin;i++) {  // for each bin
-                for(int j=0;j<nfiles[i];j++) { //for each file for that bin
-                    std::cout<<"k i j="<<k<<" "<<i<<" "<<j<<std::endl;
+	      //for(int j=0;j<nfiles[i];j++) { //for each file for that bin
+	      //    std::cout<<"k i j="<<k<<" "<<i<<" "<<j<<std::endl;
                     //inputfile=aaname+binnames[i]+"/"+binnames[i]+"_"+std::to_string(j+1)+"_0.ntpl.root";
-                    inputfile=aaname+binnames[i]+"/"+binnames[i]+"_"+std::to_string(j+1)+"_0.histo.root";
-                    std::cout<<"input file is "<<inputfile<<std::endl;
+	      //    inputfile=aaname+binnames[i]+"/"+binnames[i]+"_"+std::to_string(j+1)+"_0.histo.root";
+	      //    std::cout<<"input file is "<<inputfile<<std::endl;
+
+	      std::ifstream inputconfig(aaname[i]);
+	      std::cout<<"\nalphaScan: input config file is: "<<aaname[i]<<std::endl;
+	      int j = 0;
+	      while(std::getline(inputconfig, inputfile))
+		{
+		  std::cout<<"alphaScan: k i j="<<k<<" "<<i<<" "<<j<<std::endl;
+		  std::cout<<"alphaScan:input file is "<<inputfile<<std::endl;
+
                     int iii=0;
                     if(doopta==1) {
                         iii = EMJselect(false,hasPre,inputfile.c_str(),outputfile.c_str(),DHTcut, Dpt1cut,Dpt2cut,Dpt3cut,Dpt4cut,Djetacut,acut2,DmaxIPcut,0.9,0.9,Dntrk1,Dnemcut,blind);
@@ -175,6 +201,7 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
                     }
                     ipass[k][i]+=iii;
                     std::cout<<" iii ipass  is "<<iii<<" "<<ipass[k][i]<<std::endl;
+		    j+=1;
                 }
             }
         }}
