@@ -64,9 +64,9 @@ vector<int> EMJscan(const char* inputfilename,
   vector<vector<int> > *track_source = 0;
   vector<vector<int> > *track_index = 0;
   vector<vector<int> > *track_jet_index = 0;
-  vector<vector<int> > *track_vertex_index = 0;
   vector<vector<int> > *track_algo = 0;
-  vector<vector<float> > *track_vertex_weight =0;
+  vector<vector<int> > *track_quality = 0;
+  vector<vector<float> > *track_pvWeight =0;
   vector<vector<float> > *track_ipZ =0;
   vector<vector<float> > *track_ipXY = 0;
   vector<vector<float> > *track_ipXYSig = 0;
@@ -94,8 +94,8 @@ vector<int> EMJscan(const char* inputfilename,
   tt->SetBranchAddress("track_index",&track_index);
   tt->SetBranchAddress("track_jet_index",&track_jet_index);
   tt->SetBranchAddress("track_algo",&track_algo);
-  tt->SetBranchAddress("track_vertex_index",&track_vertex_index);
-  tt->SetBranchAddress("track_vertex_weight",&track_vertex_weight);
+  tt->SetBranchAddress("track_quality",&track_quality);
+  tt->SetBranchAddress("track_pvWeight",&track_pvWeight);
   tt->SetBranchAddress("track_ipZ",&track_ipZ);
   tt->SetBranchAddress("track_ipXY",&track_ipXY);
   tt->SetBranchAddress("track_ipXYSig",&track_ipXYSig);
@@ -115,6 +115,7 @@ vector<int> EMJscan(const char* inputfilename,
     vector<float> r0((*jet_index).size());
     vector<float> r1((*jet_index).size());    
     vector<float> jet_meanip((*jet_index).size());
+    vector<float> AM((*jet_index).size());
 
     for(Int_t j=0; j<(*jet_index).size(); j++) {
       //      calculate  number of tracks with pt > 1
@@ -122,18 +123,25 @@ vector<int> EMJscan(const char* inputfilename,
       jet_meanip[j]=0.;
       if(r0.size()>0) r0[j]=0.;
       if(r1.size()>0) r1[j]=0.;
+      AM[j]=-1.;
+      double ptsum_total=0, ptsum=0;
       vector<float> track_pts = track_pt->at(j);
       vector<int> track_sources = track_source->at(j);
+      vector<int> track_qualitys = track_quality->at(j);
       vector<float> track_ipXYs = track_ipXY->at(j);
       vector<float> track_ipXYSigs = track_ipXYSig->at(j);
+      vector<float> track_pvWeights = track_pvWeight->at(j);
       vector<float> sort_ip(track_pts.size());
       for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	if(track_sources[itrack]==0) {
+	if((track_sources[itrack]==0)&&(track_qualitys[itrack]&4>0)) {
 	  sort_ip[itrack]=track_ipXYs[itrack];
 	  if(track_pts[itrack]>1) jet_ntrkpt1[j]+=1;
 	  jet_meanip[j]=jet_meanip[j]+track_ipXYs[itrack];
+	  ptsum_total+=track_pts[itrack];
+	  if(track_pvWeights[itrack]>0) ptsum+=track_pts[itrack];
 	}
       }
+      if(ptsum_total>0) AM[j]=ptsum/ptsum_total;
       if(track_pts.size()>0) jet_meanip[j]=jet_meanip[j]/track_pts.size();
       std::sort(sort_ip.begin(), sort_ip.end());
       std::reverse(sort_ip.begin(),sort_ip.end());
@@ -159,7 +167,7 @@ vector<int> EMJscan(const char* inputfilename,
       int nemerging=0;
       int nalmostemerging=0;
       for(int ij=0;ij<4;ij++) {
-	if((*jet_alphaMax)[ij]<alphaMaxcut) {
+	if(AM[ij]<alphaMaxcut) {
 	  if((*jet_nef)[ij]<NemfracCut) {
 	    if(jet_ntrkpt1[ij]>ntrk1cut) {
 	      if((*jet_cef)[ij]<CemfracCut) {
@@ -259,9 +267,8 @@ vector<int> EMJscan(const char* inputfilename,
   delete track_source;
   delete track_index;
   delete track_jet_index;
-  delete track_vertex_index;
   delete track_algo;
-  delete track_vertex_weight;
+  delete track_pvWeight;
   delete track_ipZ;
   delete track_ipXY;
   delete track_ipXYSig;

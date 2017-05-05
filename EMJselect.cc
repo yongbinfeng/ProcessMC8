@@ -97,13 +97,12 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   vector<vector<float> > *track_pt = 0;
   vector<vector<float> > *track_eta = 0;
   vector<vector<float> > *track_phi = 0;
+  vector<vector<float> > *track_pvWeight =0;
   vector<vector<int> > *track_source = 0;
   vector<vector<int> > *track_quality = 0;
   vector<vector<int> > *track_index = 0;
   vector<vector<int> > *track_jet_index = 0;
-  vector<vector<int> > *track_vertex_index = 0;
   vector<vector<int> > *track_algo = 0;
-  vector<vector<float> > *track_vertex_weight =0;
   vector<vector<float> > *track_ipZ =0;
   vector<vector<float> > *track_ipXY = 0;
   vector<vector<float> > *track_ipXYSig = 0;
@@ -164,13 +163,12 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   tt->SetBranchAddress("track_pt",&track_pt);
   tt->SetBranchAddress("track_eta",&track_eta);
   tt->SetBranchAddress("track_phi",&track_phi);
+  tt->SetBranchAddress("track_pvWeight",&track_pvWeight);
   tt->SetBranchAddress("track_source",&track_source);
   tt->SetBranchAddress("track_quality",&track_quality);
   tt->SetBranchAddress("track_index",&track_index);
   tt->SetBranchAddress("track_jet_index",&track_jet_index);
   tt->SetBranchAddress("track_algo",&track_algo);
-  tt->SetBranchAddress("track_vertex_index",&track_vertex_index);
-  tt->SetBranchAddress("track_vertex_weight",&track_vertex_weight);
   tt->SetBranchAddress("track_ipXY",&track_ipXY);
   tt->SetBranchAddress("track_ipZ",&track_ipZ);
   tt->SetBranchAddress("track_ipXYSig",&track_ipXYSig);
@@ -375,6 +373,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     // jets
     vector<int> jet_ntrkpt1((*jet_index).size());
     vector<float> jet_meanip((*jet_index).size());
+    vector<float> AM((*jet_index).size());
     vector<float> r0((*jet_index).size());
     vector<float> r1((*jet_index).size());
     vector<int> jntrack((*jet_index).size());
@@ -399,23 +398,24 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       if(otfile) heta->Fill((*jet_eta)[j]);
       if(otfile) hjetchf->Fill((*jet_chf)[j]);
       if(otfile) if(j<4) heta2->Fill((*jet_eta)[j]);
-      if(otfile) halpha->Fill((*jet_alphaMax)[j]);
+      if(otfile) halpha->Fill(AM[j]);
 
       if(iDBG>0) {
-	std::cout<<"   jet "<<j<<" "<<(*jet_pt)[j]<<" "<<(*jet_eta)[j]<<" "<<(*jet_phi)[j]<<" "<<(*jet_alphaMax)[j]<<std::endl;
+	std::cout<<"   jet "<<j<<" "<<(*jet_pt)[j]<<" "<<(*jet_eta)[j]<<" "<<(*jet_phi)[j]<<" "<<AM[j]<<std::endl;
       }
 
       //      calculate  number of tracks with pt > 1
       jet_ntrkpt1[j]=0;
+      AM[j]=0;
       jet_meanip[j]=0.;
       if(r0.size()>0) r0[j]=0.;
       if(r1.size()>0) r1[j]=0.;
       vector<float> track_pts = track_pt->at(j);
       vector<float> track_etas = track_eta->at(j);
       vector<float> track_phis = track_phi->at(j);
+      vector<float> track_pvWeights = track_pvWeight->at(j);
       vector<int> track_sources = track_source->at(j);
       vector<int> track_qualitys = track_quality->at(j);
-      vector<float> track_vertex_weights = track_vertex_weight->at(j);
       vector<float> track_ipXYs = track_ipXY->at(j);
       vector<float> track_ipZs = track_ipZ->at(j);
       vector<float> track_ipXYSigs = track_ipXYSig->at(j);
@@ -424,18 +424,23 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       jntrack[j]=0;
       if(iDBG>0) std::cout<<"  with tracks "<<std::endl;
       if(iDBG>0) std::cout<<"  pt eta phi weight ipzy ipz"<<std::endl;
+      double sumpt=0.;
+      double sumptall=0.;
       for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
 	if((track_sources[itrack]==0)&&(track_qualitys[itrack]&4>0)) {
 	  if(iDBG>0) {
-	    std::cout<<"  "<<itrack<<" "<<track_pts[itrack]<<" "<<track_etas[itrack]<<" "<<track_phis[itrack]<<" "<<track_vertex_weights[itrack]<<" "<<track_ipXYs[itrack]<<" "<<track_ipZs[itrack]<<std::endl;
+	    std::cout<<"  "<<itrack<<" "<<track_pts[itrack]<<" "<<track_etas[itrack]<<" "<<track_phis[itrack]<<" "<<track_pvWeights[itrack]<<" "<<track_ipXYs[itrack]<<" "<<track_ipZs[itrack]<<std::endl;
 	  }
 	  sort_ip[jntrack[j]]=fabs(track_ipXYs[itrack]);
-	  if(otfile) htvw->Fill(track_vertex_weights[itrack]);
+	  sumptall+=track_pts[itrack];
+	  if(track_pvWeights[itrack]>0) sumpt+=track_pts[itrack];
+	  if(otfile) htvw->Fill(track_pvWeights[itrack]);
 	  if(track_pts[itrack]>1) jet_ntrkpt1[j]+=1;
 	  jet_meanip[j]=jet_meanip[j]+fabs(track_ipXYs[itrack]);
 	  jntrack[j]++;
 	}
       }
+      if(sumptall>0) AM[j]=sumpt/sumptall;
       float atmp = jntrack[j];
       if(jntrack[j]>0) jet_meanip[j]=jet_meanip[j]/atmp;
       std::sort(sort_ip.begin(), sort_ip.end());
@@ -468,7 +473,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
         vector<float> track_ipXYSigs = track_ipXYSig->at(ij);
         vector<int> track_sources = track_source->at(ij);
         vector<int> track_qualitys = track_quality->at(ij);
-        vector<float> track_vertex_weights = track_vertex_weight->at(ij);
+      vector<float> track_pvWeights = track_pvWeight->at(ij);
 	if(otfile) hjetcut->Fill(0.5);
 
 	if(fabs((*jet_eta)[ij])<jetacut) { // jet eta cut
@@ -490,9 +495,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	        if(otfile) hjetcut->Fill(4.5);
 		basicjet[ij]=true;
 
-	        if(otfile) hbcut_alphamax->Fill((*jet_alphaMax)[ij]);
-	        if((*jet_alphaMax)[ij]<alphaMaxcut) { // alpha max
-	          if(otfile) hacut_alphamax->Fill((*jet_alphaMax)[ij]);
+	        if(otfile) hbcut_alphamax->Fill(AM[ij]);
+	        if(AM[ij]<alphaMaxcut) { // alpha max
+	          if(otfile) hacut_alphamax->Fill(AM[ij]);
 	          if(otfile) hjetcut->Fill(5.5);
 		  almostemerging[ij]=true;
 		  
@@ -523,7 +528,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	          if((track_sources[itrack]==0)&&(track_qualitys[itrack]&4>0)) {
 		    if(otfile) hipXYEJ->Fill(track_ipXYs[itrack]);
 		    if(otfile) hipXYSigEJ->Fill(track_ipXYSigs[itrack]);
-		    if(otfile) htvwEJ->Fill(track_vertex_weights[itrack]);
+		    if(otfile) htvwEJ->Fill(track_pvWeights[itrack]);
 	           }
                 }
 		}
@@ -542,7 +547,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
                 }
 
 	}
-	if(iDBG>0) std::cout<<"event pt alphaM cef nef ntrkpt1 r0 emerging  almost "<<event<<" "<<(*jet_pt)[ij]<<" "<<(*jet_alphaMax)[ij]<<" "<<(*jet_cef)[ij]<<" "<<(*jet_nef)[ij]<<" "<<jet_ntrkpt1[ij]<<" "<<r0[ij]<<" "<<emerging[ij]<<" "<<almostemerging[ij]<<std::endl;
+	if(iDBG>0) std::cout<<"event pt alphaM cef nef ntrkpt1 r0 emerging  almost "<<event<<" "<<(*jet_pt)[ij]<<" "<<AM[ij]<<" "<<(*jet_cef)[ij]<<" "<<(*jet_nef)[ij]<<" "<<jet_ntrkpt1[ij]<<" "<<r0[ij]<<" "<<emerging[ij]<<" "<<almostemerging[ij]<<std::endl;
       }
       if(otfile) h_nemg->Fill(nemerging);
 
@@ -632,7 +637,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
         vector<float> track_ipXYSigs = track_ipXYSig->at(i);
         vector<int> track_sources = track_source->at(i);
         vector<int> track_qualitys = track_quality->at(i);
-        vector<float> track_vertex_weights = track_vertex_weight->at(i);
+      vector<float> track_pvWeights = track_pvWeight->at(i);
 
 
 
@@ -680,11 +685,11 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    if(matchdkq[i]&&matchdq[i]) std::cout<<"danger danger match both dark and down quark"<<std::endl;
 
 
-	    haMgj->Fill((*jet_alphaMax)[i]);
+	    haMgj->Fill(AM[i]);
 	    if(iDBG>0) {
-	    if((*jet_alphaMax)[i]<0.015) {
+	    if(AM[i]<0.015) {
 	      std::cout<<"CHECK"<<std::endl;
-	      std::cout<<"alpha max is "<<(*jet_alphaMax)[i]<<std::endl;
+	      std::cout<<"alpha max is "<<AM[i]<<std::endl;
 	      std::cout<<"jet pt is "<<(*jet_pt)[i]<<std::endl;  
 	      std::cout<<"jet eta is "<<(*jet_eta)[i]<<std::endl;  
 	      std::cout<<"jet phi is "<<(*jet_phi)[i]<<std::endl;  
@@ -694,9 +699,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    }
 	    }
 
-	    haMvjpt->Fill((*jet_alphaMax)[i],(*jet_pt)[i]);
-	    haMvHT->Fill((*jet_alphaMax)[i],HT);
-	    haMvnvtx->Fill((*jet_alphaMax)[i],nVtx);
+	    haMvjpt->Fill(AM[i],(*jet_pt)[i]);
+	    haMvHT->Fill(AM[i],HT);
+	    haMvnvtx->Fill(AM[i],nVtx);
 	    hjptb->Fill((*jet_pt)[i]);
 	    if(emerging[i]) {
 	      hjpta->Fill((*jet_pt)[i]);
@@ -708,7 +713,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
             for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
 	      if((track_sources[itrack]==0)&&track_qualitys[itrack]&4>0) {
 		ptall=ptall+track_pts[itrack];
-		if(track_vertex_weights[itrack]>0) {
+		if(track_pvWeights[itrack]>0) {
 		  ptpr=ptpr+track_pts[itrack];
 		}
 	      }
@@ -716,13 +721,13 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    float amaxbyhand=-1.;
 	    if(ptall>0) amaxbyhand=ptpr/ptall;
 	    if(iDBG>0) {
-	      std::cout<<" alphamax alphamax by hand are "<<(*jet_alphaMax)[i]<<" "<<amaxbyhand<<std::endl;
+	      std::cout<<" alphamax alphamax by hand are "<<AM[i]<<" "<<amaxbyhand<<std::endl;
 	    }
-	    aMbh->Fill((*jet_alphaMax)[i],amaxbyhand);
+	    aMbh->Fill(AM[i],amaxbyhand);
 
 	    // plots for dark and down quark jets  WILL ROBINSON
 	    if(matchdkq[i]&&(!matchdq[i])) {  // dark quark jet
-	      hdkjetam->Fill((*jet_alphaMax)[i]);
+	      hdkjetam->Fill(AM[i]);
 	      hdkjetmeanip->Fill(jet_meanip[i]);
 	      hdkjetntr->Fill(jet_ntrkpt1[i]);
 	      hdkjetmaxip->Fill(r0[i]);
@@ -731,10 +736,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	        if((track_sources[itrack]==0)&(track_qualitys[itrack]&4>0)) {
 		  hdkjettrkip->Fill(track_ipXYs[itrack]);
 		  hdkjettrkips->Fill(track_ipXYSigs[itrack]);
-		  hdkjettrkw->Fill(track_vertex_weights[itrack]);
+		  hdkjettrkw->Fill(track_pvWeights[itrack]);
 		  hdkipphi->Fill(track_phis[itrack],track_ipXYs[itrack]);
-		  adkwvd0->Fill(track_vertex_weights[itrack],track_ipXYs[itrack]);
-		  adkwviz->Fill(track_vertex_weights[itrack],track_ipZs[itrack]);
+		  adkwvd0->Fill(track_pvWeights[itrack],track_ipXYs[itrack]);
+		  adkwviz->Fill(track_pvWeights[itrack],track_ipZs[itrack]);
 		  //find gen particle that best matches
 		  float dR=99999.;
 		  int ipnt=0;
@@ -769,7 +774,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    }  // end match dark quark
 	   
 	    if(matchdq[i]&&(!matchdkq[i])) {  // down quark jet
-	      hdjetam->Fill((*jet_alphaMax)[i]);
+	      hdjetam->Fill(AM[i]);
 	      hdjetmeanip->Fill(jet_meanip[i]);
 	      hdjetntr->Fill(jet_ntrkpt1[i]);
 	      hdjetmaxip->Fill(r0[i]);
@@ -778,9 +783,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	        if((track_sources[itrack]==0)&&(track_qualitys[itrack]&4>0)) {
 		  hdjettrkip->Fill(track_ipXYs[itrack]);
 		  hdjettrkips->Fill(track_ipXYSigs[itrack]);
-		  hdjettrkw->Fill(track_vertex_weights[itrack]);
-		  adwvd0->Fill(track_vertex_weights[itrack],track_ipXYs[itrack]);
-		  adwviz->Fill(track_vertex_weights[itrack],track_ipZs[itrack]);
+		  hdjettrkw->Fill(track_pvWeights[itrack]);
+		  adwvd0->Fill(track_pvWeights[itrack],track_ipXYs[itrack]);
+		  adwviz->Fill(track_pvWeights[itrack],track_ipZs[itrack]);
 		  hdipphi->Fill(track_phis[itrack],track_ipXYs[itrack]);
 
 		  //find gen particle that best matches
@@ -829,10 +834,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem) {
       for(int i=0;i<4;i++) {
 	if(basicjet[i]) {
-	  halphanm1->Fill((*jet_alphaMax)[i]);
-	  aMip->Fill((*jet_alphaMax)[i],r0[i]);
+	  halphanm1->Fill(AM[i]);
+	  aMip->Fill(AM[i],r0[i]);
 	  hntrk1nm1->Fill(jet_ntrkpt1[i]);
-	  if(((*jet_alphaMax)[i]<alphaMaxcut)) {
+	  if((AM[i]<alphaMaxcut)) {
 	    hmaxipnm1->Fill(r0[i]);
 
 	    if(iDBG>0) {
@@ -843,16 +848,16 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    	     <<" meanip is "<<jet_meanip[i]
 	    	     <<" ip max is "<<r0[i]
 	    	     <<" second largest ip is "<<r1[i]
-	    	     <<" alpha max is "<<(*jet_alphaMax)[i]
+	    	     <<" alpha max is "<<AM[i]
             <<std::endl;
 	    }
             vector<float> track_pts = track_pt->at(i);
             vector<int> track_sources = track_source->at(i);
             vector<int> track_qualitys = track_quality->at(i);
-            vector<float> track_vertex_weights = track_vertex_weight->at(i);
             vector<float> track_ipXYs = track_ipXY->at(i);
             vector<float> track_ipZs = track_ipZ->at(i);
             vector<float> track_ipXYSigs = track_ipXYSig->at(i);
+      vector<float> track_pvWeights = track_pvWeight->at(i);
             vector<int> track_nMissInnerHitss = track_nMissInnerHits->at(i);
             vector<int> track_nMissInnerPxlLayerss = track_nMissInnerPxlLayers->at(i);
             vector<int> track_nPxlLayerss = track_nPxlLayers->at(i);
@@ -864,7 +869,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 			 <<" ipxy is "<<track_ipXYs[itrack]
 			 <<" ipZ is "<<track_ipZs[itrack]
 			 <<" ipxysig is "<<track_ipXYSigs[itrack]
-				 <<" pv weight is "<<track_vertex_weights[itrack]
+				 <<" pv weight is "<<track_pvWeights[itrack]
 			 <<" missinnerhits is "<<track_nMissInnerHitss[itrack]
 			 <<" missinnerpxllayers is "<<track_nMissInnerPxlLayerss[itrack]
 			 <<" pxllayers is "<<track_nPxlLayerss[itrack]
@@ -887,7 +892,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     if(otfile) H_T4->Fill(HT);
       for(int i=0;i<4;i++) {
 	if(almostemerging[i]) {
-	  if(((*jet_alphaMax)[i]<alphaMaxcut)) {
+	  if((AM[i]<alphaMaxcut)) {
 	    hnmaxipnm1->Fill(r0[i]);
 	  }
 	}
@@ -897,7 +902,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&nalmostemerging>=1) {
       for(int i=0;i<4;i++) {
 	if(almostemerging[i]) {
-	  if(((*jet_alphaMax)[i]<alphaMaxcut)) {
+	  if((AM[i]<alphaMaxcut)) {
 	    hn2maxipnm1->Fill(r0[i]);
 	  }
 	}
@@ -1000,7 +1005,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	  if(iDBG>0) std::cout<<"passing run lumi event filename is "<<run<<" "<<lumi<<" "<<event<<" "<<inputfilename<<std::endl;
 	  for(int i=0;i<4;i++) {
 	    if(iDBG>0) std::cout<<"  for jet "<<i<<" pt eta nef cfe ntrkpt1 alphamax r0"<<std::endl;
-	    if(iDBG>0) std::cout<<"     "<<(*jet_pt)[i]<<" "<<(*jet_eta)[i]<<" "<<(*jet_nef)[i]<<" "<<(*jet_cef)[i]<<" "<<jet_ntrkpt1[i]<<" "<<(*jet_alphaMax)[i]<<" "<<r0[i]<<" "<<std::endl;
+	    if(iDBG>0) std::cout<<"     "<<(*jet_pt)[i]<<" "<<(*jet_eta)[i]<<" "<<(*jet_nef)[i]<<" "<<(*jet_cef)[i]<<" "<<jet_ntrkpt1[i]<<" "<<AM[i]<<" "<<r0[i]<<" "<<std::endl;
 	  }
           if(otfile) {
 	    H_T3->Fill(HT);   
@@ -1166,9 +1171,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   delete track_quality;
   delete track_index;
   delete track_jet_index;
-  delete track_vertex_index;
   delete track_algo;
-  delete track_vertex_weight;
   delete track_ipZ;
   delete track_ipXY;
   delete track_ipXYSig;
