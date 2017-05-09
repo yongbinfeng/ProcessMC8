@@ -388,20 +388,20 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     if(iDBG>0) std::cout<<" pt eta phi alphamax"<<std::endl;
     for(Int_t j=0; j<NNNjet; j++) {
       if(iDBG>0) std::cout<<"jet j = "<<j<<std::endl;
-      jet_theta[j]=2.*atan(exp(-(*jet_eta)[j]));
+      jet_theta[j]=2.*atan(exp(-jet_eta->at(j)));
       jet_e[j]=(*jet_pt)[j]/sin(jet_theta[j]);
-      jet_px[j]=(*jet_pt)[j]*cos((*jet_phi)[j]);
-      jet_py[j]=(*jet_pt)[j]*sin((*jet_phi)[j]);
+      jet_px[j]=(*jet_pt)[j]*cos(jet_phi->at(j));
+      jet_py[j]=(*jet_pt)[j]*sin(jet_phi->at(j));
       jet_pz[j]=(*jet_pt)[j]/tan(jet_theta[j]);
 				
-      if(otfile) hpt->Fill((*jet_pt)[j]);
-      if(otfile) heta->Fill((*jet_eta)[j]);
-      if(otfile) hjetchf->Fill((*jet_chf)[j]);
-      if(otfile) if(j<4) heta2->Fill((*jet_eta)[j]);
+      if(otfile) hpt->Fill(jet_pt->at(j));
+      if(otfile) heta->Fill(jet_eta->at(j));
+      if(otfile) hjetchf->Fill(jet_chf->at(j));
+      if(otfile) if(j<4) heta2->Fill(jet_eta->at(j));
 
 
       if(iDBG>0) {
-	std::cout<<"   jet "<<j<<" "<<(*jet_pt)[j]<<" "<<(*jet_eta)[j]<<" "<<(*jet_phi)[j]<<" "<<AM[j]<<std::endl;
+	std::cout<<"   jet "<<j<<" "<<jet_pt->at(j)<<" "<<jet_eta->at(j)<<" "<<jet_phi->at(j)<<" "<<AM[j]<<std::endl;
       }
 
       //      calculate  number of tracks with pt > 1
@@ -477,12 +477,12 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       vector<float> track_pvWeights = track_pvWeight->at(ij);
 	if(otfile) hjetcut->Fill(0.5);
 
-	if(fabs((*jet_eta)[ij])<jetacut) { // jet eta cut
+	if(fabs(jet_eta->at(ij))<jetacut) { // jet eta cut
 	    if(otfile) hjetcut->Fill(1.5);
 
-	if(otfile) hbcut_nef->Fill((*jet_nef)[ij]);
-	if((*jet_nef)[ij]<NemfracCut) {  // neutral fraction
-	    if(otfile) hacut_nef->Fill((*jet_nef)[ij]);
+	    if(otfile) hbcut_nef->Fill(jet_nef->at(ij));
+	    if(jet_nef->at(ij)<NemfracCut) {  // neutral fraction
+	      if(otfile) hacut_nef->Fill(jet_nef->at(ij));
 	    if(otfile) hjetcut->Fill(2.5);
 
 	    if(otfile) hbcut_ntrkpt1->Fill(jet_ntrkpt1[ij]);
@@ -490,9 +490,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      if(otfile) hacut_ntrkpt1->Fill(jet_ntrkpt1[ij]);
 	      if(otfile) hjetcut->Fill(3.5);
 
-	      if(otfile) hbcut_cef->Fill((*jet_cef)[ij]);
-	      if((*jet_cef)[ij]<CemfracCut) {  //charged fraction
-	        if(otfile) hacut_cef->Fill((*jet_cef)[ij]);
+	      if(otfile) hbcut_cef->Fill(jet_cef->at(ij));
+	      if(jet_cef->at(ij)<CemfracCut) {  //charged fraction
+	        if(otfile) hacut_cef->Fill(jet_cef->at(ij));
 	        if(otfile) hjetcut->Fill(4.5);
 		basicjet[ij]=true;
 
@@ -507,7 +507,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		if(ij<4) {
 		  std::cout<<" an almost emerging jet "<<ij<<std::endl;
 		  std::cout<<" with r0 of "<<r0[ij]<<std::endl;
-		  std::cout<<" and pt of "<<(*jet_pt)[ij]<<std::endl;
+		  std::cout<<" and pt of "<<jet_pt->at(ij)<<std::endl;
 		}
 		  }
 		if(r0[ij]>maxIPcut) { // max IP cut
@@ -518,7 +518,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		if(ij<4) {
 		  std::cout<<" an emerging jet "<<ij<<std::endl;
 		  std::cout<<" with r0 of "<<r0[ij]<<std::endl;
-		  std::cout<<" and pt of "<<(*jet_pt)[ij]<<std::endl;
+		  std::cout<<" and pt of "<<jet_pt->at(ij)<<std::endl;
 		}
 		}
 		// look at tracks in the emerging jets
@@ -548,7 +548,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
                 }
 
 	}
-	if(iDBG>0) std::cout<<"event pt alphaM cef nef ntrkpt1 r0 emerging  almost "<<event<<" "<<(*jet_pt)[ij]<<" "<<AM[ij]<<" "<<(*jet_cef)[ij]<<" "<<(*jet_nef)[ij]<<" "<<jet_ntrkpt1[ij]<<" "<<r0[ij]<<" "<<emerging[ij]<<" "<<almostemerging[ij]<<std::endl;
+	if(iDBG>0) std::cout<<"event pt alphaM cef nef ntrkpt1 r0 emerging  almost "<<event<<" "<<jet_pt->at(ij)<<" "<<AM[ij]<<" "<<jet_cef->at(ij)<<" "<<jet_nef->at(ij)<<" "<<jet_ntrkpt1[ij]<<" "<<r0[ij]<<" "<<emerging[ij]<<" "<<almostemerging[ij]<<std::endl;
       }
       if(otfile) h_nemg->Fill(nemerging);
 
@@ -569,18 +569,18 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     bool C4jet=true;
     if(NNNjet<4) C4jet=false;
     // HT
-    //    double HT = (*jet_pt)[0]+(*jet_pt)[1]+(*jet_pt)[2]+(*jet_pt)[3];
+    //    double HT = jet_pt->at(0)+jet_pt->at(1)+jet_pt->at(2)+jet_pt->at(3);
     double HT=0.;
     for(int i=0;i<std::min(NNNjet,3);i++) {
-      HT+=(*jet_pt)[i];
+      HT+=jet_pt->at(i);
     }
 
 
     if(otfile) H_T->Fill(HT);
-    if(otfile&&NNNjet>0) hpt1->Fill((*jet_pt)[0]);
-    if(otfile&&NNNjet>1) hpt2->Fill((*jet_pt)[1]);
-    if(otfile&&NNNjet>2) hpt3->Fill((*jet_pt)[2]);
-    if(otfile&&NNNjet>3) hpt4->Fill((*jet_pt)[3]);
+    if(otfile&&NNNjet>0) hpt1->Fill(jet_pt->at(0));
+    if(otfile&&NNNjet>1) hpt2->Fill(jet_pt->at(1));
+    if(otfile&&NNNjet>2) hpt3->Fill(jet_pt->at(2));
+    if(otfile&&NNNjet>3) hpt4->Fill(jet_pt->at(3));
     bool CHT=true;
     if(HT<HTcut) CHT=false;
     // jet pt
@@ -589,13 +589,13 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     bool Cpt3=false;
     bool Cpt4=false;
     if(NNNjet>0) {
-      if(((*jet_pt)[0]>pt1cut)&&(fabs((*jet_eta)[0])<jetacut)) Cpt1=true;}
+      if((jet_pt->at(0)>pt1cut)&&(fabs(jet_eta->at(0))<jetacut)) Cpt1=true;}
     if(NNNjet>1) {
-      if(((*jet_pt)[1]>pt2cut)&&(fabs((*jet_eta)[1])<jetacut)) Cpt2=true;}
+      if((jet_pt->at(1)>pt2cut)&&(fabs(jet_eta->at(1))<jetacut)) Cpt2=true;}
     if(NNNjet>2) {
-      if(((*jet_pt)[2]>pt3cut)&&(fabs((*jet_eta)[2])<jetacut)) Cpt3=true;}
+      if((jet_pt->at(2)>pt3cut)&&(fabs(jet_eta->at(2))<jetacut)) Cpt3=true;}
     if(NNNjet>3) {
-      if(((*jet_pt)[3]>pt4cut)&&(fabs((*jet_eta)[3])<jetacut)) Cpt4=true;}
+      if((jet_pt->at(3)>pt4cut)&&(fabs(jet_eta->at(3))<jetacut)) Cpt4=true;}
     // number emerging jets
     bool Cnem = true;
     if(nemerging<NemergingCut) Cnem=false;
@@ -617,10 +617,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       // kine only plots
       if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4) {
 	hHTko->Fill(HT);
-	hpt1ko->Fill((*jet_pt)[0]);
-	hpt2ko->Fill((*jet_pt)[1]);
-	hpt3ko->Fill((*jet_pt)[2]);
-	hpt4ko->Fill((*jet_pt)[3]);
+	hpt1ko->Fill(jet_pt->at(0));
+	hpt2ko->Fill(jet_pt->at(1));
+	hpt3ko->Fill(jet_pt->at(2));
+	hpt4ko->Fill(jet_pt->at(3));
 
       }
 
@@ -644,11 +644,11 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 	
 	if(basicjet[i]) {
-	  if((*jet_pt)[i]>50 ) {
+	  if(jet_pt->at(i)>50 ) {
 	    matchdkq[i]=false;
 	    matchdq[i]=false;
 	    if(firstdkq>0) {
-              dr=DeltaR((*jet_eta)[i],(*jet_phi)[i],(*gp_eta)[firstdkq],(*gp_phi)[firstdkq]);
+              dr=DeltaR(jet_eta->at(i),jet_phi->at(i),gp_eta->at(firstdkq),gp_phi->at(firstdkq));
 	      if(dr<0.4) {
 		matchdkq[i]=true;
 	        if(iDBG>0) std::cout<<" matched jet "<<i<<" with dark quark dR="<<dr<<std::endl;
@@ -657,7 +657,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 
 	    if(firstadkq>0) {
-	      dr=DeltaR((*jet_eta)[i],(*jet_phi)[i],(*gp_eta)[firstadkq],(*gp_phi)[firstadkq]);
+	      dr=DeltaR(jet_eta->at(i),jet_phi->at(i),gp_eta->at(firstadkq),gp_phi->at(firstadkq));
 	      if(dr<0.4) {
 		matchdkq[i]=true;
 	        if(iDBG>0) std::cout<<" matched jet "<<i<<" anti with dark quark dr="<<dr<<std::endl;
@@ -666,7 +666,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 
 	    if(firstdq>0) {
-	      dr=DeltaR((*jet_eta)[i],(*jet_phi)[i],(*gp_eta)[firstdq],(*gp_phi)[firstdq]);
+	      dr=DeltaR(jet_eta->at(i),jet_phi->at(i),gp_eta->at(firstdq),gp_phi->at(firstdq));
 	      if(dr<0.4) {
 		matchdq[i]=true;
 	      if(iDBG>0) std::cout<<" matched jet "<<i<<" with down quark dr="<<dr<<std::endl;
@@ -675,7 +675,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 
 	    if(firstdq>0) {
-	      dr=DeltaR((*jet_eta)[i],(*jet_phi)[i],(*gp_eta)[firstadq],(*gp_phi)[firstadq]);
+	      dr=DeltaR(jet_eta->at(i),jet_phi->at(i),gp_eta->at(firstadq),gp_phi->at(firstadq));
 	      if(dr<0.4) {
 		matchdq[i]=true;
 	        if(iDBG>0) std::cout<<" matched jet "<<i<<" with antidown quark dr="<<dr<<std::endl;
@@ -691,21 +691,21 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    if(AM[i]<0.015) {
 	      std::cout<<"CHECK"<<std::endl;
 	      std::cout<<"alpha max is "<<AM[i]<<std::endl;
-	      std::cout<<"jet pt is "<<(*jet_pt)[i]<<std::endl;  
-	      std::cout<<"jet eta is "<<(*jet_eta)[i]<<std::endl;  
-	      std::cout<<"jet phi is "<<(*jet_phi)[i]<<std::endl;  
+	      std::cout<<"jet pt is "<<jet_pt->at(i)<<std::endl;  
+	      std::cout<<"jet eta is "<<jet_eta->at(i)<<std::endl;  
+	      std::cout<<"jet phi is "<<jet_phi->at(i)<<std::endl;  
 	      std::cout<<" number tracks in jet is "<<jntrack[i]<<std::endl;
 	      std::cout<<" number true interactions is "<<nTrueInt<<std::endl;
 	      std::cout<<" total number tracks is "<<nTracks<<std::endl;
 	    }
 	    }
 
-	    haMvjpt->Fill(AM[i],(*jet_pt)[i]);
+	    haMvjpt->Fill(AM[i],jet_pt->at(i));
 	    haMvHT->Fill(AM[i],HT);
 	    haMvnvtx->Fill(AM[i],nVtx);
-	    hjptb->Fill((*jet_pt)[i]);
+	    hjptb->Fill(jet_pt->at(i));
 	    if(emerging[i]) {
-	      hjpta->Fill((*jet_pt)[i]);
+	      hjpta->Fill(jet_pt->at(i));
 	    }
 
 	    //calculate alpha max by hand
@@ -827,10 +827,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
       //N-1 plots
     if(PVPT0&&C4jet&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem) hHTnm1->Fill(HT);
-    if(PVPT0&&C4jet&&CHT&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem) hpt1nm1->Fill((*jet_pt)[0]);
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt3&&Cpt4&&Cnem&&Canem) hpt2nm1->Fill((*jet_pt)[1]);
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt4&&Cnem&&Canem) hpt3nm1->Fill((*jet_pt)[2]);
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cnem&&Canem) hpt4nm1->Fill((*jet_pt)[3]);
+    if(PVPT0&&C4jet&&CHT&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem) hpt1nm1->Fill(jet_pt->at(0));
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt3&&Cpt4&&Cnem&&Canem) hpt2nm1->Fill(jet_pt->at(1));
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt4&&Cnem&&Canem) hpt3nm1->Fill(jet_pt->at(2));
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cnem&&Canem) hpt4nm1->Fill(jet_pt->at(3));
     if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem) hnemnm1->Fill(nemerging);
     if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem) {
       for(int i=0;i<4;i++) {
@@ -844,7 +844,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    if(iDBG>0) {
             std::cout<<" almost emerging"<<std::endl;
 	    if(r0[i]<0.05) std::cout<<"DANGER DANGER"<<std::endl;
-            std::cout<<" jet pt is "<<(*jet_pt)[i]
+            std::cout<<" jet pt is "<<jet_pt->at(i)
 	    	     <<" ntrkpt1 is "<<jet_ntrkpt1[i]
 	    	     <<" meanip is "<<jet_meanip[i]
 	    	     <<" ip max is "<<r0[i]
@@ -919,11 +919,11 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem) {
       for(Int_t j=0; j<NNNjet; j++) {
 	if(basicjet[j]) {
-	  hjptfrb->Fill((*jet_pt)[j]);
+	  hjptfrb->Fill(jet_pt->at(j));
 	  if(almostemerging[j]){
-	    hjptfra1->Fill((*jet_pt)[j]);
+	    hjptfra1->Fill(jet_pt->at(j));
 	    if(emerging[j]) {
-	      hjptfra2->Fill((*jet_pt)[j]);
+	      hjptfra2->Fill(jet_pt->at(j));
 	    }
 	  }
 	}
@@ -933,11 +933,11 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4) {
       for(Int_t j=0; j<NNNjet; j++) {
 	if(basicjet[j]) {
-	  hjptfrbc->Fill((*jet_pt)[j]);
+	  hjptfrbc->Fill(jet_pt->at(j));
 	  if(almostemerging[j]){
-	    hjptfra1c->Fill((*jet_pt)[j]);
+	    hjptfra1c->Fill(jet_pt->at(j));
 	    if(emerging[j]) {
-	      hjptfra2c->Fill((*jet_pt)[j]);
+	      hjptfra2c->Fill(jet_pt->at(j));
 	    }
 	  }
 	}
@@ -1006,7 +1006,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	  if(iDBG>0) std::cout<<"passing run lumi event filename is "<<run<<" "<<lumi<<" "<<event<<" "<<inputfilename<<std::endl;
 	  for(int i=0;i<4;i++) {
 	    if(iDBG>0) std::cout<<"  for jet "<<i<<" pt eta nef cfe ntrkpt1 alphamax r0"<<std::endl;
-	    if(iDBG>0) std::cout<<"     "<<(*jet_pt)[i]<<" "<<(*jet_eta)[i]<<" "<<(*jet_nef)[i]<<" "<<(*jet_cef)[i]<<" "<<jet_ntrkpt1[i]<<" "<<AM[i]<<" "<<r0[i]<<" "<<std::endl;
+	    if(iDBG>0) std::cout<<"     "<<jet_pt->at(i)<<" "<<jet_eta->at(i)<<" "<<jet_nef->at(i)<<" "<<jet_cef->at(i)<<" "<<jet_ntrkpt1[i]<<" "<<AM[i]<<" "<<r0[i]<<" "<<std::endl;
 	  }
           if(otfile) {
 	    H_T3->Fill(HT);   

@@ -157,7 +157,7 @@ vector<int> EMJscan(const char* inputfilename,
     if(pv_indexInColl !=0) continue;
 
 
-    double HT = (*jet_pt)[0]+(*jet_pt)[1]+(*jet_pt)[2]+(*jet_pt)[3];
+    double HT = jet_pt->at(0)+jet_pt->at(1)+jet_pt->at(2)+jet_pt->at(3);
     // now start the event selections
 
       //now look and see if any of the jets are emerging
@@ -168,9 +168,9 @@ vector<int> EMJscan(const char* inputfilename,
       int nalmostemerging=0;
       for(int ij=0;ij<4;ij++) {
 	if(AM[ij]<alphaMaxcut) {
-	  if((*jet_nef)[ij]<NemfracCut) {
+	  if(jet_nef->at(ij)<NemfracCut) {
 	    if(jet_ntrkpt1[ij]>ntrk1cut) {
-	      if((*jet_cef)[ij]<CemfracCut) {
+	      if(jet_cef->at(ij)<CemfracCut) {
 		nalmostemerging=nalmostemerging+1;
 		if(r0[ij]>maxIPcut) {
 	          emerging[ij]=true;
@@ -226,10 +226,10 @@ vector<int> EMJscan(const char* inputfilename,
 		  if(icut==iicut) EMJscanFirst= false;
 		}
 	          if(HT>HTcut) {
-	            if(((*jet_pt)[0]>pt1cut)&&(fabs((*jet_eta)[0])<jetacut)) {
-	              if((*jet_pt)[1]>pt2cut&&(fabs((*jet_eta)[1])<jetacut)) {
-	                if((*jet_pt)[2]>pt3cut&&(fabs((*jet_eta)[2])<jetacut)) {
-	                  if((*jet_pt)[3]>pt4cut&&(fabs((*jet_eta)[3])<jetacut)) {
+	            if((jet_pt->at(0)>pt1cut)&&(fabs(jet_eta->at(0))<jetacut)) {
+	              if(jet_pt->at(1)>pt2cut&&(fabs(jet_eta->at(1))<jetacut)) {
+	                if(jet_pt->at(2)>pt3cut&&(fabs(jet_eta->at(2))<jetacut)) {
+	                  if(jet_pt->at(3)>pt4cut&&(fabs(jet_eta->at(3))<jetacut)) {
 			    if((nalmostemerging<4)||blind) {
 	                    if((nemerging>=NemergingCut)||blind) {
                               npass[icut]+=1;
