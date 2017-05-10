@@ -571,7 +571,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     // HT
     //    double HT = jet_pt->at(0)+jet_pt->at(1)+jet_pt->at(2)+jet_pt->at(3);
     double HT=0.;
-    for(int i=0;i<std::min(NNNjet,3);i++) {
+    for(int i=0;i<std::min(NNNjet,4);i++) {
       HT+=jet_pt->at(i);
     }
 
