@@ -264,7 +264,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hpt2ko = new TH1F("hpt2ko"," pT of second jet kine cuts",200,0.,1000.);
   hpt3ko = new TH1F("hpt3ko"," pT of third jet kine cuts",200,0.,1000.);
   hpt4ko = new TH1F("hpt4ko"," pT of fourth jet kine cuts",200,0.,1000.);
-  hmass = new TH1F("hmass","mass emerging and non",500,0.,5000.);
+  hmass = new TH1F("hmass","mass emerging and non",500,-10.,5000.);
 
   hdkjetam = new TH1F("hdkjetam","alphamax dark quark jets ",100,0.,1.);
   hdkjetmeanip = new TH1F("hdkjetmeanip","mean ip dark quark jets",100,0.,10.);
@@ -624,7 +624,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	   else {id2=i5;}
 	 }
        }
-       if(ie1>0&&ie2>0&&id1>0&&id2>0) {
+       if(iDBG) {
+	 std::cout<<"ie1 ie2 id1 id2 are "<<ie1<<" "<<ie2<<" "<<id1<<" "<<id2<<std::endl;
+       }
+       if(ie1>-1&&ie2>-1&&id1>-1&&id2>-1) {
 	      float mass1 = sqrt(
 				 pow((jet_e[ie1]+jet_e[id1]),2) -
 				 pow((jet_px[ie1]+jet_px[id1]),2) -
@@ -654,6 +657,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      } else {
                 amass=(mass3+mass4)/2.;
 	      }
+	      if(iDBG>2) std::cout<<"mass1 mass2 mass3 mass4 amass "<<mass1<<" "<<mass2<<" "<<mass3<<" "<<mass4<<" "<<amass<<std::endl;
        }
      }
 
