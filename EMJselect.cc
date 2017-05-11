@@ -187,7 +187,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   
 
   // create a histograms
-  TH1F *acount,*count,*hjetcut,*hjetchf,*h_nemg,*hnjet,*hpt,*heta,*heta2,*halpha,*H_T,*H_T2,*H_T3,*H_T4,*hbcut_ntrkpt1,*hacut_ntrkpt1,*hbcut_nef,*hacut_nef,*hbcut_cef,*hacut_cef,*hbcut_alphamax,*hacut_alphamax,*hbcut_theta2d,*hbcut_maxip,*hHTnm1,*hnHitsnm1,*hntrk1nm1,*hmaxipnm1,*hpt1nm1,*hpt2nm1,*hpt3nm1,*hpt4nm1,*halphanm1,*hnemnm1,*hpt1,*hpt2,*hpt3,*hpt4,*hipXYEJ,*hipXYnEJ,*htvw,*htvwEJ,*hnmaxipnm1,*hn2maxipnm1,*hjptfrb,*hjptfra1,*hjptfra2,*hjptfrbc,*hjptfra1c,*hjptfra2c,*hjptb,*hjpta,*haMgj,*hHTko,*hpt1ko,*hpt2ko,*hpt3ko,*hpt4ko,*hipXYSigEJ,*hipXYSignEJ,*hmaxipXYEJ,*hmaxipXYnEJ,*hmeanipXYEJ,*hmeanipXYnEJ,*hmass,
+  TH1F *acount,*count,*hjetcut,*hjetchf,*h_nemg,*hnjet,*hpt,*heta,*heta2,*halpha,*H_T,*H_T2,*H_T3,*H_T4,*hbcut_ntrkpt1,*hacut_ntrkpt1,*hbcut_nef,*hacut_nef,*hbcut_cef,*hacut_cef,*hbcut_alphamax,*hacut_alphamax,*hbcut_theta2d,*hbcut_maxip,*hmetnm1,*hmassnm1,*hHTnm1,*hnHitsnm1,*hntrk1nm1,*hmaxipnm1,*hpt1nm1,*hpt2nm1,*hpt3nm1,*hpt4nm1,*halphanm1,*hnemnm1,*hpt1,*hpt2,*hpt3,*hpt4,*hipXYEJ,*hipXYnEJ,*htvw,*htvwEJ,*hnmaxipnm1,*hn2maxipnm1,*hjptfrb,*hjptfra1,*hjptfra2,*hjptfrbc,*hjptfra1c,*hjptfra2c,*hjptb,*hjpta,*haMgj,*hHTko,*hpt1ko,*hpt2ko,*hpt3ko,*hpt4ko,*hipXYSigEJ,*hipXYSignEJ,*hmaxipXYEJ,*hmaxipXYnEJ,*hmeanipXYEJ,*hmeanipXYnEJ,*hmass,
     *hdkjetam,*hdkjetmeanip,*hdkjetntr,*hdkjetmaxip,*hdkjettrkip,*hdkjettrkips,*hdkjettrkw,*hdkjettrgip,*hdkjettrkdr,
     *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr
 ;
@@ -232,6 +232,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hbcut_maxip = new TH1F("hbcut_maxip","maxip before cut",50,0.,30.);
   hbcut_theta2d = new TH1F("hbcut_theta2d","theta2d before cut",50,0.,0.1);
   hHTnm1 = new TH1F("hHTnm1","HT n-1",100,0.,5000.);
+  hmassnm1 = new TH1F("hmassnm1","mass n-1",100,-10.,5000.);
+  hmetnm1 = new TH1F("hmetnm1","MET n-1",100,0.,500.);
   hpt1nm1 = new TH1F("hpt1nm1","pt1 n-1",200,0.,1000.);
   hpt2nm1 = new TH1F("hpt2nm1","pt2 n-1",200,0.,1000.);
   hpt3nm1 = new TH1F("hpt3nm1","pt3 n-1",200,0.,1000.);
@@ -896,13 +898,18 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       }
 
       //N-1 plots
-    if(PVPT0&&C4jet&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem) hHTnm1->Fill(HT);
-    if(PVPT0&&C4jet&&CHT&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem) hpt1nm1->Fill(jet_pt->at(0));
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt3&&Cpt4&&Cnem&&Canem) hpt2nm1->Fill(jet_pt->at(1));
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt4&&Cnem&&Canem) hpt3nm1->Fill(jet_pt->at(2));
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cnem&&Canem) hpt4nm1->Fill(jet_pt->at(3));
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem) hnemnm1->Fill(nemerging);
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem) {
+    if(PVPT0&&C4jet&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hHTnm1->Fill(HT);
+    if(PVPT0&&C4jet&&CHT&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hpt1nm1->Fill(jet_pt->at(0));
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hpt2nm1->Fill(jet_pt->at(1));
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hpt3nm1->Fill(jet_pt->at(2));
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cnem&&Canem&&Cmass&&Cmet) hpt4nm1->Fill(jet_pt->at(3));
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem&&Cmass&&Cmet) hnemnm1->Fill(nemerging);
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmet) hmassnm1->Fill(amass);
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmet) hmetnm1->Fill(met_pt);
+
+
+
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem&&Cmass&&Cmet) {
       for(int i=0;i<4;i++) {
 	if(basicjet[i]) {
 	  halphanm1->Fill(AM[i]);
@@ -1140,6 +1147,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     hbcut_maxip->Write();
     hbcut_theta2d->Write();
     hHTnm1->Write();
+    hmassnm1->Write();
+    hmetnm1->Write();
     hpt1nm1->Write();
     hpt2nm1->Write();
     hpt3nm1->Write();
