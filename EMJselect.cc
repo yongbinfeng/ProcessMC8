@@ -187,7 +187,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   
 
   // create a histograms
-  TH1F *acount,*count,*hjetcut,*hjetchf,*h_nemg,*hnjet,*hpt,*heta,*heta2,*halpha,*H_T,*H_T2,*H_T3,*H_T4,*hbcut_ntrkpt1,*hacut_ntrkpt1,*hbcut_nef,*hacut_nef,*hbcut_cef,*hacut_cef,*hbcut_alphamax,*hacut_alphamax,*hHTnm1,*hnHitsnm1,*hntrk1nm1,*hmaxipnm1,*hpt1nm1,*hpt2nm1,*hpt3nm1,*hpt4nm1,*halphanm1,*hnemnm1,*hpt1,*hpt2,*hpt3,*hpt4,*hipXYEJ,*hipXYnEJ,*htvw,*htvwEJ,*hnmaxipnm1,*hn2maxipnm1,*hjptfrb,*hjptfra1,*hjptfra2,*hjptfrbc,*hjptfra1c,*hjptfra2c,*hjptb,*hjpta,*haMgj,*hHTko,*hpt1ko,*hpt2ko,*hpt3ko,*hpt4ko,*hipXYSigEJ,*hipXYSignEJ,*hmaxipXYEJ,*hmaxipXYnEJ,*hmeanipXYEJ,*hmeanipXYnEJ,*hmass,
+  TH1F *acount,*count,*hjetcut,*hjetchf,*h_nemg,*hnjet,*hpt,*heta,*heta2,*halpha,*H_T,*H_T2,*H_T3,*H_T4,*hbcut_ntrkpt1,*hacut_ntrkpt1,*hbcut_nef,*hacut_nef,*hbcut_cef,*hacut_cef,*hbcut_alphamax,*hacut_alphamax,*hbcut_theta2d,*hbcut_maxip,*hHTnm1,*hnHitsnm1,*hntrk1nm1,*hmaxipnm1,*hpt1nm1,*hpt2nm1,*hpt3nm1,*hpt4nm1,*halphanm1,*hnemnm1,*hpt1,*hpt2,*hpt3,*hpt4,*hipXYEJ,*hipXYnEJ,*htvw,*htvwEJ,*hnmaxipnm1,*hn2maxipnm1,*hjptfrb,*hjptfra1,*hjptfra2,*hjptfrbc,*hjptfra1c,*hjptfra2c,*hjptb,*hjpta,*haMgj,*hHTko,*hpt1ko,*hpt2ko,*hpt3ko,*hpt4ko,*hipXYSigEJ,*hipXYSignEJ,*hmaxipXYEJ,*hmaxipXYnEJ,*hmeanipXYEJ,*hmeanipXYnEJ,*hmass,
     *hdkjetam,*hdkjetmeanip,*hdkjetntr,*hdkjetmaxip,*hdkjettrkip,*hdkjettrkips,*hdkjettrkw,*hdkjettrgip,*hdkjettrkdr,
     *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr
 ;
@@ -229,6 +229,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hacut_cef = new TH1F("hacut_cef","charged em fraction after cut",50,0.,1.2);
   hbcut_alphamax = new TH1F("hbcut_alphamax","alphamax before cut",50,0.,1.5);
   hacut_alphamax = new TH1F("hacut_alphamax","alphamax after cut",50,0.,1.5);
+  hbcut_maxip = new TH1F("hbcut_maxip","maxip before cut",50,0.,1.5);
+  hbcut_theta2d = new TH1F("hbcut_theta2d","theta2d before cut",50,0.,1.5);
   hHTnm1 = new TH1F("hHTnm1","HT n-1",100,0.,5000.);
   hpt1nm1 = new TH1F("hpt1nm1","pt1 n-1",200,0.,1000.);
   hpt2nm1 = new TH1F("hpt2nm1","pt2 n-1",200,0.,1000.);
@@ -505,41 +507,46 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		  
 		  if(ij<4) nalmostemerging=nalmostemerging+1;
 		  if(iDBG>0) {
-		if(ij<4) {
-		  std::cout<<" an almost emerging jet "<<ij<<std::endl;
-		  std::cout<<" with r0 of "<<r0[ij]<<std::endl;
-		  std::cout<<" and pt of "<<jet_pt->at(ij)<<std::endl;
-		}
+		    if(ij<4) {
+		      std::cout<<" an almost emerging jet "<<ij<<std::endl;
+		      std::cout<<" with r0 of "<<r0[ij]<<std::endl;
+		      std::cout<<" and pt of "<<jet_pt->at(ij)<<std::endl;
+		    }
 		  }
-		if(r0[ij]>maxIPcut) { // max IP cut
-		  if(jet_theta2D->at(ij)>Dtheta2dcut) {
+	          if(otfile) hbcut_maxip->Fill(r0[ij]);
+		  if(r0[ij]>maxIPcut) { // max IP cut
+                    if(otfile) hjetcut->Fill(6.5);
+	            if(otfile) hbcut_theta2d->Fill(jet_theta2D->at(ij));
+		    if(jet_theta2D->at(ij)>Dtheta2dcut) {
+                      if(otfile) hjetcut->Fill(7.5);
 
-	            emerging[ij]=true;
-	            if(ij<4) nemerging+=1.;
-		    if(iDBG>0) {
-		      if(ij<4) {
-		        std::cout<<" an emerging jet "<<ij<<std::endl;
-		        std::cout<<" with r0 of "<<r0[ij]<<std::endl;
-		        std::cout<<" and pt of "<<jet_pt->at(ij)<<std::endl;
+	              emerging[ij]=true;
+	              if(ij<4) nemerging+=1.;
+		      if(iDBG>0) {
+		        if(ij<4) {
+		          std::cout<<" an emerging jet "<<ij<<std::endl;
+		          std::cout<<" with r0 of "<<r0[ij]<<std::endl;
+		          std::cout<<" and pt of "<<jet_pt->at(ij)<<std::endl;
+		        }
+		      }
+		// look at tracks in the emerging jets
+		      if(otfile) hmaxipXYEJ->Fill(r0[ij]);
+		      if(otfile) hmeanipXYEJ->Fill(jet_meanip[ij]);
+		      if(jet_meanip[ij]>r0[ij]) std::cout<<"DANGER DANGER"<<std::endl;
+                        for (unsigned itrack=0; itrack<track_ipXYs.size(); itrack++) {
+	                  if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
+		          if(otfile) hipXYEJ->Fill(track_ipXYs[itrack]);
+		          if(otfile) hipXYSigEJ->Fill(track_ipXYSigs[itrack]);
+		          if(otfile) htvwEJ->Fill(track_pvWeights[itrack]);
+	                }
 		      }
 		    }
-		// look at tracks in the emerging jets
-		    if(otfile) hmaxipXYEJ->Fill(r0[ij]);
-		    if(otfile) hmeanipXYEJ->Fill(jet_meanip[ij]);
-		    if(jet_meanip[ij]>r0[ij]) std::cout<<"DANGER DANGER"<<std::endl;
-                      for (unsigned itrack=0; itrack<track_ipXYs.size(); itrack++) {
-	                if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
-		        if(otfile) hipXYEJ->Fill(track_ipXYs[itrack]);
-		        if(otfile) hipXYSigEJ->Fill(track_ipXYSigs[itrack]);
-		        if(otfile) htvwEJ->Fill(track_pvWeights[itrack]);
-	              }
-		    }
 		  }
-		}
+	        }
 	      }
 	    }
-	  }
-        }}
+          }
+        }
 	if(!emerging[ij]) {
 	  if(otfile) hmaxipXYnEJ->Fill(r0[ij]);
 	  if(otfile) hmeanipXYnEJ->Fill(jet_meanip[ij]);
