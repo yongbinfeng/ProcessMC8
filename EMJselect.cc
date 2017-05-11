@@ -1061,22 +1061,31 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
         if(otfile) acount->Fill(8.5);
 
 
-        npass+=1;
-	if(iDBG>0) std::cout<<"passing run lumi event filename is "<<run<<" "<<lumi<<" "<<event<<" "<<inputfilename<<std::endl;
-	for(int i=0;i<4;i++) {
-	  if(iDBG>0) std::cout<<"  for jet "<<i<<" pt eta nef cfe ntrkpt1 alphamax r0"<<std::endl;
-	  if(iDBG>0) std::cout<<"     "<<jet_pt->at(i)<<" "<<jet_eta->at(i)<<" "<<jet_nef->at(i)<<" "<<jet_cef->at(i)<<" "<<jet_ntrkpt1[i]<<" "<<AM[i]<<" "<<r0[i]<<" "<<std::endl;
-	  }
-          if(otfile) {
-	    H_T3->Fill(HT);   
-	      hmass->Fill(amass);
-	  }
+	if(Cmet) {
+          if(otfile) count->Fill("MET",1);
+          if(otfile) acount->Fill(9.5);
+
+	  if(Cmass) {
+            if(otfile) count->Fill("mass",1);
+            if(otfile) acount->Fill(10.5);
+
+
+            npass+=1;
+	    if(iDBG>0) std::cout<<"passing run lumi event filename is "<<run<<" "<<lumi<<" "<<event<<" "<<inputfilename<<std::endl;
+	    for(int i=0;i<4;i++) {
+	      if(iDBG>0) std::cout<<"  for jet "<<i<<" pt eta nef cfe ntrkpt1 alphamax r0"<<std::endl;
+	      if(iDBG>0) std::cout<<"     "<<jet_pt->at(i)<<" "<<jet_eta->at(i)<<" "<<jet_nef->at(i)<<" "<<jet_cef->at(i)<<" "<<jet_ntrkpt1[i]<<" "<<AM[i]<<" "<<r0[i]<<" "<<std::endl;
+	      }
+              if(otfile) {
+	        H_T3->Fill(HT);   
+	        hmass->Fill(amass);
+	      }
      
 
         if(iDBG>0) std::cout<<"npass  event is "<<npass<<" "<<event<<std::endl;
         if(iDBG>0) std::cout<<"nemerging nalmostemerging "<<nemerging<<" "<<nalmostemerging<<std::endl;
 
-      }}}}}}}}}
+	  }}}}}}}}}}}
 
 
 
