@@ -229,8 +229,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hacut_cef = new TH1F("hacut_cef","charged em fraction after cut",50,0.,1.2);
   hbcut_alphamax = new TH1F("hbcut_alphamax","alphamax before cut",50,0.,1.5);
   hacut_alphamax = new TH1F("hacut_alphamax","alphamax after cut",50,0.,1.5);
-  hbcut_maxip = new TH1F("hbcut_maxip","maxip before cut",50,0.,1.5);
-  hbcut_theta2d = new TH1F("hbcut_theta2d","theta2d before cut",50,0.,1.5);
+  hbcut_maxip = new TH1F("hbcut_maxip","maxip before cut",50,0.,30.);
+  hbcut_theta2d = new TH1F("hbcut_theta2d","theta2d before cut",50,0.,0.1);
   hHTnm1 = new TH1F("hHTnm1","HT n-1",100,0.,5000.);
   hpt1nm1 = new TH1F("hpt1nm1","pt1 n-1",200,0.,1000.);
   hpt2nm1 = new TH1F("hpt2nm1","pt2 n-1",200,0.,1000.);
