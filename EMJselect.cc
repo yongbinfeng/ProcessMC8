@@ -1137,6 +1137,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     hacut_cef->Write();
     hbcut_alphamax->Write();
     hacut_alphamax->Write();
+    hbcut_maxip->Write();
+    hbcut_theta2d->Write();
     hHTnm1->Write();
     hpt1nm1->Write();
     hpt2nm1->Write();
