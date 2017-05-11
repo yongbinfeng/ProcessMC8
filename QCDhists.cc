@@ -23,7 +23,8 @@ int EMJ16003(bool otfile, bool hasPre, const char* inputfilename,const char* out
 
 int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* outputfilename,
 	      float HTcut, float pt1cut, float pt2cut,float pt3cut, float pt4cut, float jetacut,float alphaMaxcut, float maxIPcut, float NemfracCut,float CemfracCut,
-	      int ntrk1cut, int NemergingCut, bool blind
+	      int ntrk1cut, int NemergingCut, bool blind,
+	      float Dmetcut, float Dmass, float Dmasscut, float Dtheta2dcut
               );
 void  HistNorm(vector<double>& norm,int nbin,float* xsec, int* nfiles, std::string* binnames);
 TH1F* HistMan(float goalintlum,std::string thisHIST,vector<double>& histnorm, vector<double>& outnorm,int nbin,float* xsec, int* nfiles, std::string* binnames,bool donorm);
@@ -57,7 +58,11 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
     // dont forget there is a hidden cut nalmostemergin<4!!!!!!!!!!!!!!!!!
     int Dnemcut=2;
     int Dntrk1=0;
-
+    
+    float Dmetcut=-1;
+    float Dmass=1000.;
+    float Dmasscut=3000000000;
+    float Dtheta2dcut=-1;
   
 
 
@@ -85,7 +90,9 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
 
             int itmp;
             if(!b16003) {
-                itmp = EMJselect(true,hasPre,inputfile.c_str(),outputfile.c_str(),DHTcut, Dpt1cut,Dpt2cut,Dpt3cut,Dpt4cut,Djetacut,Dalphacut,DmaxIPcut,0.9,0.9,Dntrk1,Dnemcut,blind);
+	      itmp = EMJselect(true,hasPre,inputfile.c_str(),outputfile.c_str(),DHTcut, Dpt1cut,Dpt2cut,Dpt3cut,Dpt4cut,Djetacut,Dalphacut,DmaxIPcut,0.9,0.9,Dntrk1,Dnemcut,blind,
+			       Dmetcut,Dmass,Dmasscut,Dtheta2dcut
+);
             } else {
                 itmp = EMJ16003(true,hasPre,inputfile.c_str(),outputfile.c_str());
             }

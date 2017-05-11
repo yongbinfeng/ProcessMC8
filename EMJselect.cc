@@ -36,7 +36,9 @@ float DeltaR(float eta1, float phi1, float eta2, float phi2) {
 
 
 int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* outputfilename,
-	      float HTcut, float pt1cut, float pt2cut, float pt3cut, float pt4cut, float jetacut,float alphaMaxcut, float maxIPcut, float NemfracCut,float CemfracCut,int ntrk1cut, int NemergingCut,bool blind) {
+	      float HTcut, float pt1cut, float pt2cut, float pt3cut, float pt4cut, float jetacut,float alphaMaxcut, float maxIPcut, float NemfracCut,float CemfracCut,int ntrk1cut, int NemergingCut,bool blind,
+	      float Dmetcut, float Dmass, float Dmasscut, float Dtheta2dcut
+) {
   // "ntuple.root", "histos.root"
   // suggest cuts 1000., 400.,200.,125.,50.,0.2,0.9,0.9,0,1
   // right now this code hard wires the jet pT cut and requires emerging jets to have at least
@@ -89,6 +91,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   vector<float> *jet_eta = new vector<float>;
   vector<float> *jet_phi = new vector<float>;
   vector<float> *jet_alphaMax = new vector<float>;
+  vector<float> *jet_theta2D = new vector<float>;
   vector<float> *jet_cef = new vector<float>;
   vector<float> *jet_nef = new vector<float>;
   vector<float> *jet_chf = new vector<float>;
@@ -160,6 +163,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   tt->SetBranchAddress("jet_nhf",&jet_nhf);
   //  tt->SetBranchAddress("jet_phf",&jet_phf);
   tt->SetBranchAddress("jet_alphaMax",&jet_alphaMax);
+  tt->SetBranchAddress("jet_theta2D",&jet_theta2D);
   tt->SetBranchAddress("track_pt",&track_pt);
   tt->SetBranchAddress("track_eta",&track_eta);
   tt->SetBranchAddress("track_phi",&track_phi);
@@ -508,27 +512,29 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		}
 		  }
 		if(r0[ij]>maxIPcut) { // max IP cut
+		  if(jet_theta2D->at(ij)>Dtheta2dcut) {
 
-	        emerging[ij]=true;
-	        if(ij<4) nemerging+=1.;
-		if(iDBG>0) {
-		if(ij<4) {
-		  std::cout<<" an emerging jet "<<ij<<std::endl;
-		  std::cout<<" with r0 of "<<r0[ij]<<std::endl;
-		  std::cout<<" and pt of "<<jet_pt->at(ij)<<std::endl;
-		}
-		}
+	            emerging[ij]=true;
+	            if(ij<4) nemerging+=1.;
+		    if(iDBG>0) {
+		      if(ij<4) {
+		        std::cout<<" an emerging jet "<<ij<<std::endl;
+		        std::cout<<" with r0 of "<<r0[ij]<<std::endl;
+		        std::cout<<" and pt of "<<jet_pt->at(ij)<<std::endl;
+		      }
+		    }
 		// look at tracks in the emerging jets
-		if(otfile) hmaxipXYEJ->Fill(r0[ij]);
-		if(otfile) hmeanipXYEJ->Fill(jet_meanip[ij]);
-		if(jet_meanip[ij]>r0[ij]) std::cout<<"DANGER DANGER"<<std::endl;
-                for (unsigned itrack=0; itrack<track_ipXYs.size(); itrack++) {
-	          if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
-		    if(otfile) hipXYEJ->Fill(track_ipXYs[itrack]);
-		    if(otfile) hipXYSigEJ->Fill(track_ipXYSigs[itrack]);
-		    if(otfile) htvwEJ->Fill(track_pvWeights[itrack]);
-	           }
-                }
+		    if(otfile) hmaxipXYEJ->Fill(r0[ij]);
+		    if(otfile) hmeanipXYEJ->Fill(jet_meanip[ij]);
+		    if(jet_meanip[ij]>r0[ij]) std::cout<<"DANGER DANGER"<<std::endl;
+                      for (unsigned itrack=0; itrack<track_ipXYs.size(); itrack++) {
+	                if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
+		        if(otfile) hipXYEJ->Fill(track_ipXYs[itrack]);
+		        if(otfile) hipXYSigEJ->Fill(track_ipXYSigs[itrack]);
+		        if(otfile) htvwEJ->Fill(track_pvWeights[itrack]);
+	              }
+		    }
+		  }
 		}
 	      }
 	    }
@@ -600,6 +606,62 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     //    if(nalmostemerging>=4) Cnem=false;
     bool Canem =true;
     if(nalmostemerging>=4) Canem=false;
+
+     
+     double amass=-1;
+     if(NNNjet>3) {
+       int ie1 =-1;
+       int ie2=-1;
+       int id1=-1;
+       int id2=-1;
+
+       for(int i5=0;i5<4;i5++) {
+	 if(emerging[i5]) {
+	   if(ie1==-1) {ie1=i5;}
+	   else {ie2=i5;}
+	 } else {
+	   if(id1==-1) {id1=i5;}
+	   else {id2=i5;}
+	 }
+       }
+       if(ie1>0&&ie2>0&&id1>0&&id2>0) {
+	      float mass1 = sqrt(
+				 pow((jet_e[ie1]+jet_e[id1]),2) -
+				 pow((jet_px[ie1]+jet_px[id1]),2) -
+				 pow((jet_py[ie1]+jet_py[id1]),2) -
+				 pow((jet_pz[ie1]+jet_pz[id1]),2)
+				 );
+	      float mass2 = sqrt(
+				 pow((jet_e[ie2]+jet_e[id2]),2) -
+				 pow((jet_px[ie2]+jet_px[id2]),2) -
+				 pow((jet_py[ie2]+jet_py[id2]),2) -
+				 pow((jet_pz[ie2]+jet_pz[id2]),2)
+				 );
+	      float mass3 = sqrt(
+				 pow((jet_e[ie1]+jet_e[id2]),2) -
+				 pow((jet_px[ie1]+jet_px[id2]),2) -
+				 pow((jet_py[ie1]+jet_py[id2]),2) -
+				 pow((jet_pz[ie1]+jet_pz[id2]),2)
+				 );
+	      float mass4 = sqrt(
+				 pow((jet_e[ie2]+jet_e[id1]),2) -
+				 pow((jet_px[ie2]+jet_px[id1]),2) -
+				 pow((jet_py[ie2]+jet_py[id1]),2) -
+				 pow((jet_pz[ie2]+jet_pz[id1]),2)
+				 );
+	      if(fabs(mass1-mass2)<fabs(mass3-mass4)) {
+                amass=(mass1+mass2)/2.;
+	      } else {
+                amass=(mass3+mass4)/2.;
+	      }
+       }
+     }
+
+    bool Cmass = false;
+    if(fabs(amass-Dmass)<Dmasscut) Cmass=true;
+
+    bool Cmet = false;
+    if(met_pt>Dmetcut) Cmet = true;
 
 
     //blind
@@ -999,69 +1061,20 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
         if(otfile) acount->Fill(8.5);
 
 
-          npass+=1;
-	  if(iDBG>0) std::cout<<"passing run lumi event filename is "<<run<<" "<<lumi<<" "<<event<<" "<<inputfilename<<std::endl;
-	  for(int i=0;i<4;i++) {
-	    if(iDBG>0) std::cout<<"  for jet "<<i<<" pt eta nef cfe ntrkpt1 alphamax r0"<<std::endl;
-	    if(iDBG>0) std::cout<<"     "<<jet_pt->at(i)<<" "<<jet_eta->at(i)<<" "<<jet_nef->at(i)<<" "<<jet_cef->at(i)<<" "<<jet_ntrkpt1[i]<<" "<<AM[i]<<" "<<r0[i]<<" "<<std::endl;
+        npass+=1;
+	if(iDBG>0) std::cout<<"passing run lumi event filename is "<<run<<" "<<lumi<<" "<<event<<" "<<inputfilename<<std::endl;
+	for(int i=0;i<4;i++) {
+	  if(iDBG>0) std::cout<<"  for jet "<<i<<" pt eta nef cfe ntrkpt1 alphamax r0"<<std::endl;
+	  if(iDBG>0) std::cout<<"     "<<jet_pt->at(i)<<" "<<jet_eta->at(i)<<" "<<jet_nef->at(i)<<" "<<jet_cef->at(i)<<" "<<jet_ntrkpt1[i]<<" "<<AM[i]<<" "<<r0[i]<<" "<<std::endl;
 	  }
           if(otfile) {
 	    H_T3->Fill(HT);   
-	    double amass=-1;
-	    int ie1 =-1;
-	    int ie2=-1;
-	    int id1=-1;
-	    int id2=-1;
-
-	    for(int i5=0;i5<4;i5++) {
-	      if(emerging[i5]) {
-		if(ie1==-1) {ie1=i5;}
-		else {ie2=i5;}
-	      } else {
-		if(id1==-1) {id1=i5;}
-		else {id2=i5;}
-	      }
-	    }
-	    if(ie1>0&&ie2>0&&id1>0&&id2>0) {
-	      float mass1 = sqrt(
-				 pow((jet_e[ie1]+jet_e[id1]),2) -
-				 pow((jet_px[ie1]+jet_px[id1]),2) -
-				 pow((jet_py[ie1]+jet_py[id1]),2) -
-				 pow((jet_pz[ie1]+jet_pz[id1]),2)
-				 );
-	      float mass2 = sqrt(
-				 pow((jet_e[ie2]+jet_e[id2]),2) -
-				 pow((jet_px[ie2]+jet_px[id2]),2) -
-				 pow((jet_py[ie2]+jet_py[id2]),2) -
-				 pow((jet_pz[ie2]+jet_pz[id2]),2)
-				 );
-	      float mass3 = sqrt(
-				 pow((jet_e[ie1]+jet_e[id2]),2) -
-				 pow((jet_px[ie1]+jet_px[id2]),2) -
-				 pow((jet_py[ie1]+jet_py[id2]),2) -
-				 pow((jet_pz[ie1]+jet_pz[id2]),2)
-				 );
-	      float mass4 = sqrt(
-				 pow((jet_e[ie2]+jet_e[id1]),2) -
-				 pow((jet_px[ie2]+jet_px[id1]),2) -
-				 pow((jet_py[ie2]+jet_py[id1]),2) -
-				 pow((jet_pz[ie2]+jet_pz[id1]),2)
-				 );
-	      if(fabs(mass1-mass2)<fabs(mass3-mass4)) {
-                amass=(mass1+mass2)/2.;
-	      } else {
-                amass=(mass3+mass4)/2.;
-	      }
 	      hmass->Fill(amass);
-
-
-	    }
 	  }
+     
 
-    
-
-	  if(iDBG>0) std::cout<<"npass  event is "<<npass<<" "<<event<<std::endl;
-	  if(iDBG>0) std::cout<<"nemerging nalmostemerging "<<nemerging<<" "<<nalmostemerging<<std::endl;
+        if(iDBG>0) std::cout<<"npass  event is "<<npass<<" "<<event<<std::endl;
+        if(iDBG>0) std::cout<<"nemerging nalmostemerging "<<nemerging<<" "<<nalmostemerging<<std::endl;
 
       }}}}}}}}}
 
