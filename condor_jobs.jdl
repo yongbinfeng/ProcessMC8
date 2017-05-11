@@ -6,5 +6,5 @@ Requirements = TARGET.FileSystemDomain == "privnet"
 Output = QCDhists_sce_$(cluster)_$(process).stdout
 Error = QCDhists_sce_$(cluster)_$(process).stderr
 Log = QCDhists_sce_$(cluster)_$(process).condor
-Arguments = MODELB $(process) /data/users/eno/emergingJets5/CMSSW_7_6_3/src/EmergingJetAnalysis/histsQCD/ 2 0 0
+Arguments = QCD $(process) /data/users/eno/em10/CMSSW_8_0_26_patch1/src/ProcessMC8 0 0 0
 Queue 1
