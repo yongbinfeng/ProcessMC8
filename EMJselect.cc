@@ -465,9 +465,6 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	}
       int nemerging=0;
       int nalmostemerging=0;
-      int iijjkk = 4;
-      //if(NNNjet<4) iijjkk=NNNjet;
-      //      std::cout<<"iijjkk is "<<iijjkk<<std::endl;
       for(int ij=0;ij<NNNjet;ij++) {
 	
         vector<float> track_ipXYs = track_ipXY->at(ij);
@@ -1010,21 +1007,55 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	  }
           if(otfile) {
 	    H_T3->Fill(HT);   
-	    float mass;
+	    double amass=-1;
+	    int ie1 =-1;
+	    int ie2=-1;
+	    int id1=-1;
+	    int id2=-1;
+
 	    for(int i5=0;i5<4;i5++) {
-	    for(int i6=i5+1;i6<4;i6++) {
-	      if((emerging[i5]&&!emerging[i6])||(!emerging[i5]&&emerging[i6])) {
-	      mass = sqrt(
-			  pow((jet_e[i5]+jet_e[i6]),2) -
-			  pow((jet_px[i5]+jet_px[i6]),2) -
-			  pow((jet_py[i5]+jet_py[i6]),2) -
-			  pow((jet_pz[i5]+jet_pz[i6]),2)
+	      if(emerging[i5]) {
+		if(ie1==-1) {ie1=i5;}
+		else {ie2=i5;}
+	      } else {
+		if(id1==-1) {id1=i5;}
+		else {id2=i5;}
+	      }
+	    }
+	    if(ie1>0&&ie2>0&&id1>0&&id2>0) {
+	      float mass1 = sqrt(
+				 pow((jet_e[ie1]+jet_e[id1]),2) -
+				 pow((jet_px[ie1]+jet_px[id1]),2) -
+				 pow((jet_py[ie1]+jet_py[id1]),2) -
+				 pow((jet_pz[ie1]+jet_pz[id1]),2)
+				 );
+	      float mass2 = sqrt(
+				 pow((jet_e[ie2]+jet_e[id2]),2) -
+				 pow((jet_px[ie2]+jet_px[id2]),2) -
+				 pow((jet_py[ie2]+jet_py[id2]),2) -
+				 pow((jet_pz[ie2]+jet_pz[id2]),2)
+				 );
+	      float mass3 = sqrt(
+				 pow((jet_e[ie1]+jet_e[id2]),2) -
+				 pow((jet_px[ie1]+jet_px[id2]),2) -
+				 pow((jet_py[ie1]+jet_py[id2]),2) -
+				 pow((jet_pz[ie1]+jet_pz[id2]),2)
+				 );
+	      float mass4 = sqrt(
+				 pow((jet_e[ie2]+jet_e[id1]),2) -
+				 pow((jet_px[ie2]+jet_px[id1]),2) -
+				 pow((jet_py[ie2]+jet_py[id1]),2) -
+				 pow((jet_pz[ie2]+jet_pz[id1]),2)
+				 );
+	      if(fabs(mass1-mass2)<fabs(mass3-mass4)) {
+                amass=(mass1+mass2)/2.;
+	      } else {
+                amass=(mass3+mass4)/2.;
+	      }
+	      hmass->Fill(amass);
 
-                );
-	      hmass->Fill(mass);
-	    }}}
 
-	      
+	    }
 	  }
 
     
