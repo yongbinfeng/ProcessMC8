@@ -16,6 +16,7 @@ RUN_DIR=$3
 RUN_MODE=$4
 BLIND_MODE=$5
 I16_MODE=$6
+THEMASS=$7
 
 echo ""
 echo "CMSSW on Condor"
@@ -39,7 +40,7 @@ FINAL_LOG=`echo $FINAL_PREFIX_NAME.log`
 #
 # run c
 #
-./main $RUN_MODE $BLIND_MODE $I16_MODE >> $FINAL_LOG 2>&1
+./main $RUN_MODE $BLIND_MODE $I16_MODE $THEMASS >> $FINAL_LOG 2>&1
 
 
 

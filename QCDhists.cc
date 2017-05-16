@@ -38,7 +38,7 @@ std::string bbname = "./";
 
 
 //void QCDhists() 
-void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* binnames,std::string* aaname,std::string ohname, bool hasPre,bool donorm, bool blind, bool b16003) 
+void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* binnames,std::string* aaname,std::string ohname, bool hasPre,bool donorm, bool blind, bool b16003,float themass) 
 {
 
     std::string inputfile;
@@ -60,7 +60,7 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
     int Dntrk1=0;
     
     float Dmetcut=-1;
-    float Dmass=1000.;
+    float Dmass=themass;
     float Dmasscut=3000000000;
     float Dtheta2dcut=-1;
   

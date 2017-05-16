@@ -7,10 +7,10 @@ o compile:
 make
 
 to run on background
-./main 0
+./main 0 0 0 1000.
 
-to run on signal
-./main 1
+to run on signal modelA
+./main 1 0 0 1000.
 
 (right now it doesn't run on the full sample.  edit main.cc and it should be obvious now\
  to change this)

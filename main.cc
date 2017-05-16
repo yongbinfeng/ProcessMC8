@@ -3,15 +3,19 @@
 #include <string>
 #include <map>
 
-void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* binnames,std::string* aaname,std::string ohname, bool hasPre,bool norm, bool blind, bool b16003) ;
+void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* binnames,std::string* aaname,std::string ohname, bool hasPre,bool norm, bool blind, bool b16003, float themass) ;
 
 
 
 int main(int argc, char *argv[])
 { 
-    int imode=*(argv[1])-'0';
-    int iblind=*(argv[2])-'0';
-    int i16003=*(argv[3])-'0';
+    int imode=atoi(argv[1]);
+    int iblind=atoi(argv[2]);
+    int i16003=atoi(argv[3]);
+    float TheMass=atof(argv[4]);
+
+
+    std::cout<<" doing cuts for hypothesis signal mass of "<<TheMass<<std::endl;
 
     bool b16003 = false;
     if(i16003>0) b16003=true;
@@ -129,22 +133,22 @@ int main(int argc, char *argv[])
 
 
     if(imode==0) {
-        QCDhists(goalintlum,nbin,xsec,nfiles,binnames,aaname,"SumHistsQCD.root",hasPre,true,blind,b16003);
+      QCDhists(goalintlum,nbin,xsec,nfiles,binnames,aaname,"SumHistsQCD.root",hasPre,true,blind,b16003,TheMass);
     } else if (imode==1) {
-        QCDhists(goalintlum,anbin,axsec,anfiles,abinnames,aaname_a,"SumHistsModelA.root",hasPre,true,blind,b16003);
+        QCDhists(goalintlum,anbin,axsec,anfiles,abinnames,aaname_a,"SumHistsModelA.root",hasPre,true,blind,b16003,TheMass);
     } else if (imode==2) {
-        QCDhists(goalintlum,bnbin,bxsec,bnfiles,bbinnames,aaname_b,"SumHistsModelB.root",hasPre,true,blind,b16003);
+        QCDhists(goalintlum,bnbin,bxsec,bnfiles,bbinnames,aaname_b,"SumHistsModelB.root",hasPre,true,blind,b16003,TheMass);
     } else if (imode==3) {
-        QCDhists(goalintlum,qnbin,qxsec,qnfiles,qbinnames,aaname_q,"SumHistsQQCD.root",hasPre,true,blind,b16003);
+        QCDhists(goalintlum,qnbin,qxsec,qnfiles,qbinnames,aaname_q,"SumHistsQQCD.root",hasPre,true,blind,b16003,TheMass);
     } else if (imode==4) {
-        QCDhists(goalintlum,dnbin,dxsec,dnfiles,dbinnames,aaname_d,"SumHistsDebug.root",hasPre,true,blind,b16003);
+        QCDhists(goalintlum,dnbin,dxsec,dnfiles,dbinnames,aaname_d,"SumHistsDebug.root",hasPre,true,blind,b16003,TheMass);
     } else if (imode==5) {
-        QCDhists(goalintlum,wnbin,wxsec,wnfiles,wbinnames,aaname_w,"SumHistsWSkim.root",hasPre,false,blind,b16003);
+        QCDhists(goalintlum,wnbin,wxsec,wnfiles,wbinnames,aaname_w,"SumHistsWSkim.root",hasPre,false,blind,b16003,TheMass);
     } else if (imode==6) {
-        QCDhists(goalintlum,wmcnbin,wmcxsec,wmcnfiles,wmcbinnames,aaname_wmc,"SumHistsWMCSkim.root",hasPre,true,blind,b16003);
+        QCDhists(goalintlum,wmcnbin,wmcxsec,wmcnfiles,wmcbinnames,aaname_wmc,"SumHistsWMCSkim.root",hasPre,true,blind,b16003,TheMass);
     } else if (imode==7) {
-        QCDhists(goalintlum,datanbin,dataxsec,datanfiles,databinnames,aaname_data,"SumHistsDATA.root",hasPre,false,blind,b16003);
+        QCDhists(goalintlum,datanbin,dataxsec,datanfiles,databinnames,aaname_data,"SumHistsDATA.root",hasPre,false,blind,b16003,TheMass);
     } else if (imode==8) {
-      QCDhists(goalintlum,q74nbin,q74xsec,q74nfiles,q74binnames,aaname_q74,"SumHistsQCD74.root",hasPre,true,blind,b16003);
+      QCDhists(goalintlum,q74nbin,q74xsec,q74nfiles,q74binnames,aaname_q74,"SumHistsQCD74.root",hasPre,true,blind,b16003,TheMass);
     }
 }
