@@ -195,8 +195,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   // create a histograms
   TH1F *acount,*count,*hjetcut,*hjetchf,*h_nemg,*hnjet,*hpt,*heta,*heta2,*halpha,*H_T,*H_T2,*H_T3,*H_T4,*hbcut_ntrkpt1,*hacut_ntrkpt1,*hbcut_nef,*hacut_nef,*hbcut_cef,*hacut_cef,*hbcut_alphamax,*hacut_alphamax,*hbcut_theta2d,*hbcut_maxip,*hmetnm1,*hmassnm1,*hHTnm1,*hnHitsnm1,*hntrk1nm1,*hmaxipnm1,*hpt1nm1,*hpt2nm1,*hpt3nm1,*hpt4nm1,*halphanm1,*hnemnm1,*hpt1,*hpt2,*hpt3,*hpt4,*hipXYEJ,*hipXYnEJ,*htvw,*htvwEJ,*hnmaxipnm1,*hn2maxipnm1,*hjptfrb,*hjptfra1,*hjptfra2,*hjptfrbc,*hjptfra1c,*hjptfra2c,*hjptb,*hjpta,*haMgj,*hHTko,*hpt1ko,*hpt2ko,*hpt3ko,*hpt4ko,*hipXYSigEJ,*hipXYSignEJ,*hmaxipXYEJ,*hmaxipXYnEJ,*hmeanipXYEJ,*hmeanipXYnEJ,*hmass,
     *hdkjetam,*hdkjetmeanip,*hdkjetntr,*hdkjetmaxip,*hdkjettrkip,*hdkjettrkips,*hdkjettrkw,*hdkjettrgip,*hdkjettrkdr,
-    *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr,*hdjetam2d,*hdkjetam2d,*hmeanz,*hmeanzfa,*hmeanzpa,*hmeanzdk,*hmeanzd
-;
+    *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr,*hdjetam2d,*hdkjetam2d,*hmeanz,*hmeanzfa,*hmeanzpa,*hmeanzdk,*hmeanzd;
+
+  TH1F *hmzamd,*hmznamd,*h2damd,*h2dnamd;
 
   TH2F *aMip,*haMvjpt,*haMvHT,*haMvnvtx,*aMbh,*aMbh2D,*aMbh2Daem,*aMbh2Dd,*aMbh2Ddk,*aMmzd,*aMmzdk,
     *adkwvd0,*adkwviz,
@@ -302,6 +303,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hmeanzdk = new TH1F("hmeanzdk","diff pvz and mean jet z dark quarks",100,-20.,20.);
   hmeanzfa = new TH1F("hmeanzfa","diff pvz and mean jet z failling almost emerging",100,-20.,20.);
   hmeanzpa = new TH1F("hmeanzpa","diff pvz and mean jet z pass almost emerging",100,-20.,20.);
+  hmzamd = new TH1F("hmzamd","meanz down quarks almost emerging",100,-7.,7.);
+  hmznamd = new TH1F("hmznamd","meanz down quarks not almost emerging",100,-7.,7.);
+  h2damd = new TH1F("h2damd","alpha2d down quarks almost emerging",100,0.,1.);
+  h2dnamd = new TH1F("h2dnamd","alpha2d down quarks not almost emerging",100,0.,1.);
 
   //2d
   aMip = new TH2F("aMip"," alpha Max versus max IP n-1 plot",100,0.,1.,100,0.,10.);
@@ -841,7 +846,14 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      aMbh2Ddk->Fill(AM[i],amax2D[i]);
 	      float why1=jet_meanz[i]-pv_z;
 	      aMmzdk->Fill(AM[i],fabs(why1));
-	    hmeanzdk->Fill(why1);
+	      if(almostemerging[i]) {
+		hmzamd->Fill(why1);
+		h2damd->Fill(amax2D[i]);
+	      } else {
+		hmznamd->Fill(why1);
+		h2dnamd->Fill(amax2D[i]);
+	      }
+	      hmeanzdk->Fill(why1);
 	      hdkjetmeanip->Fill(jet_meanip[i]);
 	      hdkjetntr->Fill(jet_ntrkpt1[i]);
 	      hdkjetmaxip->Fill(r0[i]);
@@ -1295,6 +1307,11 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     hmeanzdk->Write();
     hmeanzfa->Write();
     hmeanzpa->Write();
+    hmzamd->Write();
+    h2damd->Write();
+    hmznamd->Write();
+    h2dnamd->Write();
+
 
     //2d
     aMip->Write();
