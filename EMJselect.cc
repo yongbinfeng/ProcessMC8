@@ -189,7 +189,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   // create a histograms
   TH1F *acount,*count,*hjetcut,*hjetchf,*h_nemg,*hnjet,*hpt,*heta,*heta2,*halpha,*H_T,*H_T2,*H_T3,*H_T4,*hbcut_ntrkpt1,*hacut_ntrkpt1,*hbcut_nef,*hacut_nef,*hbcut_cef,*hacut_cef,*hbcut_alphamax,*hacut_alphamax,*hbcut_theta2d,*hbcut_maxip,*hmetnm1,*hmassnm1,*hHTnm1,*hnHitsnm1,*hntrk1nm1,*hmaxipnm1,*hpt1nm1,*hpt2nm1,*hpt3nm1,*hpt4nm1,*halphanm1,*hnemnm1,*hpt1,*hpt2,*hpt3,*hpt4,*hipXYEJ,*hipXYnEJ,*htvw,*htvwEJ,*hnmaxipnm1,*hn2maxipnm1,*hjptfrb,*hjptfra1,*hjptfra2,*hjptfrbc,*hjptfra1c,*hjptfra2c,*hjptb,*hjpta,*haMgj,*hHTko,*hpt1ko,*hpt2ko,*hpt3ko,*hpt4ko,*hipXYSigEJ,*hipXYSignEJ,*hmaxipXYEJ,*hmaxipXYnEJ,*hmeanipXYEJ,*hmeanipXYnEJ,*hmass,
     *hdkjetam,*hdkjetmeanip,*hdkjetntr,*hdkjetmaxip,*hdkjettrkip,*hdkjettrkips,*hdkjettrkw,*hdkjettrgip,*hdkjettrkdr,
-    *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr
+    *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr,*hdjetam2d,*hdkjetam2d
 ;
 
   TH2F *aMip,*haMvjpt,*haMvHT,*haMvnvtx,*aMbh,*aMbh2D,*aMbh2Daem,
@@ -271,6 +271,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hmass = new TH1F("hmass","mass emerging and non",500,-10.,5000.);
 
   hdkjetam = new TH1F("hdkjetam","alphamax dark quark jets ",100,0.,1.);
+  hdkjetam2d = new TH1F("hdkjetam2d","alphamax2d dark quark jets ",100,0.,1.);
   hdkjetmeanip = new TH1F("hdkjetmeanip","mean ip dark quark jets",100,0.,10.);
   hdkjetmaxip = new TH1F("hdkjetmaxip","max ip dark quark jets",100,0.,30.);
   hdkjetntr = new TH1F("hdkjetntr","number tracks pt>1 dark quark jets",100,0.,50.);
@@ -281,6 +282,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hdkjettrkdr = new TH1F("hdkjettrkdr","gen trk dr charged part in dark quark jets",100,0.,1.);
 
   hdjetam = new TH1F("hdjetam","alphamax down quark jets ",100,0.,1.);
+  hdjetam2d = new TH1F("hdjetam2d","alphamax2d down quark jets ",100,0.,1.);
   hdjetmeanip = new TH1F("hdjetmeanip","mean ip down quark jets",100,0.,10.);
   hdjetmaxip = new TH1F("hdjetmaxip","max ip down quark jets",100,0.,30.);
   hdjetntr = new TH1F("hdjetntr","number tracks pt>1 down quark jets",100,0.,50.);
@@ -394,6 +396,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     vector<float> jet_px((*jet_index).size());
     vector<float> jet_py((*jet_index).size());
     vector<float> jet_pz((*jet_index).size());
+    vector<float> amaxbyhand((*jet_index).size());
+    vector<float> amax2D((*jet_index).size());
+
+
     if(otfile) hnjet->Fill((*jet_index).size()+0.5);
     int NNNjet = (*jet_index).size();
     if(iDBG>0) std::cout<<std::endl<<" number of jets is "<<NNNjet<<std::endl;
@@ -436,8 +442,11 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       jntrack[j]=0;
       if(iDBG>0) std::cout<<"  with tracks "<<std::endl;
       if(iDBG>0) std::cout<<"  pt eta phi weight ipzy ipz"<<std::endl;
+
+
       double sumpt=0.;
       double sumptall=0.;
+      double sumpt2D=0.;
       for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
 	if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
 	  if(iDBG>0) {
@@ -445,7 +454,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	  }
 	  sort_ip[jntrack[j]]=fabs(track_ipXYs[itrack]);
 	  sumptall+=track_pts[itrack];
-	  if(track_pvWeights[itrack]>0) sumpt+=track_pts[itrack];
+ 	  if(track_pvWeights[itrack]>0) sumpt+=track_pts[itrack];
+	  if(fabs(track_ipXYs[itrack])<0.04) sumpt2D+=track_pts[itrack];
 	  if(otfile) htvw->Fill(track_pvWeights[itrack]);
 	  if(track_pts[itrack]>1) jet_ntrkpt1[j]+=1;
 	  jet_meanip[j]=jet_meanip[j]+fabs(track_ipXYs[itrack]);
@@ -453,6 +463,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	}
       }
       if(sumptall>0) AM[j]=sumpt/sumptall;
+      if(sumptall>0) amaxbyhand[j]=sumpt/sumptall;
+      if(sumptall>0) amax2D[j]=sumpt2D/sumptall;
       if(otfile) halpha->Fill(AM[j]);
       float atmp = jntrack[j];
       if(jntrack[j]>0) jet_meanip[j]=jet_meanip[j]/atmp;
@@ -703,8 +715,6 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       // jet plots
       vector<bool> matchdkq(NNNjet);;
       vector<bool> matchdq(NNNjet);
-      vector<float> amaxbyhand(NNNjet);
-      vector<float> amax2D(NNNjet);
       float dr;
       for(int i=0;i<NNNjet;i++) {
 	
@@ -786,25 +796,6 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      hjpta->Fill(jet_pt->at(i));
 	    }
 
-	    //calculate alpha max by hand and alpha2d
-	    float ptall=0.;
-	    float ptpr=0.;
-	    float pt2D=0.;
-            for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	      if((track_sources[itrack]==0)&&(track_qualitys[itrack]&4)>0) {
-		ptall=ptall+track_pts[itrack];
-		if(track_pvWeights[itrack]>0) {
-		  ptpr=ptpr+track_pts[itrack];
-		}
-		if(fabs(track_ipXYs[itrack])<0.04) {
-		  pt2D+=track_pts[itrack];
-		}
-	      }
-	    }
-	    amaxbyhand[i]=-1.;
-	    amax2D[i]=-1;
-	    if(ptall>0) amaxbyhand[i]=ptpr/ptall;
-	    if(ptall>0) amax2D[i]=pt2D/ptall;
 	    if(iDBG>0) {
 	      std::cout<<" alphamax alphamax by hand alpha2d are "<<AM[i]<<" "<<amaxbyhand[i]<<" "<<amax2D[i]<<std::endl;
 	    }
@@ -814,6 +805,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    // plots for dark and down quark jets  WILL ROBINSON
 	    if(matchdkq[i]&&(!matchdq[i])) {  // dark quark jet
 	      hdkjetam->Fill(AM[i]);
+	      hdkjetam2d->Fill(amax2D[i]);
 	      hdkjetmeanip->Fill(jet_meanip[i]);
 	      hdkjetntr->Fill(jet_ntrkpt1[i]);
 	      hdkjetmaxip->Fill(r0[i]);
@@ -861,6 +853,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	   
 	    if(matchdq[i]&&(!matchdkq[i])) {  // down quark jet
 	      hdjetam->Fill(AM[i]);
+	      hdjetam2d->Fill(amax2D[i]);
 	      hdjetmeanip->Fill(jet_meanip[i]);
 	      hdjetntr->Fill(jet_ntrkpt1[i]);
 	      hdjetmaxip->Fill(r0[i]);
@@ -1218,6 +1211,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     hHTko->Write();
 
     hdkjetam->Write();
+    hdkjetam2d->Write();
     hdkjetmeanip->Write();
     hdkjetntr->Write();
     hdkjetmaxip->Write();
@@ -1228,6 +1222,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     hdkjettrkdr->Write();
 
     hdjetam->Write();
+    hdjetam2d->Write();
     hdjetmeanip->Write();
     hdjetntr->Write();
     hdjetmaxip->Write();
