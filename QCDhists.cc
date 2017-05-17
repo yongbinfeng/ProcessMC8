@@ -157,11 +157,11 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
         vv[i]=HistMan(goalintlum,histnames[i],norm,outnorm,nbin,xsec,nfiles,binnames,donorm);
     }
 
-    const int nhist2=13;
+    const int nhist2=15;
     std::vector<TH2F*> vv2(nhist2);
     std::string histnames2[nhist2]={
       "aMip","haMvjpt","haMvHT","haMvnvtx","aMbh","adkwvd0","adwvd0",
-      "adkwviz","adwviz","adk2Dr0","ad2Dr0","hdkipphi","hdipphi"
+      "adkwviz","adwviz","adk2Dr0","ad2Dr0","hdkipphi","hdipphi","aMbh2D","aMbh2Daem"
     };
     vector<double> outnorm2(nbin);
     for(int i=0;i<nhist2;i++) {

@@ -192,7 +192,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr
 ;
 
-  TH2F *aMip,*haMvjpt,*haMvHT,*haMvnvtx,*aMbh,
+  TH2F *aMip,*haMvjpt,*haMvHT,*haMvnvtx,*aMbh,*aMbh2D,*aMbh2Daem,
     *adkwvd0,*adkwviz,
     *adwvd0,*adwviz,*adk2Dr0,*ad2Dr0,*hdkipphi,*hdipphi
   ;
@@ -298,6 +298,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   haMvnvtx = new TH2F("haMvnvtx"," alpha Max versus nvtx ",40,0.,1.,100,0.,40.);
 
   aMbh = new TH2F("aMbh"," alpha Max versus alphaMax by hand",100,0.,1.2,100,0.,1.2);
+  aMbh2D = new TH2F("aMbh2D"," alpha2D versus alphaMax by hand",100,0.,1.2,100,0.,1.2);
+  aMbh2Daem = new TH2F("aMbh2Daem"," alpha2D versus alphaMax by hand failling almost emerging",100,0.,1.2,100,0.,1.2);
+
+
   adkwvd0 = new TH2F("adkwvd0","weight versus ip dark quark jets",100,-1.2,1.2,100,0.,6.);
   adwvd0 = new TH2F("adwvd0","weight versus ip down quark jets",100,-1.2,1.2,100,0.,6.);
   adkwviz = new TH2F("adkwviz","weight versus 3Dip dark quark jets",100,-1.2,1.2,100,0.,6.);
@@ -699,6 +703,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       // jet plots
       vector<bool> matchdkq(NNNjet);;
       vector<bool> matchdq(NNNjet);
+      vector<float> amaxbyhand(NNNjet);
+      vector<float> amax2D(NNNjet);
       float dr;
       for(int i=0;i<NNNjet;i++) {
 	
@@ -780,23 +786,30 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      hjpta->Fill(jet_pt->at(i));
 	    }
 
-	    //calculate alpha max by hand
+	    //calculate alpha max by hand and alpha2d
 	    float ptall=0.;
 	    float ptpr=0.;
+	    float pt2D=0.;
             for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
 	      if((track_sources[itrack]==0)&&(track_qualitys[itrack]&4)>0) {
 		ptall=ptall+track_pts[itrack];
 		if(track_pvWeights[itrack]>0) {
 		  ptpr=ptpr+track_pts[itrack];
 		}
+		if(fabs(track_ipXYs[itrack])<0.04) {
+		  pt2D+=track_pts[itrack];
+		}
 	      }
 	    }
-	    float amaxbyhand=-1.;
-	    if(ptall>0) amaxbyhand=ptpr/ptall;
+	    amaxbyhand[i]=-1.;
+	    amax2D[i]=-1;
+	    if(ptall>0) amaxbyhand[i]=ptpr/ptall;
+	    if(ptall>0) amax2D[i]=pt2D/ptall;
 	    if(iDBG>0) {
-	      std::cout<<" alphamax alphamax by hand are "<<AM[i]<<" "<<amaxbyhand<<std::endl;
+	      std::cout<<" alphamax alphamax by hand alpha2d are "<<AM[i]<<" "<<amaxbyhand[i]<<" "<<amax2D[i]<<std::endl;
 	    }
-	    aMbh->Fill(AM[i],amaxbyhand);
+	    aMbh->Fill(AM[i],amaxbyhand[i]);
+
 
 	    // plots for dark and down quark jets  WILL ROBINSON
 	    if(matchdkq[i]&&(!matchdq[i])) {  // dark quark jet
@@ -905,7 +918,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cnem&&Canem&&Cmass&&Cmet) hpt4nm1->Fill(jet_pt->at(3));
     if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem&&Cmass&&Cmet) hnemnm1->Fill(nemerging);
     if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmet) hmassnm1->Fill(amass);
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmet) hmetnm1->Fill(met_pt);
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass) hmetnm1->Fill(met_pt);
 
 
 
@@ -966,6 +979,23 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     }
 
 
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4) {
+    if(otfile) H_T4->Fill(HT);
+      for(int i=0;i<4;i++) {
+	    aMbh2D->Fill(amax2D[i],amaxbyhand[i]);
+      }
+    }
+
+
+
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&(!Canem)&&Cmass&&Cmet) {
+    if(otfile) H_T4->Fill(HT);
+      for(int i=0;i<4;i++) {
+	    aMbh2Daem->Fill(amax2D[i],amaxbyhand[i]);
+      }
+    }
+
+
     if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&nalmostemerging>=2) {
     if(otfile) H_T4->Fill(HT);
       for(int i=0;i<4;i++) {
@@ -989,7 +1019,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 
 
-    }
+    }  // close if (otfile)
 
 
       // make plots for fake rate studes
@@ -1214,6 +1244,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     haMvHT->Write();
     haMvnvtx->Write();
     aMbh->Write();
+    aMbh2D->Write();
+    aMbh2Daem->Write();
 
     adkwvd0->Write();
     adwvd0->Write();
