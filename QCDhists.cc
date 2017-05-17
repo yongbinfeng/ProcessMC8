@@ -126,7 +126,7 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
 
     //make and  output summed and renormalized histograms
     std::cout<<"normalizing histograms"<<std::endl;
-    const int nhist=99;
+    const int nhist=104;
     std::vector<TH1F*> vv(nhist);
     std::string histnames[nhist]={
         "count","acount","hjetcut","hjetchf","h_nemg",
@@ -149,7 +149,7 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
 	"hdkjetam","hdkjetmeanip","hdkjetntr","hdkjetmaxip","hdkjettrkip","hdkjettrkips","hdkjettrgip","hdkjettrkdr",
 	"hdkjettrkw",
 	"hdjetam","hdjetmeanip","hdjetntr","hdjetmaxip","hdjettrkip","hdjettrkips","hdjettrgip","hdjettrkdr","hdjetam2d","hdkjetam2d",
-	"hdjettrkw"
+	"hdjettrkw","hmeanz","hmeanzfa","hmeanzpa","hmeanzd","hmeanzdk"
     };
     vector<double> outnorm(nbin);
     for(int i=0;i<nhist;i++) {
@@ -157,11 +157,11 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
         vv[i]=HistMan(goalintlum,histnames[i],norm,outnorm,nbin,xsec,nfiles,binnames,donorm);
     }
 
-    const int nhist2=15;
+    const int nhist2=17;
     std::vector<TH2F*> vv2(nhist2);
     std::string histnames2[nhist2]={
       "aMip","haMvjpt","haMvHT","haMvnvtx","aMbh","adkwvd0","adwvd0",
-      "adkwviz","adwviz","adk2Dr0","ad2Dr0","hdkipphi","hdipphi","aMbh2D","aMbh2Daem"
+      "adkwviz","adwviz","adk2Dr0","ad2Dr0","hdkipphi","hdipphi","aMbh2D","aMbh2Daem","aMbh2Dd","aMbh2Ddk"
     };
     vector<double> outnorm2(nbin);
     for(int i=0;i<nhist2;i++) {
