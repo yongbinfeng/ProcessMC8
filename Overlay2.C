@@ -7,15 +7,15 @@
 int dolog=1;
 void Overlay2() 
 { 
-  char* atitle = "2D impact parameter 80";
+  char* atitle = "alpha2d";
 
-  //  TFile *f1 = new TFile("SumHistsQQCD.root");
-  //TFile *f2 = new TFile("SumHistsWMCtSkim.root");  
-  //TFile *f3 = new TFile("SumHistsWSkim.root");  
-  TFile *f1 = new TFile("SumHists80.root");
-  //TFile *f2 = new TFile("SumHistsModelA.root");  
-  //TFile *f2 = new TFile("SumHistsDATA.root");  
-  //TFile *f2 = new TFile("SumHists80.root");  
+  TFile *f1 = new TFile("SumHistsQQCD.root");
+  //TFile *f1 = new TFile("SumHistsWMCtSkim.root");  
+  //TFile *f1 = new TFile("SumHistsWSkim.root");  
+  //TFile *f1 = new TFile("SumHists80.root");
+  //TFile *f1 = new TFile("SumHistsModelA.root");  
+  //TFile *f1 = new TFile("SumHistsDATA.root");  
+  //TFile *f1 = new TFile("SumHists80.root");  
 
  
   gStyle->SetOptStat(0);
@@ -79,7 +79,7 @@ void Overlay2()
   //  float x1_l = 0.75;
   float y1_l = 0.80;
   
-  float dx_l = 0.60;
+  float dx_l = 0.90;
   float dy_l = 0.1;
   float x0_l = x1_l-dx_l;
   float y0_l = y1_l-dy_l;
@@ -89,7 +89,7 @@ void Overlay2()
 
 
   std::cout<<"getting first"<<std::endl;
- TH1F *A_pt = static_cast<TH1F*>(f1->Get("hdkjettrkip")->Clone());
+ TH1F *A_pt = static_cast<TH1F*>(f1->Get("hmeanzpa")->Clone());
  A_pt->SetDirectory(0);
   double aaA = A_pt->Integral();
 std::cout<<" first entries is "<<aaA<<std::endl;
@@ -97,7 +97,7 @@ std::cout<<" first entries is "<<aaA<<std::endl;
 
 
   std::cout<<"getting second"<<std::endl;
-  TH1F *B_pt = static_cast<TH1F*>(f1->Get("hdjettrkip")->Clone());
+  TH1F *B_pt = static_cast<TH1F*>(f1->Get("hmeanzfa")->Clone());
   std::cout<<"ha"<<std::endl;
   B_pt->SetDirectory(0);
   //  B_pt->Rebin(25);
@@ -109,7 +109,7 @@ std::cout<<" second entries is "<<aaB<<std::endl;
   float max = std::max(A_pt->GetMaximum(),B_pt->GetMaximum());
   A_pt->SetMaximum(max*1.3);
 
-  A_pt->GetYaxis()->SetTitle("percent ");  
+  A_pt->GetYaxis()->SetTitle(" percent  ");  
   A_pt->GetYaxis()->SetTitleSize(0.05);  
   A_pt->GetXaxis()->SetTitle(atitle);  
   A_pt->GetXaxis()->SetTitleSize(0.05);  
@@ -152,8 +152,8 @@ C_pt->Scale(1/aaC);
  // lgd->AddEntry(C_pt, "data W to mu", "l");
 
 
-  lgd->AddEntry(A_pt, "dark quark jets", "l");
-  lgd->AddEntry(B_pt, "down quark jets", "l");
+  lgd->AddEntry(A_pt, "qcd all select pass almost emerging", "l");
+  lgd->AddEntry(B_pt, "qcd all select fail almost emerging", "l");
   //lgd->AddEntry(C_pt, "ModelBx500", "l");
 
  lgd->Draw();

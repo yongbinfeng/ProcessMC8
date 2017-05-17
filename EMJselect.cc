@@ -195,7 +195,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   // create a histograms
   TH1F *acount,*count,*hjetcut,*hjetchf,*h_nemg,*hnjet,*hpt,*heta,*heta2,*halpha,*H_T,*H_T2,*H_T3,*H_T4,*hbcut_ntrkpt1,*hacut_ntrkpt1,*hbcut_nef,*hacut_nef,*hbcut_cef,*hacut_cef,*hbcut_alphamax,*hacut_alphamax,*hbcut_theta2d,*hbcut_maxip,*hmetnm1,*hmassnm1,*hHTnm1,*hnHitsnm1,*hntrk1nm1,*hmaxipnm1,*hpt1nm1,*hpt2nm1,*hpt3nm1,*hpt4nm1,*halphanm1,*hnemnm1,*hpt1,*hpt2,*hpt3,*hpt4,*hipXYEJ,*hipXYnEJ,*htvw,*htvwEJ,*hnmaxipnm1,*hn2maxipnm1,*hjptfrb,*hjptfra1,*hjptfra2,*hjptfrbc,*hjptfra1c,*hjptfra2c,*hjptb,*hjpta,*haMgj,*hHTko,*hpt1ko,*hpt2ko,*hpt3ko,*hpt4ko,*hipXYSigEJ,*hipXYSignEJ,*hmaxipXYEJ,*hmaxipXYnEJ,*hmeanipXYEJ,*hmeanipXYnEJ,*hmass,
     *hdkjetam,*hdkjetmeanip,*hdkjetntr,*hdkjetmaxip,*hdkjettrkip,*hdkjettrkips,*hdkjettrkw,*hdkjettrgip,*hdkjettrkdr,
-    *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr,*hdjetam2d,*hdkjetam2d,*hmeanz,*hmeanzfa,*hmeanzpa,*hmeanzdk,*hmeanzd;
+    *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr,*hdjetam2d,*hdkjetam2d,*hmeanz,*hmeanzfa,*hmeanzpa,*hmeanzdk,*hmeanzd,*h2dpa,*h2dfa;
 
   TH1F *hmzamd,*hmznamd,*h2damd,*h2dnamd;
 
@@ -303,6 +303,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hmeanzdk = new TH1F("hmeanzdk","diff pvz and mean jet z dark quarks",100,-20.,20.);
   hmeanzfa = new TH1F("hmeanzfa","diff pvz and mean jet z failling almost emerging",100,-20.,20.);
   hmeanzpa = new TH1F("hmeanzpa","diff pvz and mean jet z pass almost emerging",100,-20.,20.);
+  h2dpa = new TH1F("h2dpa","alpha2d z pass almost emerging",100,-20.,20.);
+  h2dfa = new TH1F("h2dfa","alpha2d z fail almost emerging",100,-20.,20.);
   hmzamd = new TH1F("hmzamd","meanz down quarks almost emerging",100,-7.,7.);
   hmznamd = new TH1F("hmznamd","meanz down quarks not almost emerging",100,-7.,7.);
   h2damd = new TH1F("h2damd","alpha2d down quarks almost emerging",100,0.,1.);
@@ -1037,6 +1039,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       for(int i=0;i<4;i++) {
 	    aMbh2Daem->Fill(amax2D[i],amaxbyhand[i]);
 	    hmeanzfa->Fill(jet_meanz[i]-pv_z);
+	    h2dfa->Fill(amax2D[i]);
       }
     }
 
@@ -1044,6 +1047,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&(Canem)&&Cmass&&Cmet) {
       for(int i=0;i<4;i++) {
 	    hmeanzpa->Fill(jet_meanz[i]-pv_z);
+	    h2dpa->Fill(amax2D[i]);
 	    if(iDBG>1) {
 	      std::cout<<" jet meanz pvz are "<<jet_meanz[i]<<" "<<pv_z<<std::endl;
 	      if(fabs(jet_meanz[i]-pv_z)>5) std::cout<<"danger"<<std::endl;
@@ -1307,6 +1311,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     hmeanzdk->Write();
     hmeanzfa->Write();
     hmeanzpa->Write();
+    h2dpa->Write();
+    h2dfa->Write();
     hmzamd->Write();
     h2damd->Write();
     hmznamd->Write();
