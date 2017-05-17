@@ -198,7 +198,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr,*hdjetam2d,*hdkjetam2d,*hmeanz,*hmeanzfa,*hmeanzpa,*hmeanzdk,*hmeanzd
 ;
 
-  TH2F *aMip,*haMvjpt,*haMvHT,*haMvnvtx,*aMbh,*aMbh2D,*aMbh2Daem,*aMbh2Dd,*aMbh2Ddk,
+  TH2F *aMip,*haMvjpt,*haMvHT,*haMvnvtx,*aMbh,*aMbh2D,*aMbh2Daem,*aMbh2Dd,*aMbh2Ddk,*aMmzd,*aMmzdk,
     *adkwvd0,*adkwviz,
     *adwvd0,*adwviz,*adk2Dr0,*ad2Dr0,*hdkipphi,*hdipphi
   ;
@@ -314,6 +314,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   aMbh2Dd = new TH2F("aMbh2Dd"," alpha2D versus alphaMax by hand down quarks",100,0.,1.2,100,0.,1.2);
   aMbh2Ddk = new TH2F("aMbh2Ddk"," alpha2D versus alphaMax by hand dark quarks",100,0.,1.2,100,0.,1.2);
   aMbh2Daem = new TH2F("aMbh2Daem"," alpha2D versus alphaMax by hand failling almost emerging",100,0.,1.2,100,0.,1.2);
+  aMmzd = new TH2F("aMmzd"," meanz-pv versus alphaMax by hand down quarks",100,0.,1.2,100,0.,3.0);
+  aMmzdk = new TH2F("aMmzdk"," manz-pv versus alphaMax by hand dark quarks",100,0.,1.2,100,0.,3.);
 
 
   adkwvd0 = new TH2F("adkwvd0","weight versus ip dark quark jets",100,-1.2,1.2,100,0.,6.);
@@ -388,11 +390,11 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
       }
     }
-    if(iDBG>0) std::cout<<std::endl<<std::endl;
+    if(iDBG>0) {std::cout<<std::endl<<std::endl;
     if(firstdq==0) std::cout<<" first dark quark not found"<<std::endl;
     if(firstdq==0) std::cout<<" first down quark not found"<<std::endl;
     if(firstdq==0) std::cout<<" first anti dark quark not found"<<std::endl;
-    if(firstdq==0) std::cout<<" first anti down quark not found"<<std::endl;
+    if(firstdq==0) std::cout<<" first anti down quark not found"<<std::endl;}
 
 
 
@@ -836,7 +838,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      hdkjetam->Fill(AM[i]);
 	      hdkjetam2d->Fill(amax2D[i]);
 	      aMbh2Ddk->Fill(AM[i],amax2D[i]);
-	    hmeanzdk->Fill(jet_meanz[i]-pv_z);
+	      float why1=jet_meanz[i]-pv_z;
+	      aMmzdk->Fill(AM[i],fabs(why1));
+	    hmeanzdk->Fill(why1);
 	      hdkjetmeanip->Fill(jet_meanip[i]);
 	      hdkjetntr->Fill(jet_ntrkpt1[i]);
 	      hdkjetmaxip->Fill(r0[i]);
@@ -886,6 +890,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      hdjetam->Fill(AM[i]);
 	      hdjetam2d->Fill(amax2D[i]);
 	      aMbh2Dd->Fill(AM[i],amax2D[i]);
+	      float why1=jet_meanz[i]-pv_z;
+	      aMmzd->Fill(AM[i],fabs(why1));
 	    hmeanzd->Fill(jet_meanz[i]-pv_z);
 	      hdjetmeanip->Fill(jet_meanip[i]);
 	      hdjetntr->Fill(jet_ntrkpt1[i]);
@@ -1300,6 +1306,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     aMbh2Dd->Write();
     aMbh2Ddk->Write();
     aMbh2Daem->Write();
+    aMmzd->Write();
+    aMmzdk->Write();
 
     adkwvd0->Write();
     adwvd0->Write();
