@@ -394,7 +394,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     if(firstdq==0) std::cout<<" first dark quark not found"<<std::endl;
     if(firstdq==0) std::cout<<" first down quark not found"<<std::endl;
     if(firstdq==0) std::cout<<" first anti dark quark not found"<<std::endl;
-    if(firstdq==0) std::cout<<" first anti down quark not found"<<std::endl;}
+    if(firstdq==0) std::cout<<" first anti down quark not found"<<std::endl;
+}
 
 
 
