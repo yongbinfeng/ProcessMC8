@@ -281,8 +281,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hdkjetamo = new TH1F("hdkjetamo","old alphamax dark quark jets ",100,0.,1.);
   hdjetamo = new TH1F("hdjetamo","old alphamax down quark jets ",100,0.,1.);
   hdkjetam2d = new TH1F("hdkjetam2d","alphamax2d dark quark jets ",100,0.,1.);
-  ham2dfd = new TH1F("ham2dfd","alphamaxfiltered down quark jets ",100,0.,1.);
-  ham2dfdk = new TH1F("ham2dfdk","alphamaxfiltered dark quark jets ",100,0.,1.);
+  ham2dfd = new TH1F("ham2dfd","alpha2d sig down quark jets ",100,0.,1.);
+  ham2dfdk = new TH1F("ham2dfdk","alpha2d sig dark quark jets ",100,0.,1.);
   hdkjetmeanip = new TH1F("hdkjetmeanip","mean ip dark quark jets",100,0.,10.);
   hdkjetmaxip = new TH1F("hdkjetmaxip","max ip dark quark jets",100,0.,30.);
   hdkjetntr = new TH1F("hdkjetntr","number tracks pt>1 dark quark jets",100,0.,50.);
@@ -503,10 +503,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 	  sort_ip[jntrack[j]]=fabs(track_ipXYs[itrack]);
 	  sumptall+=track_pts[itrack];
-	  if((fabs(az-pv_z)<5.)||(fabs(track_ipXYs[itrack])>0.12)) {
+	  //	  if((fabs(az-pv_z)<5.)||(fabs(track_ipXYs[itrack])>0.12)) {
 	    sumptallf+=track_pts[itrack];
-	    if(track_pvWeights[itrack]>0) sumpt2Df+=track_pts[itrack];
-	  }
+	    if(fabs(track_ipXYSigs[itrack])<3) sumpt2Df+=track_pts[itrack];
+	    //}
  	  if(track_pvWeights[itrack]>0) sumpt+=track_pts[itrack];
 	  if(fabs(track_ipXYs[itrack])<0.08) sumpt2D+=track_pts[itrack];
 	  if(otfile) htvw->Fill(track_pvWeights[itrack]);

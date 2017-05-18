@@ -7,14 +7,14 @@
 int dolog=1;
 void Overlay2() 
 { 
-  char* atitle = "2D";
+  char* atitle = "alphamax 2d";
 
   //TFile *f1 = new TFile("SumHistsQCD.root");
   //TFile *f1 = new TFile("SumHistsWMCtSkim.root");  
   //TFile *f1 = new TFile("SumHistsWSkim.root");  
   //TFile *f1 = new TFile("SumHists80.root");
-  TFile *f1 = new TFile("SumHistsModelA.root");  
-  //TFile *f1 = new TFile("SumHistsModelB.root");  
+  //TFile *f1 = new TFile("SumHistsModelA.root");  
+  TFile *f1 = new TFile("SumHistsModelB.root");  
   //TFile *f1 = new TFile("SumHistsDATA.root");  
   //TFile *f1 = new TFile("SumHists80.root");  
 
@@ -78,7 +78,7 @@ void Overlay2()
   
   float x1_l = 1.2;
   //  float x1_l = 0.75;
-  float y1_l = 0.80;
+  float y1_l = 0.90;
   
   float dx_l = 0.60;
   float dy_l = 0.1;
