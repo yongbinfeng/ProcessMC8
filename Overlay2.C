@@ -9,7 +9,7 @@ void Overlay2()
 { 
   char* atitle = "alpha2d";
 
-  TFile *f1 = new TFile("SumHistsQQCD.root");
+  TFile *f1 = new TFile("SumHistsQCD.root");
   //TFile *f1 = new TFile("SumHistsWMCtSkim.root");  
   //TFile *f1 = new TFile("SumHistsWSkim.root");  
   //TFile *f1 = new TFile("SumHists80.root");
@@ -80,7 +80,7 @@ void Overlay2()
   //  float x1_l = 0.75;
   float y1_l = 0.80;
   
-  float dx_l = 0.90;
+  float dx_l = 0.60;
   float dy_l = 0.1;
   float x0_l = x1_l-dx_l;
   float y0_l = y1_l-dy_l;
@@ -90,7 +90,7 @@ void Overlay2()
 
 
   std::cout<<"getting first"<<std::endl;
- TH1F *A_pt = static_cast<TH1F*>(f1->Get("h2dpa")->Clone());
+ TH1F *A_pt = static_cast<TH1F*>(f1->Get("hmeanzpa")->Clone());
  A_pt->SetDirectory(0);
   double aaA = A_pt->Integral();
 std::cout<<" first entries is "<<aaA<<std::endl;
@@ -98,7 +98,7 @@ std::cout<<" first entries is "<<aaA<<std::endl;
 
 
   std::cout<<"getting second"<<std::endl;
-  TH1F *B_pt = static_cast<TH1F*>(f1->Get("h2dfa")->Clone());
+  TH1F *B_pt = static_cast<TH1F*>(f1->Get("hmeanzfa")->Clone());
   std::cout<<"ha"<<std::endl;
   B_pt->SetDirectory(0);
   //  B_pt->Rebin(25);
