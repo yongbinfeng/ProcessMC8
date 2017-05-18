@@ -4,7 +4,9 @@
 #include "TH1.h"
 #include "TH1F.h"
 #include "TGraph.h"
-
+#include "TPaveLabel.h"
+#include "TLatex.h"
+#include "TFrame.h"
 
 
 TGraph* makegraph(TFile* f1, char* name1, char* name2) {
@@ -34,12 +36,13 @@ std::cout<<" second entries is "<<aaB<<std::endl;
   B_pt->Scale(1/aaB);
 
   Double_t bck1[nbin];
+  std::cout<<" bin center  bck  sig "<<std::endl;
   for(int i=0;i<nbin;i++) {
     bck1[i]=0.;
     for(int j=0;j<i;j++) {
       bck1[i]+=B_pt->GetBinContent(j);
     }
-    std::cout<<i<<"]="<<bck1[i]<<" "<<eff1[i]<<std::endl;
+    std::cout<<A_pt->GetBinCenter(i)<<" "<<bck1[i]<<" "<<eff1[i]<<std::endl;
   }
 
 
@@ -79,10 +82,8 @@ void roc()
   char* aa1 = "hdkjetam2d";
   char* bb1 = "hdjetam2d";
   TGraph* gr1 = makegraph(f1,aa1,bb1);
-
-  gr1->SetLineColor(1);
   gr1->SetMarkerStyle(21);
-  gr1->SetMarkerColor(2);
+  gr1->SetMarkerColor(0);
   gr1->SetTitle("roc curve");
   gr1->GetXaxis()->SetTitle("background efficiency");
   gr1->GetYaxis()->SetTitle("signa efficiency");
@@ -92,23 +93,30 @@ void roc()
   char* aa2 = "hdkjetamo";
   char* bb2 = "hdjetamo";
   TGraph* gr2 = makegraph(f1,aa2,bb2);
-
-  gr2->SetLineColor(2);
   gr2->SetMarkerStyle(21);
-  gr2->SetMarkerColor(3);
+  gr2->SetMarkerColor(1);
   gr2->Draw("psame");
 
   char* aa3 = "ham2dfdk";
   char* bb3 = "ham2dfd";
   TGraph* gr3 = makegraph(f1,aa3,bb3);
-
-  gr3->SetLineColor(2);
   gr3->SetMarkerStyle(21);
-  gr3->SetMarkerColor(4);
+  gr3->SetMarkerColor(2);
   gr3->Draw("psame");
   
 
-  TLatex latex;
+  TLatex *t = new TLatex();
+  t->SetTextFont(32);
+
+  t->SetTextSize(0.1);
+  t->SetTextAlign(12);
+
+  t->SetTextColor(0);
+  t->DrawLatex(0.5,0.5,"2D");
+  t->SetTextColor(1);
+  t->DrawLatex(0.5,0.3,"alphaMax origin");
+  t->SetTextColor(2);
+  t->DrawLatex(0.5,0.2,"2D sig");
   
 
 
