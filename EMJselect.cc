@@ -194,7 +194,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
   // create a histograms
   TH1F *acount,*count,*hjetcut,*hjetchf,*h_nemg,*hnjet,*hpt,*heta,*heta2,*halpha,*H_T,*H_T2,*H_T3,*H_T4,*hbcut_ntrkpt1,*hacut_ntrkpt1,*hbcut_nef,*hacut_nef,*hbcut_cef,*hacut_cef,*hbcut_alphamax,*hacut_alphamax,*hbcut_theta2d,*hbcut_maxip,*hmetnm1,*hmassnm1,*hHTnm1,*hnHitsnm1,*hntrk1nm1,*hmaxipnm1,*hpt1nm1,*hpt2nm1,*hpt3nm1,*hpt4nm1,*halphanm1,*hnemnm1,*hpt1,*hpt2,*hpt3,*hpt4,*hipXYEJ,*hipXYnEJ,*htvw,*htvwEJ,*hnmaxipnm1,*hn2maxipnm1,*hjptfrb,*hjptfra1,*hjptfra2,*hjptfrbc,*hjptfra1c,*hjptfra2c,*hjptb,*hjpta,*haMgj,*hHTko,*hpt1ko,*hpt2ko,*hpt3ko,*hpt4ko,*hipXYSigEJ,*hipXYSignEJ,*hmaxipXYEJ,*hmaxipXYnEJ,*hmeanipXYEJ,*hmeanipXYnEJ,*hmass,
-    *hdkjetam,*hdkjetmeanip,*hdkjetntr,*hdkjetmaxip,*hdkjettrkip,*hdkjettrkips,*hdkjettrkw,*hdkjettrgip,*hdkjettrkdr,*ham2dfd,*ham2dfdk,
+    *hdkjetam,*hdkjetmeanip,*hdkjetntr,*hdkjetmaxip,*hdkjettrkip,*hdkjettrkips,*hdkjettrkw,*hdkjettrgip,*hdkjettrkdr,*ham2dfd,*ham2dfdk,*hdkjetamo,*hdjetamo,
     *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr,*hdjetam2d,*hdkjetam2d,*hmeanz,*hmeanzfa,*hmeanzpa,*hmeanzdk,*hmeanzd,*h2dpa,*h2dfa,*hntrkpt1zmpa,*hntrkpt1zmfa;
 
   TH1F *hmzamd,*hmznamd,*h2damd,*h2dnamd;
@@ -278,6 +278,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hmass = new TH1F("hmass","mass emerging and non",500,-10.,5000.);
 
   hdkjetam = new TH1F("hdkjetam","alphamax dark quark jets ",100,0.,1.);
+  hdkjetamo = new TH1F("hdkjetamo","old alphamax dark quark jets ",100,0.,1.);
+  hdjetamo = new TH1F("hdjetamo","old alphamax down quark jets ",100,0.,1.);
   hdkjetam2d = new TH1F("hdkjetam2d","alphamax2d dark quark jets ",100,0.,1.);
   ham2dfd = new TH1F("ham2dfd","alphamaxfiltered down quark jets ",100,0.,1.);
   ham2dfdk = new TH1F("ham2dfdk","alphamaxfiltered dark quark jets ",100,0.,1.);
@@ -873,6 +875,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    // plots for dark and down quark jets  WILL ROBINSON
 	    if(matchdkq[i]&&(!matchdq[i])) {  // dark quark jet
 	      hdkjetam->Fill(AM[i]);
+	      hdkjetamo->Fill(jet_alphaMax->at(i));
 	      ham2dfdk->Fill(amax2Df[i]);
 	      hdkjetam2d->Fill(amax2D[i]);
 	      aMbh2Ddk->Fill(AM[i],amax2D[i]);
@@ -933,6 +936,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	   
 	    if(matchdq[i]&&(!matchdkq[i])) {  // down quark jet
 	      hdjetam->Fill(AM[i]);
+	      hdjetamo->Fill(jet_alphaMax->at(i));
 	      ham2dfd->Fill(amax2Df[i]);
 	      hdjetam2d->Fill(amax2D[i]);
 	      aMbh2Dd->Fill(AM[i],amax2D[i]);
@@ -1326,6 +1330,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     hHTko->Write();
 
     hdkjetam->Write();
+    hdkjetamo->Write();
     hdkjetam2d->Write();
     hdkjetmeanip->Write();
     hdkjetntr->Write();
@@ -1341,6 +1346,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
     hdjetam->Write();
     hdjetam2d->Write();
+    hdjetamo->Write();
     hdjetmeanip->Write();
     hdjetntr->Write();
     hdjetmaxip->Write();
