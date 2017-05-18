@@ -14,6 +14,7 @@ void Overlay2()
   //TFile *f1 = new TFile("SumHistsWSkim.root");  
   //TFile *f1 = new TFile("SumHists80.root");
   //TFile *f1 = new TFile("SumHistsModelA.root");  
+  //TFile *f1 = new TFile("SumHistsModelB.root");  
   //TFile *f1 = new TFile("SumHistsDATA.root");  
   //TFile *f1 = new TFile("SumHists80.root");  
 
@@ -89,7 +90,7 @@ void Overlay2()
 
 
   std::cout<<"getting first"<<std::endl;
- TH1F *A_pt = static_cast<TH1F*>(f1->Get("hmeanzpa")->Clone());
+ TH1F *A_pt = static_cast<TH1F*>(f1->Get("h2dpa")->Clone());
  A_pt->SetDirectory(0);
   double aaA = A_pt->Integral();
 std::cout<<" first entries is "<<aaA<<std::endl;
@@ -97,7 +98,7 @@ std::cout<<" first entries is "<<aaA<<std::endl;
 
 
   std::cout<<"getting second"<<std::endl;
-  TH1F *B_pt = static_cast<TH1F*>(f1->Get("hmeanzfa")->Clone());
+  TH1F *B_pt = static_cast<TH1F*>(f1->Get("h2dfa")->Clone());
   std::cout<<"ha"<<std::endl;
   B_pt->SetDirectory(0);
   //  B_pt->Rebin(25);
@@ -152,8 +153,8 @@ C_pt->Scale(1/aaC);
  // lgd->AddEntry(C_pt, "data W to mu", "l");
 
 
-  lgd->AddEntry(A_pt, "qcd all select pass almost emerging", "l");
-  lgd->AddEntry(B_pt, "qcd all select fail almost emerging", "l");
+  lgd->AddEntry(A_pt, "qcd passing almost", "l");
+  lgd->AddEntry(B_pt, "qcd failing almost", "l");
   //lgd->AddEntry(C_pt, "ModelBx500", "l");
 
  lgd->Draw();

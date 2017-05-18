@@ -303,8 +303,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hmeanzdk = new TH1F("hmeanzdk","diff pvz and mean jet z dark quarks",100,-20.,20.);
   hmeanzfa = new TH1F("hmeanzfa","diff pvz and mean jet z failling almost emerging",100,-20.,20.);
   hmeanzpa = new TH1F("hmeanzpa","diff pvz and mean jet z pass almost emerging",100,-20.,20.);
-  h2dpa = new TH1F("h2dpa","alpha2d z pass almost emerging",100,-20.,20.);
-  h2dfa = new TH1F("h2dfa","alpha2d z fail almost emerging",100,-20.,20.);
+  h2dpa = new TH1F("h2dpa","alpha2d z pass almost emerging",100,0.,1.);
+  h2dfa = new TH1F("h2dfa","alpha2d z fail almost emerging",100,0.,1.);
   hmzamd = new TH1F("hmzamd","meanz down quarks almost emerging",100,-7.,7.);
   hmznamd = new TH1F("hmznamd","meanz down quarks not almost emerging",100,-7.,7.);
   h2damd = new TH1F("h2damd","alpha2d down quarks almost emerging",100,0.,1.);
@@ -442,9 +442,6 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       if(otfile) if(j<4) heta2->Fill(jet_eta->at(j));
 
 
-      if(iDBG>0) {
-	std::cout<<"   jet "<<j<<" "<<jet_pt->at(j)<<" "<<jet_eta->at(j)<<" "<<jet_phi->at(j)<<" "<<AM[j]<<std::endl;
-      }
 
       //      calculate  number of tracks with pt > 1
       jet_ntrkpt1[j]=0;
@@ -512,6 +509,11 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       if(sort_ip.size()>0) r0[j]=sort_ip[0];
       if(sort_ip.size()>1) r1[j]=sort_ip[1];
       if(iDBG>0) std::cout<<"mean max are "<<jet_meanip[j]<<" "<<r0[j]<<std::endl;
+      if(iDBG>0) {
+	std::cout<<"   jet "<<j<<" "<<jet_pt->at(j)<<" "<<jet_eta->at(j)<<" "<<jet_phi->at(j)<<" "<<AM[j]<<std::endl;
+      }
+
+
      }  // end of loop over jets
 
 
