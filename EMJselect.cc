@@ -196,7 +196,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   // create a histograms
   TH1F *acount,*count,*hjetcut,*hjetchf,*h_nemg,*hnjet,*hpt,*heta,*heta2,*halpha,*H_T,*H_T2,*H_T3,*H_T4,*hbcut_ntrkpt1,*hacut_ntrkpt1,*hbcut_nef,*hacut_nef,*hbcut_cef,*hacut_cef,*hbcut_alphamax,*hacut_alphamax,*hbcut_theta2d,*hbcut_maxip,*hmetnm1,*hmassnm1,*hHTnm1,*hnHitsnm1,*hntrk1nm1,*hmaxipnm1,*hpt1nm1,*hpt2nm1,*hpt3nm1,*hpt4nm1,*halphanm1,*hnemnm1,*hpt1,*hpt2,*hpt3,*hpt4,*hipXYEJ,*hipXYnEJ,*htvw,*htvwEJ,*hnmaxipnm1,*hn2maxipnm1,*hjptfrb,*hjptfra1,*hjptfra2,*hjptfrbc,*hjptfra1c,*hjptfra2c,*hjptb,*hjpta,*haMgj,*hHTko,*hpt1ko,*hpt2ko,*hpt3ko,*hpt4ko,*hipXYSigEJ,*hipXYSignEJ,*hmaxipXYEJ,*hmaxipXYnEJ,*hmeanipXYEJ,*hmeanipXYnEJ,*hmass,
     *hdkjetam,*hdkjetmeanip,*hdkjetntr,*hdkjetmaxip,*hdkjettrkip,*hdkjettrkips,*hdkjettrkw,*hdkjettrgip,*hdkjettrkdr,*ham2dfd,*ham2dfdk,*hdkjetamo,*hdjetamo,
-    *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr,*hdjetam2d,*hdkjetam2d,*hmeanz,*hmeanzfa,*hmeanzpa,*hmeanzdk,*hmeanzd,*h2dpa,*h2dfa,*hntrkpt1zmpa,*hntrkpt1zmfa;
+    *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr,*hdjetam2d,*hdkjetam2d,*hmeanz,*hmeanzfa,*hmeanzpa,*hmeanzdk,*hmeanzd,*h2dpa,*h2dfa,*hntrkpt1zmpa,*hntrkpt1zmfa,*hbigb;
 
   TH1F *hmzamd,*hmznamd,*h2damd,*h2dnamd;
 
@@ -318,6 +318,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   h2damd = new TH1F("h2damd","alpha2d down quarks almost emerging",100,0.,1.);
   h2dnamd = new TH1F("h2dnamd","alpha2d down quarks not almost emerging",100,0.,1.);
 
+  hbigb = new TH1F("hbigb","delta R emerging jet and nearest big b",100,-2,10.);
+
   //2d
   aMip = new TH2F("aMip"," alpha Max versus max IP n-1 plot",100,0.,1.,100,0.,10.);
   haMvjpt = new TH2F("haMvjpt"," alpha Max versus jet pT ",100,0.,1.,100,0.,700.);
@@ -391,6 +393,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       // for background, find high pt b's
       if(abs(gp_pdgId->at(j))==5) {
 	if(gp_pt->at(j)>50) {
+	  if(fabs(gp_eta->at(j))<4) {
 	  if(int(bigbs.size())==0) {
 	      bigbs.push_back(j);
 	    } else {
@@ -405,7 +408,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    }
           if(iDBG>1) std::cout<<" BIG B   "<<(*gp_pdgId)[j]<<" "<<(*gp_pt)[j]<<" "<<(*gp_eta)[j]<<" "<<(*gp_phi)[j]<<" current size is "<<int(bigbs.size())<<std::endl;
 
-	}
+	  }}
       }
 
       // for signal, find the daughters
@@ -1285,6 +1288,17 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
             if(otfile) {
 	        H_T3->Fill(HT);   
 	        hmass->Fill(amass);
+		for(int i=0;i<4;i++) {
+		  if(emerging[i]) {
+		    float bdr=1000.;
+	            for(int k=0;k<bigbs.size();k++) {
+		      float bdt = DeltaR(jet_eta->at(i),jet_phi->at(i),gp_eta->at(bigbs[k]),gp_phi->at(bigbs[k]));
+		      if(bdt<bdr) bdr=bdt;
+		    }
+		    if(bdr>10) bdr=-1;
+		    hbigb->Fill(bdr);
+		  }
+		}
 	    }
 	    if(iDBG>0) {
 	      std::cout<<"this event has "<<bigbs.size()<<" big bs"<<std::endl;
@@ -1421,7 +1435,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     h2damd->Write();
     hmznamd->Write();
     h2dnamd->Write();
-
+    hbigb->Write();
 
     //2d
     aMip->Write();
