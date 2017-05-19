@@ -587,7 +587,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	        if(otfile) hacut_cef->Fill(jet_cef->at(ij));
 	        if(otfile) hjetcut->Fill(4.5);
 		basicjet[ij]=true;
-		nbasicjet+=1;
+		if(ij<4) nbasicjet+=1;
 
 	        if(otfile) hbcut_alphamax->Fill(AM[ij]);
 	        if(AM[ij]<alphaMaxcut) { // alpha max
