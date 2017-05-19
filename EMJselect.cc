@@ -557,6 +557,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	  almostemerging[i]=false;
 	  basicjet[i]=false;
 	}
+      int nbasicjet=0.;
       int nemerging=0;
       int nalmostemerging=0;
       for(int ij=0;ij<NNNjet;ij++) {
@@ -586,6 +587,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	        if(otfile) hacut_cef->Fill(jet_cef->at(ij));
 	        if(otfile) hjetcut->Fill(4.5);
 		basicjet[ij]=true;
+		nbasicjet+=1;
 
 	        if(otfile) hbcut_alphamax->Fill(AM[ij]);
 	        if(AM[ij]<alphaMaxcut) { // alpha max
@@ -665,7 +667,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
     // require at least 4 jets
     bool C4jet=true;
-    if(NNNjet<4) C4jet=false;
+    if(nbasicjet<4) C4jet=false;
     // HT
     //    double HT = jet_pt->at(0)+jet_pt->at(1)+jet_pt->at(2)+jet_pt->at(3);
     double HT=0.;
