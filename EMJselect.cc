@@ -1268,6 +1268,27 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 
             npass+=1;
+
+            if(otfile) {
+	        H_T3->Fill(HT);   
+	        hmass->Fill(amass);
+		for(int i=0;i<4;i++) {
+		  if(emerging[i]) {
+		    float bdr=1000.;
+	            for(int k=0;k<bigbs.size();k++) {
+		      float bdt = DeltaR(jet_eta->at(i),jet_phi->at(i),gp_eta->at(bigbs[k]),gp_phi->at(bigbs[k]));
+		      if(bdt<bdr) bdr=bdt;
+		    }
+		    if(bdr>10) bdr=-1;
+		    hbigb->Fill(bdr);
+		    if(iDBG>1) {
+		      if(abs(bdr)<0.4) std::cout<<" jet "<<i<<"tagged as b"<<std::endl;
+		    }
+		  }
+		}
+	    }
+
+
 	    if(iDBG>0) std::cout<<"passing run lumi event filename is "<<run<<" "<<lumi<<" "<<event<<" "<<inputfilename<<std::endl;
 	    if(iDBG>0) std::cout<<"     pt eta phi   nef cfe ntrkpt1 alphamax r0 amax2d amax2df"<<std::endl;
 	    for(int i=0;i<4;i++) {
@@ -1285,21 +1306,6 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 				  <<std::setw(8)<<std::setprecision(3)<<amax2Df[i]
 				  <<std::endl;
 	    }  
-            if(otfile) {
-	        H_T3->Fill(HT);   
-	        hmass->Fill(amass);
-		for(int i=0;i<4;i++) {
-		  if(emerging[i]) {
-		    float bdr=1000.;
-	            for(int k=0;k<bigbs.size();k++) {
-		      float bdt = DeltaR(jet_eta->at(i),jet_phi->at(i),gp_eta->at(bigbs[k]),gp_phi->at(bigbs[k]));
-		      if(bdt<bdr) bdr=bdt;
-		    }
-		    if(bdr>10) bdr=-1;
-		    hbigb->Fill(bdr);
-		  }
-		}
-	    }
 	    if(iDBG>0) {
 	      std::cout<<"this event has "<<bigbs.size()<<" big bs"<<std::endl;
 	      for(int k=0;k<bigbs.size();k++) {
