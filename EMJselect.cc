@@ -9,6 +9,7 @@
 #include "vector"
 #include "vector"
 using std::vector;
+#include "list"
 #include "algorithm"
 
 #include <TH2.h>
@@ -380,24 +381,31 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     int firstdq=0;
     int firstadq=0;
 
+    std::vector<int> bigbs;
+
     int NNNgp = (*gp_index).size();
     if(iDBG>0) std::cout<<" gen particle id pt eta phi"<<std::endl;
-    int ifr=0;
     for(Int_t j=1; j<NNNgp-1; j++) {
       //	if(iDBG>0) std::cout<<"    "<<(*gp_pdgId)[j]<<" "<<(*gp_pt)[j]<<" "<<(*gp_eta)[j]<<" "<<(*gp_phi)[j]<<std::endl;
 
       // for background, find high pt b's
-      if(iDBG>1) {
       if(abs(gp_pdgId->at(j))==5) {
 	if(gp_pt->at(j)>50) {
-	  if(ifr==0) {
-	    std::cout<<"FOUND A Whooping B"<<std::endl;
-	    ifr++;
-	  }
-          std::cout<<"    "<<(*gp_pdgId)[j]<<" "<<(*gp_pt)[j]<<" "<<(*gp_eta)[j]<<" "<<(*gp_phi)[j]<<std::endl;
+	  if(int(bigbs.size())==0) {
+	      bigbs.push_back(j);
+	    } else {
+	      int anewone=0;
+	      for(int k=0;k<int(bigbs.size());k++ ) {
+	        float ggg = DeltaR(gp_eta->at(j),gp_phi->at(j),gp_eta->at(bigbs[k]),gp_phi->at(bigbs[k]));
+	        if(ggg<0.4) {
+		  anewone=1;
+	        }
+	      }
+	      if(anewone==0) bigbs.push_back(j);
+	    }
+          if(iDBG>1) std::cout<<" BIG B   "<<(*gp_pdgId)[j]<<" "<<(*gp_pt)[j]<<" "<<(*gp_eta)[j]<<" "<<(*gp_phi)[j]<<" current size is "<<int(bigbs.size())<<std::endl;
 
 	}
-      }
       }
 
       // for signal, find the daughters
@@ -1258,12 +1266,13 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
             npass+=1;
 	    if(iDBG>0) std::cout<<"passing run lumi event filename is "<<run<<" "<<lumi<<" "<<event<<" "<<inputfilename<<std::endl;
-	      if(iDBG>0) std::cout<<"     pt eta nef cfe ntrkpt1 alphamax r0 amax2d amax2df"<<std::endl;
+	    if(iDBG>0) std::cout<<"     pt eta phi   nef cfe ntrkpt1 alphamax r0 amax2d amax2df"<<std::endl;
 	    for(int i=0;i<4;i++) {
 	      if(AM[i]<0.002&&iDBG>0) std::cout<<"BAD BAD CAT"<<std::endl; 
 	      if(iDBG>0) std::cout
 <<std::setw(8)<<std::setprecision(3)<<jet_pt->at(i)
 <<std::setw(8)<<std::setprecision(3)<<jet_eta->at(i)
+<<std::setw(8)<<std::setprecision(3)<<jet_phi->at(i)
 <<std::setw(8)<<std::setprecision(3)<<jet_nef->at(i)
 				  <<std::setw(8)<<std::setprecision(3)<<jet_cef->at(i)
 				  <<std::setw(8)<<std::setprecision(3)<<jet_ntrkpt1[i]
@@ -1272,15 +1281,22 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 				  <<std::setw(8)<<std::setprecision(3)<<amax2D[i]
 				  <<std::setw(8)<<std::setprecision(3)<<amax2Df[i]
 				  <<std::endl;
-	      }
-              if(otfile) {
+	    }  
+            if(otfile) {
 	        H_T3->Fill(HT);   
 	        hmass->Fill(amass);
+	    }
+	    if(iDBG>0) {
+	      std::cout<<"this event has "<<bigbs.size()<<" big bs"<<std::endl;
+	      for(int k=0;k<bigbs.size();k++) {
+		std::cout<<"b pt eta phi "<<gp_pt->at(bigbs[k])<<" "<<gp_eta->at(bigbs[k])<<" "<<gp_phi->at(bigbs[k])<<std::endl;
 	      }
-     
+	    }
+	    
+	  
 
-        if(iDBG>0) std::cout<<"npass  event is "<<npass<<" "<<event<<std::endl;
-        if(iDBG>0) std::cout<<"nemerging nalmostemerging "<<nemerging<<" "<<nalmostemerging<<std::endl;
+          if(iDBG>0) std::cout<<"npass  event is "<<npass<<" "<<event<<std::endl;
+          if(iDBG>0) std::cout<<"nemerging nalmostemerging "<<nemerging<<" "<<nalmostemerging<<std::endl;
 
 	  }}}}}}}}}}}
 
