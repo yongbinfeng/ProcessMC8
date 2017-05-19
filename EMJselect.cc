@@ -318,7 +318,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   h2damd = new TH1F("h2damd","alpha2d down quarks almost emerging",100,0.,1.);
   h2dnamd = new TH1F("h2dnamd","alpha2d down quarks not almost emerging",100,0.,1.);
 
-  hbigb = new TH1F("hbigb","delta R emerging jet and nearest big b",100,-2,10.);
+  hbigb = new TH1F("hbigb","delta R emerging jet and nearest big b",100,-2,5.);
 
   //2d
   aMip = new TH2F("aMip"," alpha Max versus max IP n-1 plot",100,0.,1.,100,0.,10.);
