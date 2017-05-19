@@ -7,7 +7,11 @@
 int dolog=1;
 void Overlay2() 
 { 
-  char* atitle = "alphamax 2d";
+  char* atitle = "alphamax ";
+  char* hname1 = "hdkjetam";
+  char* hname2 = "hdjetam";
+  char* lgd1 = "dark jets";
+  char* lgd2 = "down jets";
 
   //TFile *f1 = new TFile("SumHistsQCD.root");
   //TFile *f1 = new TFile("SumHistsWMCtSkim.root");  
@@ -90,7 +94,7 @@ void Overlay2()
 
 
   std::cout<<"getting first"<<std::endl;
- TH1F *A_pt = static_cast<TH1F*>(f1->Get("ham2dfdk")->Clone());
+  TH1F *A_pt = static_cast<TH1F*>(f1->Get(hname1)->Clone());
  A_pt->SetDirectory(0);
   double aaA = A_pt->Integral();
 std::cout<<" first entries is "<<aaA<<std::endl;
@@ -98,7 +102,7 @@ std::cout<<" first entries is "<<aaA<<std::endl;
 
 
   std::cout<<"getting second"<<std::endl;
-  TH1F *B_pt = static_cast<TH1F*>(f1->Get("ham2dfd")->Clone());
+  TH1F *B_pt = static_cast<TH1F*>(f1->Get(hname2)->Clone());
   std::cout<<"ha"<<std::endl;
   B_pt->SetDirectory(0);
   //  B_pt->Rebin(25);
@@ -153,8 +157,8 @@ C_pt->Scale(1/aaC);
  // lgd->AddEntry(C_pt, "data W to mu", "l");
 
 
-  lgd->AddEntry(A_pt, "dark jets", "l");
-  lgd->AddEntry(B_pt, "down jets", "l");
+  lgd->AddEntry(A_pt, lgd1, "l");
+  lgd->AddEntry(B_pt, lgd2, "l");
   //lgd->AddEntry(C_pt, "ModelBx500", "l");
 
  lgd->Draw();
