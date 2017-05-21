@@ -53,7 +53,7 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
     float Dpt3cut=200;
     float Dpt4cut=100;
     float Dalphacut=0.04;
-    float DmaxIPcut=0.4;
+    float DmaxIPcut=0.06;
     float Djetacut = 2.;
     // dont forget there is a hidden cut nalmostemergin<4!!!!!!!!!!!!!!!!!
     int Dnemcut=2;
@@ -126,7 +126,7 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
 
     //make and  output summed and renormalized histograms
     std::cout<<"normalizing histograms"<<std::endl;
-    const int nhist=110;
+    const int nhist=114;//was 110
     std::vector<TH1F*> vv(nhist);
     std::string histnames[nhist]={
         "count","acount","hjetcut","hjetchf","h_nemg",
@@ -137,7 +137,7 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
         "hbcut_maxip","hHTnm1",
         "hpt1nm1","hpt2nm1","hpt3nm1","hpt4nm1","halphanm1",
         "hmaxipnm1","hnHitsnm1","hntrk1nm1","hnemnm1",
-	"hmetnm1","hmassnm1",
+	"hmetnm1","hmassnm1","htheta2D1nm1","htheta2D2nm1","htheta2D3nm1","htheta2D4nm1",
         "hipXYEJ",
         "hipXYnEJ","htvwEJ","htvw","hipXYSigEJ","hipXYSignEJ",
         "hmaxipXYEJ","hmaxipXYnEJ","hmeanipXYEJ","hmeanipXYnEJ","hnmaxipnm1",

@@ -193,7 +193,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   
 
   // create a histograms
-  TH1F *acount,*count,*hjetcut,*hjetchf,*h_nemg,*hnjet,*hpt,*heta,*heta2,*halpha,*H_T,*H_T2,*H_T3,*H_T4,*hbcut_ntrkpt1,*hacut_ntrkpt1,*hbcut_nef,*hacut_nef,*hbcut_cef,*hacut_cef,*hbcut_alphamax,*hacut_alphamax,*hbcut_theta2d,*hbcut_maxip,*hmetnm1,*hmassnm1,*hHTnm1,*hnHitsnm1,*hntrk1nm1,*hmaxipnm1,*hpt1nm1,*hpt2nm1,*hpt3nm1,*hpt4nm1,*halphanm1,*hnemnm1,*hpt1,*hpt2,*hpt3,*hpt4,*hipXYEJ,*hipXYnEJ,*htvw,*htvwEJ,*hnmaxipnm1,*hn2maxipnm1,*hjptfrb,*hjptfra1,*hjptfra2,*hjptfrbc,*hjptfra1c,*hjptfra2c,*hjptb,*hjpta,*haMgj,*hHTko,*hpt1ko,*hpt2ko,*hpt3ko,*hpt4ko,*hipXYSigEJ,*hipXYSignEJ,*hmaxipXYEJ,*hmaxipXYnEJ,*hmeanipXYEJ,*hmeanipXYnEJ,*hmass,
+  TH1F *acount,*count,*hjetcut,*hjetchf,*h_nemg,*hnjet,*hpt,*heta,*heta2,*halpha,*H_T,*H_T2,*H_T3,*H_T4,*hbcut_ntrkpt1,*hacut_ntrkpt1,*hbcut_nef,*hacut_nef,*hbcut_cef,*hacut_cef,*hbcut_alphamax,*hacut_alphamax,*hbcut_theta2d,*hbcut_maxip,*hmetnm1,*hmassnm1,*htheta2D1nm1,*htheta2D2nm1,*htheta2D3nm1,*htheta2D4nm1,*hHTnm1,*hnHitsnm1,*hntrk1nm1,*hmaxipnm1,*hpt1nm1,*hpt2nm1,*hpt3nm1,*hpt4nm1,*halphanm1,*hnemnm1,*hpt1,*hpt2,*hpt3,*hpt4,*hipXYEJ,*hipXYnEJ,*htvw,*htvwEJ,*hnmaxipnm1,*hn2maxipnm1,*hjptfrb,*hjptfra1,*hjptfra2,*hjptfrbc,*hjptfra1c,*hjptfra2c,*hjptb,*hjpta,*haMgj,*hHTko,*hpt1ko,*hpt2ko,*hpt3ko,*hpt4ko,*hipXYSigEJ,*hipXYSignEJ,*hmaxipXYEJ,*hmaxipXYnEJ,*hmeanipXYEJ,*hmeanipXYnEJ,*hmass,
     *hdkjetam,*hdkjetmeanip,*hdkjetntr,*hdkjetmaxip,*hdkjettrkip,*hdkjettrkips,*hdkjettrkw,*hdkjettrgip,*hdkjettrkdr,
     *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr,*hdjetam2d,*hdkjetam2d,*hmeanz,*hmeanzfa,*hmeanzpa,*hmeanzdk,*hmeanzd,*h2dpa,*h2dfa;
 
@@ -240,6 +240,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hbcut_theta2d = new TH1F("hbcut_theta2d","theta2d before cut",50,0.,0.1);
   hHTnm1 = new TH1F("hHTnm1","HT n-1",100,0.,5000.);
   hmassnm1 = new TH1F("hmassnm1","mass n-1",100,-10.,5000.);
+  htheta2D1nm1 = new TH1F("htheta2D1nm1","log10 theta2D jet1 n-1",50,-3.5,0.5);
+  htheta2D2nm1 = new TH1F("htheta2D2nm1","log10 theta2D jet2 n-1",50,-3.5,0.5);
+  htheta2D3nm1 = new TH1F("htheta2D3nm1","log10 theta2D jet3 n-1",50,-3.5,0.5);
+  htheta2D4nm1 = new TH1F("htheta2D4nm1","log10 theta2D jet4 n-1",50,-3.5,0.5);
   hmetnm1 = new TH1F("hmetnm1","MET n-1",100,0.,500.);
   hpt1nm1 = new TH1F("hpt1nm1","pt1 n-1",200,0.,1000.);
   hpt2nm1 = new TH1F("hpt2nm1","pt2 n-1",200,0.,1000.);
@@ -412,6 +416,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     vector<float> AM((*jet_index).size());
     vector<float> r0((*jet_index).size());
     vector<float> r1((*jet_index).size());
+    vector<float> rmed((*jet_index).size());
     vector<int> jntrack((*jet_index).size());
     vector<int> jntrackip((*jet_index).size());
     vector<float> jet_e((*jet_index).size());
@@ -458,11 +463,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       vector<float> track_ipXYs = track_ipXY->at(j);
       vector<float> track_ipZs = track_ipZ->at(j);
       vector<float> track_ipXYSigs = track_ipXYSig->at(j);
-      vector<float> sort_ip(track_pts.size());
+      vector<float> sort_ip;
       vector<float> track_pca_rs = track_pca_r->at(j);
       vector<float> track_pca_etas = track_pca_eta->at(j);
       vector<float> track_pca_phis = track_pca_phi->at(j);
-      for(int it=0;it<track_pts.size();it++) sort_ip[it]=0;
       jntrack[j]=0;
       jntrackip[j]=0;
       jet_meanz[j]=0.;
@@ -473,12 +477,14 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       double sumpt=0.;
       double sumptall=0.;
       double sumpt2D=0.;
+      float tracks_srczero = 0.; // for counting number of tracks src 0
       for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
 	if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
+	  tracks_srczero += 1.0;
 	  if(iDBG>0) {
 	    std::cout<<"  "<<itrack<<" "<<track_pts[itrack]<<" "<<track_etas[itrack]<<" "<<track_phis[itrack]<<" "<<track_pvWeights[itrack]<<" "<<track_ipXYs[itrack]<<" "<<track_ipZs[itrack]<<std::endl;
 	  }
-	  sort_ip[jntrack[j]]=fabs(track_ipXYs[itrack]);
+	  sort_ip.push_back(fabs(track_ipXYs[itrack]));
 	  sumptall+=track_pts[itrack];
  	  if(track_pvWeights[itrack]>0) sumpt+=track_pts[itrack];
 	  if(fabs(track_ipXYs[itrack])<0.04) sumpt2D+=track_pts[itrack];
@@ -500,14 +506,26 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       if(sumptall>0) amaxbyhand[j]=sumpt/sumptall;
       if(sumptall>0) amax2D[j]=sumpt2D/sumptall;
       if(otfile) halpha->Fill(AM[j]);
-      float atmp = jntrack[j];
-      if(jntrack[j]>0) jet_meanip[j]=jet_meanip[j]/atmp;
-      float atmp2 = jntrackip[j];
-      if(jntrackip[j]>0) jet_meanz[j]=jet_meanz[j]/atmp2;
+      //float atmp = jntrack[j];
+      if(jntrack[j]>0) jet_meanip[j]=jet_meanip[j]/tracks_srczero;
+      //float atmp2 = jntrackip[j];
+      if(jntrackip[j]>0) jet_meanz[j]=jet_meanz[j]/tracks_srczero;
       std::sort(sort_ip.begin(), sort_ip.end());
       std::reverse(sort_ip.begin(),sort_ip.end());
       if(sort_ip.size()>0) r0[j]=sort_ip[0];
       if(sort_ip.size()>1) r1[j]=sort_ip[1];
+      if(sort_ip.size()>0)
+	{
+	  int thesize = sort_ip.size();
+	  if (thesize % 2 == 0)
+	    {
+	      rmed[j] = (sort_ip[thesize/2]+sort_ip[thesize/2 - 1])/2.;
+	    }
+	  else
+	    {
+	      rmed[j] = (sort_ip[(thesize)/2]);
+	    }
+	}
       if(iDBG>0) std::cout<<"mean max are "<<jet_meanip[j]<<" "<<r0[j]<<std::endl;
       if(iDBG>0) {
 	std::cout<<"   jet "<<j<<" "<<jet_pt->at(j)<<" "<<jet_eta->at(j)<<" "<<jet_phi->at(j)<<" "<<AM[j]<<std::endl;
@@ -573,7 +591,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		    }
 		  }
 	          if(otfile) hbcut_maxip->Fill(r0[ij]);
-		  if(r0[ij]>maxIPcut) { // max IP cut
+		  if(rmed[ij]>maxIPcut) { // max IP cut
                     if(otfile) hjetcut->Fill(6.5);
 	            if(otfile) hbcut_theta2d->Fill(jet_theta2D->at(ij));
 		    if(jet_theta2D->at(ij)>Dtheta2dcut) {
@@ -968,7 +986,13 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem&&Cmass&&Cmet) hnemnm1->Fill(nemerging);
     if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmet) hmassnm1->Fill(amass);
     if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass) hmetnm1->Fill(met_pt);
-
+    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet)
+      {
+	htheta2D1nm1->Fill(log10(jet_theta2D->at(0)));
+	htheta2D2nm1->Fill(log10(jet_theta2D->at(1)));
+	htheta2D3nm1->Fill(log10(jet_theta2D->at(2)));
+	htheta2D4nm1->Fill(log10(jet_theta2D->at(3)));
+      }
 
 
     if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem&&Cmass&&Cmet) {
@@ -1248,6 +1272,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     hbcut_theta2d->Write();
     hHTnm1->Write();
     hmassnm1->Write();
+    htheta2D1nm1->Write();
+    htheta2D2nm1->Write();
+    htheta2D3nm1->Write();
+    htheta2D4nm1->Write();
     hmetnm1->Write();
     hpt1nm1->Write();
     hpt2nm1->Write();
