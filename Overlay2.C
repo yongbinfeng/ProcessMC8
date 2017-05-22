@@ -7,14 +7,18 @@
 int dolog=1;
 void Overlay2() 
 { 
-  char* atitle = "alpha2d";
+  char* atitle = "alphamax ";
+  char* hname1 = "hdkjetam";
+  char* hname2 = "hdjetam";
+  char* lgd1 = "dark jets";
+  char* lgd2 = "down jets";
 
-  TFile *f1 = new TFile("SumHistsQQCD.root");
+  //TFile *f1 = new TFile("SumHistsQCD.root");
   //TFile *f1 = new TFile("SumHistsWMCtSkim.root");  
   //TFile *f1 = new TFile("SumHistsWSkim.root");  
   //TFile *f1 = new TFile("SumHists80.root");
   //TFile *f1 = new TFile("SumHistsModelA.root");  
-  //TFile *f1 = new TFile("SumHistsModelB.root");  
+  TFile *f1 = new TFile("SumHistsModelB.root");  
   //TFile *f1 = new TFile("SumHistsDATA.root");  
   //TFile *f1 = new TFile("SumHists80.root");  
 
@@ -78,9 +82,9 @@ void Overlay2()
   
   float x1_l = 1.2;
   //  float x1_l = 0.75;
-  float y1_l = 0.80;
+  float y1_l = 0.90;
   
-  float dx_l = 0.90;
+  float dx_l = 0.60;
   float dy_l = 0.1;
   float x0_l = x1_l-dx_l;
   float y0_l = y1_l-dy_l;
@@ -90,7 +94,7 @@ void Overlay2()
 
 
   std::cout<<"getting first"<<std::endl;
- TH1F *A_pt = static_cast<TH1F*>(f1->Get("h2dpa")->Clone());
+  TH1F *A_pt = static_cast<TH1F*>(f1->Get(hname1)->Clone());
  A_pt->SetDirectory(0);
   double aaA = A_pt->Integral();
 std::cout<<" first entries is "<<aaA<<std::endl;
@@ -98,7 +102,7 @@ std::cout<<" first entries is "<<aaA<<std::endl;
 
 
   std::cout<<"getting second"<<std::endl;
-  TH1F *B_pt = static_cast<TH1F*>(f1->Get("h2dfa")->Clone());
+  TH1F *B_pt = static_cast<TH1F*>(f1->Get(hname2)->Clone());
   std::cout<<"ha"<<std::endl;
   B_pt->SetDirectory(0);
   //  B_pt->Rebin(25);
@@ -153,8 +157,8 @@ C_pt->Scale(1/aaC);
  // lgd->AddEntry(C_pt, "data W to mu", "l");
 
 
-  lgd->AddEntry(A_pt, "qcd passing almost", "l");
-  lgd->AddEntry(B_pt, "qcd failing almost", "l");
+  lgd->AddEntry(A_pt, lgd1, "l");
+  lgd->AddEntry(B_pt, lgd2, "l");
   //lgd->AddEntry(C_pt, "ModelBx500", "l");
 
  lgd->Draw();
