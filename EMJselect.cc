@@ -1320,6 +1320,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 
 	    if(iDBG>0) std::cout<<"passing run lumi event filename is "<<run<<" "<<lumi<<" "<<event<<" "<<inputfilename<<std::endl;
+	    if(iDBG>0) std::cout<<"pv position is "<<pv_x<<","<<pv_y<<","<<pv_z<<std::endl;
+	    if(iDBG>0) std::cout<<" pv ntracks is "<<nTracks<<std::endl;
+
 	    if(iDBG>0) std::cout<<"     pt eta phi   nef cfe ntrkpt1 alphamax r0 amax2d amax2df"<<std::endl;
 	    for(int i=0;i<4;i++) {
 	      if(AM[i]<0.002&&iDBG>0) std::cout<<"BAD BAD CAT"<<std::endl; 
