@@ -522,7 +522,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
 	if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
 	  tracks_srczero += 1.0;
-	  if(iDBG>0) {
+	  if(iDBG>2) {
 	    std::cout<<"  "<<itrack<<" "<<track_pts[itrack]<<" "<<track_etas[itrack]<<" "<<track_phis[itrack]<<" "<<track_pvWeights[itrack]<<" "<<track_ipXYs[itrack]<<" "<<track_ipZs[itrack]<<std::endl;
 	  }
 	  float az=0.;
@@ -590,7 +590,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      rmed[j] = (sort_ip[(thesize)/2]);
 	    }
 	}
-      if(iDBG>0) {
+      if(iDBG>2) {
 	std::cout<<"mean max are "<<jet_meanip[j]<<" "<<r0[j]<<std::endl;
 	std::cout<<"   jet "<<j<<" "<<jet_pt->at(j)<<" "<<jet_eta->at(j)<<" "<<jet_phi->at(j)<<" "<<AM[j]<<std::endl;
       }
