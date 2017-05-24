@@ -7,18 +7,19 @@
 int dolog=1;
 void Overlay2() 
 { 
-  char* atitle = "alphamax ";
-  char* hname1 = "hdkjetam";
-  char* hname2 = "hdjetam";
-  char* lgd1 = "dark jets";
-  char* lgd2 = "down jets";
+  char* atitle = "pv z ";
+  char* hname1 = "hpvpre";
+  char* hname2 = "hpvfinal";
+  char* lgd1 = "after preselection";
+  char* lgd2 = "after final selection";
 
   //TFile *f1 = new TFile("SumHistsQCD.root");
+ TFile *f1 = new TFile("SumHistsQQCD.root");
   //TFile *f1 = new TFile("SumHistsWMCtSkim.root");  
   //TFile *f1 = new TFile("SumHistsWSkim.root");  
   //TFile *f1 = new TFile("SumHists80.root");
   //TFile *f1 = new TFile("SumHistsModelA.root");  
-  TFile *f1 = new TFile("SumHistsModelB.root");  
+  //TFile *f1 = new TFile("SumHistsModelB.root");  
   //TFile *f1 = new TFile("SumHistsDATA.root");  
   //TFile *f1 = new TFile("SumHists80.root");  
 

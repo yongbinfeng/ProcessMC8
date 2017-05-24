@@ -151,7 +151,7 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
 	"hdkjettrkw",
 	"hdjetam","hdjetmeanip","hdjetntr","hdjetmaxip","hdjettrkip","hdjettrkips","hdjettrgip","hdjettrkdr","hdjetam2d","hdkjetam2d",
 	"hdjettrkw","hmeanz","hmeanzfa","hmeanzpa","hmeanzd","hmeanzdk","hmzamd","hmznamd","h2damd","h2dnamd","h2dpa","h2dfa","hntrkpt1zmpa","hntrkpt1zmfa","ham2dfd","ham2dfdk",
-	"hbigb","pvpre","pvfinal"
+	"hbigb","hpvpre","hpvfinal"
     };
     vector<double> outnorm(nbin);
     for(int i=0;i<nhist;i++) {

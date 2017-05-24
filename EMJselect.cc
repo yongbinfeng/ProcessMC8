@@ -740,10 +740,14 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     // now start the event selections
       // *************************************************************
 
+      //vertex cuts
 
       bool PVPT0=true;
       if(pv_indexInColl!=0) PVPT0=false;
 
+
+      bool PVZ=true;
+      if(fabs(PVZ)>20) PVZ=false;
 
     // require at least 4 jets
     bool C4jet=true;
@@ -855,7 +859,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     if(otfile) {
 
       // kine only plots
-      if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4) {
+      if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4) {
 	hHTko->Fill(HT);
 	hpt1ko->Fill(jet_pt->at(0));
 	hpt2ko->Fill(jet_pt->at(1));
@@ -1075,15 +1079,15 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       }
 
       //N-1 plots
-    if(PVPT0&&C4jet&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hHTnm1->Fill(HT);
-    if(PVPT0&&C4jet&&CHT&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hpt1nm1->Fill(jet_pt->at(0));
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hpt2nm1->Fill(jet_pt->at(1));
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hpt3nm1->Fill(jet_pt->at(2));
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cnem&&Canem&&Cmass&&Cmet) hpt4nm1->Fill(jet_pt->at(3));
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem&&Cmass&&Cmet) hnemnm1->Fill(nemerging);
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmet) hmassnm1->Fill(amass);
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass) hmetnm1->Fill(met_pt);
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet)
+    if(PVZ&&PVPT0&&C4jet&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hHTnm1->Fill(HT);
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hpt1nm1->Fill(jet_pt->at(0));
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hpt2nm1->Fill(jet_pt->at(1));
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hpt3nm1->Fill(jet_pt->at(2));
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cnem&&Canem&&Cmass&&Cmet) hpt4nm1->Fill(jet_pt->at(3));
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem&&Cmass&&Cmet) hnemnm1->Fill(nemerging);
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmet) hmassnm1->Fill(amass);
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass) hmetnm1->Fill(met_pt);
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet)
       {
 	htheta2D1nm1->Fill(log10(jet_theta2D->at(0)));
 	htheta2D2nm1->Fill(log10(jet_theta2D->at(1)));
@@ -1092,7 +1096,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       }
 
 
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem&&Cmass&&Cmet) {
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem&&Cmass&&Cmet) {
       for(int i=0;i<4;i++) {
 	if(basicjet[i]) {
 	  halphanm1->Fill(AM[i]);
@@ -1149,7 +1153,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     }
 
 
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4) {
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4) {
       for(int i=0;i<4;i++) {
 	    aMbh2D->Fill(amax2D[i],amaxbyhand[i]);
 	    hmeanz->Fill(jet_meanz[i]-pv_z);
@@ -1158,7 +1162,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 
 
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&(!Canem)&&Cmass&&Cmet) {
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&(!Canem)&&Cmass&&Cmet) {
       for(int i=0;i<4;i++) {
 	    aMbh2Daem->Fill(amax2D[i],amaxbyhand[i]);
 	    hmeanzfa->Fill(jet_meanz[i]-pv_z);
@@ -1175,7 +1179,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     }
 
 
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&(Canem)&&Cmass&&Cmet) {
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&(Canem)&&Cmass&&Cmet) {
       for(int i=0;i<4;i++) {
 	    hmeanzpa->Fill(jet_meanz[i]-pv_z);
 	    hntrkpt1zmpa->Fill(jet_ntrkpt1zm[i]);
@@ -1189,7 +1193,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 
 
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&(!Canem)&&Cmass&&Cmet) {
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&(!Canem)&&Cmass&&Cmet) {
     if(otfile) H_T4->Fill(HT);
       for(int i=0;i<4;i++) {
 	aMbh2Daem->Fill(amax2D[i],amaxbyhand[i]);
@@ -1197,7 +1201,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     }
 
 
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&nalmostemerging>=2) {
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&nalmostemerging>=2) {
       for(int i=0;i<4;i++) {
 	if(almostemerging[i]) {
 	  if((AM[i]<alphaMaxcut)) {
@@ -1207,7 +1211,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       }
     }
 
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&nalmostemerging>=1) {
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&nalmostemerging>=1) {
       for(int i=0;i<4;i++) {
 	if(almostemerging[i]) {
 	  if((AM[i]<alphaMaxcut)) {
@@ -1223,7 +1227,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 
       // make plots for fake rate studes
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem) {
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem) {
       for(Int_t j=0; j<NNNjet; j++) {
 	if(basicjet[j]) {
 	  hjptfrb->Fill(jet_pt->at(j));
@@ -1237,7 +1241,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       }
     }
       // check without Canem
-    if(PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4) {
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4) {
       for(Int_t j=0; j<NNNjet; j++) {
 	if(basicjet[j]) {
 	  hjptfrbc->Fill(jet_pt->at(j));
@@ -1254,7 +1258,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
     // apply cuts sequentially
 
-    if(iDBG>2) std::cout<<"pvpt0 c4jet cht cpt1 cpt2 cpt3 cpt4 cnem "<<PVPT0<<" "<<C4jet<<" "<<CHT<<" "<<Cpt1<<" "<<Cpt2<<" "<<Cpt3<<" "<<Cpt4<<" "<<Cnem<<std::endl;
+    if(iDBG>2) std::cout<<"pvz pvpt0 c4jet cht cpt1 cpt2 cpt3 cpt4 cnem "<<PVZ<<" "<<PVPT0<<" "<<C4jet<<" "<<CHT<<" "<<Cpt1<<" "<<Cpt2<<" "<<Cpt3<<" "<<Cpt4<<" "<<Cnem<<std::endl;
 
 
     if(C4jet) {
@@ -1293,6 +1297,12 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
     if(otfile) hpvpre->Fill(pv_z);
       // require at least N emerging jets
+
+    if(PVZ) {
+    if(otfile) count->Fill("pv z",1);
+    if(otfile) acount->Fill(8.5);
+
+
     if(Cnem) {
       if(iDBG>2) std::cout<<"PASS without almost"<<std::endl;
       if(iDBG>2) std::cout<<"n emerging nealmost emergin is "<<nemerging<<" "<<nalmostemerging<<std::endl;
@@ -1301,21 +1311,21 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 
       if(otfile) count->Fill("emerging",1);
-      if(otfile) acount->Fill(8.5);
+      if(otfile) acount->Fill(9.5);
       if(Canem) {
 	if(iDBG>2) std::cout<<"PASS with almost"<<std::endl;
 
         if(otfile) count->Fill("almostemerging",1);
-        if(otfile) acount->Fill(8.5);
+        if(otfile) acount->Fill(10.5);
 
 
 	if(Cmet) {
           if(otfile) count->Fill("MET",1);
-          if(otfile) acount->Fill(9.5);
+          if(otfile) acount->Fill(11.5);
 
 	  if(Cmass) {
             if(otfile) count->Fill("mass",1);
-            if(otfile) acount->Fill(10.5);
+            if(otfile) acount->Fill(12.5);
 
 
             npass+=1;
@@ -1407,7 +1417,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
           if(iDBG>0) std::cout<<"npass  event is "<<npass<<" "<<event<<std::endl;
           if(iDBG>0) std::cout<<"nemerging nalmostemerging "<<nemerging<<" "<<nalmostemerging<<std::endl;
 
-	  }}}}}}}}}}}
+	  }}}}}}}}}}}}
 
 
 
