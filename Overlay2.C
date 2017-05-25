@@ -13,8 +13,8 @@ void Overlay2()
   char* lgd1 = "after preselection";
   char* lgd2 = "after final selection";
 
-  //TFile *f1 = new TFile("SumHistsQCD.root");
- TFile *f1 = new TFile("SumHistsQQCD.root");
+  TFile *f1 = new TFile("SumHistsQCD.root");
+  //TFile *f1 = new TFile("SumHistsQQCD.root");
   //TFile *f1 = new TFile("SumHistsWMCtSkim.root");  
   //TFile *f1 = new TFile("SumHistsWSkim.root");  
   //TFile *f1 = new TFile("SumHists80.root");

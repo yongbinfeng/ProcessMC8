@@ -196,7 +196,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   // create a histograms
   TH1F *acount,*count,*hjetcut,*hjetchf,*h_nemg,*hnjet,*hpt,*heta,*heta2,*halpha,*H_T,*H_T2,*H_T3,*H_T4,*hbcut_ntrkpt1,*hacut_ntrkpt1,*hbcut_nef,*hacut_nef,*hbcut_cef,*hacut_cef,*hbcut_alphamax,*hacut_alphamax,*hbcut_theta2d,*hbcut_maxip,*hmetnm1,*hmassnm1,*htheta2D1nm1,*htheta2D2nm1,*htheta2D3nm1,*htheta2D4nm1,*hHTnm1,*hnHitsnm1,*hntrk1nm1,*hmaxipnm1,*hpt1nm1,*hpt2nm1,*hpt3nm1,*hpt4nm1,*halphanm1,*hnemnm1,*hpt1,*hpt2,*hpt3,*hpt4,*hipXYEJ,*hipXYnEJ,*htvw,*htvwEJ,*hnmaxipnm1,*hn2maxipnm1,*hjptfrb,*hjptfra1,*hjptfra2,*hjptfrbc,*hjptfra1c,*hjptfra2c,*hjptb,*hjpta,*haMgj,*hHTko,*hpt1ko,*hpt2ko,*hpt3ko,*hpt4ko,*hipXYSigEJ,*hipXYSignEJ,*hmaxipXYEJ,*hmaxipXYnEJ,*hmeanipXYEJ,*hmeanipXYnEJ,*hmass,
     *hdkjetam,*hdkjetmeanip,*hdkjetntr,*hdkjetmaxip,*hdkjettrkip,*hdkjettrkips,*hdkjettrkw,*hdkjettrgip,*hdkjettrkdr,*ham2dfd,*ham2dfdk,*hdkjetamo,*hdjetamo,
-    *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr,*hdjetam2d,*hdkjetam2d,*hmeanz,*hmeanzfa,*hmeanzpa,*hmeanzdk,*hmeanzd,*h2dpa,*h2dfa,*hntrkpt1zmpa,*hntrkpt1zmfa,*hbigb,*hpvpre,*hpvfinal;
+    *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr,*hdjetam2d,*hdkjetam2d,*hmeanz,*hmeanzfa,*hmeanzpa,*hmeanzdk,*hmeanzd,*h2dpa,*h2dfa,*hntrkpt1zmpa,*hntrkpt1zmfa,*hbigb,*hpvpre,*hpvfinal,
+    *hnvtxpre,*hnvtxfinal,*hntrkpre,*hntrkfinal;
 
   TH1F *hmzamd,*hmznamd,*h2damd,*h2dnamd;
 
@@ -325,6 +326,15 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hbigb = new TH1F("hbigb","delta R emerging jet and nearest big b",100,-2,5.);
   hpvpre = new TH1F("hpvpre","pv z preselection",100,-30.,30.);
   hpvfinal = new TH1F("hpvfinal","pv z final",100,-30.,30.);
+
+
+  hnvtxpre = new TH1F("hnvtxpre","nvtx  preselection",50,-0.,50.);
+  hnvtxfinal = new TH1F("hnvtxfinal","nvtx final",50,0.,50.);
+
+  hntrkpre = new TH1F("hnvtrkpre","ntrk  preselection",100,-0.,1500.);
+  hntrkfinal = new TH1F("hntrkfinal","nntrk final",100,0.,1500.);
+
+
 
   //2d
   aMip = new TH2F("aMip"," alpha Max versus max IP n-1 plot",100,0.,1.,100,0.,10.);
@@ -1295,7 +1305,11 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     if(otfile) count->Fill("pv 0",1);
     if(otfile) acount->Fill(7.5);
 
-    if(otfile) hpvpre->Fill(pv_z);
+    if(otfile) {
+      hpvpre->Fill(pv_z);
+      hnvtxpre->Fill(nVtx);
+      hntrkpre->Fill(nTracks);
+    }
       // require at least N emerging jets
 
     if(PVZ) {
@@ -1350,11 +1364,17 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		  }
 		}
 	    }
-    if(otfile) hpvfinal->Fill(pv_z);
+	    if(otfile) {
+	      hpvfinal->Fill(pv_z);
+              hnvtxfinal->Fill(nVtx);
+              hntrkfinal->Fill(nTracks);
+
+	    }
 
 	    if(iDBG>0) std::cout<<"passing run lumi event filename is "<<run<<" "<<lumi<<" "<<event<<" "<<inputfilename<<std::endl;
 	    if(iDBG>0) std::cout<<"pv position is "<<pv_x<<","<<pv_y<<","<<pv_z<<std::endl;
 	    if(iDBG>0) std::cout<<" pv ntracks is "<<nTracks<<std::endl;
+	    if(iDBG>0) std::cout<<" number of vertices is "<<nVtx<<std::endl;
 
 	    if(iDBG>0) std::cout<<"     pt eta phi   nef cfe ntrkpt1 alphamax r0 amax2d amax2df"<<std::endl;
 	    for(int i=0;i<4;i++) {
@@ -1547,6 +1567,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     hbigb->Write();
     hpvpre->Write();
     hpvfinal->Write();
+    hnvtxpre->Write();
+    hnvtxfinal->Write();
+    hntrkpre->Write();
+    hntrkfinal->Write();
 
     //2d
     aMip->Write();

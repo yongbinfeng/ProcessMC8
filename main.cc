@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     float dxsec[dnbin]={18.45}; // fb 
     int dnfiles[dnbin]={1}; 
     std::string dbinnames[dnbin]={"tmpStore"};
-    std::string aaname_d[dnbin]={"configs/ModelB_80X_config.txt"};
+    std::string aaname_d[dnbin]={"configs/debug_config.txt"};
 
     // Wjets data sample
     const int wnbin=1;
