@@ -776,7 +776,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 
       bool PVZ=true;
-      if(fabs(PVZ)>20) PVZ=false;
+      if(fabs(pv_z)>20) PVZ=false;
 
     // require at least 4 jets
     bool C4jet=true;
