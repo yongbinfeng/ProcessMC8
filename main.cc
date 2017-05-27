@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 
     const int nbin=3; // 1000-1500,1500-2000,200toInf
     float xsec[nbin]={1064000,121500,25420}; // fb 
-    int nfiles[nbin]={47, 49, 14};
+    int nfiles[nbin]={761, 675, 266};
     std::string binnames[nbin]={"QCD_HT1000to1500","QCD_HT1500to2000","QCD_HT2000toInf"};
     std::string aaname[nbin]={"configs/QCD_HT1000to1500_80X_config.txt", "configs/QCD_HT1500to2000_80X_config.txt", "configs/QCD_HT2000toInf_80X_config.txt"};
 
@@ -75,9 +75,9 @@ int main(int argc, char *argv[])
     // quick background
     const int qnbin=1; // 500-700,700-1000,1000-1500,1500-2000,200toInf
     float qxsec[qnbin]={25420}; // fb 
-    int qnfiles[qnbin]={3};
-    std::string qbinnames[qnbin]={"QCD_HT2000toInf"};
-    std::string aaname_q[qnbin]={"configs/QCD_HT2000toInf_80X_config.txt"};
+    int qnfiles[qnbin]={42};
+    std::string qbinnames[qnbin]={"QCD_HT2000toInf_short"};
+    std::string aaname_q[qnbin]={"configs/QCD_HT2000toInf_80X_config_short.txt"};
 
     // for signal models A.  mediat mass is 1000
     const int anbin=1; 

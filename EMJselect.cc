@@ -337,8 +337,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hntrkfinal = new TH1F("hntrkfinal","nntrk final",100,0.,3000.);
 
 
-  hjntrkpre = new TH1F("hjntrkpre","jet ntrk  preselection",100,0.,3000.);
-  hjntrkfinal = new TH1F("hjntrkfinal","jet nntrk final",100,0.,3000.);
+  hjntrkpre = new TH1F("hjntrkpre","jet ntrk  preselection",100,0.,100.);
+  hjntrkfinal = new TH1F("hjntrkfinal","jet nntrk final",100,0.,100.);
 
 
   hjetptfrpre = new TH1F("hjetptfrpre","fract jet pt leading track  preselection",100,0.,1.5);
@@ -691,7 +691,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	        if(otfile) hacut_cef->Fill(jet_cef->at(ij));
 	        if(otfile) hjetcut->Fill(4.5);
 
-		if(jet_fpt[ij]<1.0) {
+		if(jet_fpt[ij]<0.6) {
 	        if(otfile) hjetcut->Fill(5.5);
 
 		basicjet[ij]=true;
@@ -1329,7 +1329,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       hnvtxpre->Fill(nVtx);
       hntrkpre->Fill(nTracks);
       for(int i=0;i<4;i++) {
-	hjetptfrpre->Fill(std::min(jet_fpt[i],1.499));
+	hjetptfrpre->Fill(std::min(jet_fpt[i],1.2));
 	hjntrkpre->Fill(jet_ntrkpt1[i]);
       }			
     }
@@ -1393,7 +1393,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
               hntrkfinal->Fill(nTracks);
 	      for(int i=0;i<4;i++) {
 		if(emerging[i])
-		hjetptfrfinal->Fill(std::min(jet_fpt[i],1.499));
+		hjetptfrfinal->Fill(std::min(jet_fpt[i],1.2));
 	        hjntrkfinal->Fill(jet_ntrkpt1[i]);
 	      }
 	    }
@@ -1403,7 +1403,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    if(iDBG>0) std::cout<<" pv ntracks is "<<nTracks<<std::endl;
 	    if(iDBG>0) std::cout<<" number of vertices is "<<nVtx<<std::endl;
 
-	    if(iDBG>0) std::cout<<"     pt eta phi   nef cfe ntrkpt1 alphamax r0 amax2d amax2df"<<std::endl;
+	    if(iDBG>0) std::cout<<"     pt eta phi   nef cfe ntrkpt1 alphamax r0 amax2d amax2df meanz  jet_fr"<<std::endl;
 	    for(int i=0;i<4;i++) {
 	      if(AM[i]<0.002&&iDBG>0) std::cout<<"BAD BAD CAT"<<std::endl; 
 	      if(iDBG>0) std::cout
@@ -1417,6 +1417,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 				  <<std::setw(8)<<std::setprecision(3)<<r0[i]
 				  <<std::setw(8)<<std::setprecision(3)<<amax2D[i]
 				  <<std::setw(8)<<std::setprecision(3)<<amax2Df[i]
+				  <<std::setw(8)<<std::setprecision(3)<<jet_meanz[i]
+				  <<std::setw(8)<<std::setprecision(3)<<jet_fpt[i]
 				  <<std::endl;
 	    }  
 	    if(iDBG>0) {
@@ -1431,7 +1433,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    for(int i=0;i<4;i++) {
 	      std::cout<<" for jet "<<i<<std::endl;
                 std::cout<<"  with tracks "<<std::endl;
-                std::cout<<" #     pt     eta   phi    weight  ipxy    ipxysig     "<<std::endl;
+                std::cout<<" #     pt     eta   phi    weight  ipxy    ipxysig  refx    refy    refz   "<<std::endl;
       vector<float> track_pts = track_pt->at(i);
       vector<float> track_etas = track_eta->at(i);
       vector<float> track_phis = track_phi->at(i);
@@ -1454,6 +1456,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 <<std::setw(8)<<std::setprecision(3)<<track_pvWeights[itrack]
 <<std::setw(9)<<std::setprecision(3)<<track_ipXYs[itrack]
 <<std::setw(8)<<std::setprecision(3)<<track_ipXYSigs[itrack]
+<<std::setw(8)<<std::setprecision(3)<<track_ref_xs[itrack]
+<<std::setw(8)<<std::setprecision(3)<<track_ref_ys[itrack]
+<<std::setw(8)<<std::setprecision(3)<<track_ref_zs[itrack]
 		     <<std::endl;
 	}}
 	    }

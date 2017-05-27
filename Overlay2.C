@@ -7,15 +7,15 @@
 int dolog=0;
 void Overlay2() 
 { 
-  char* atitle = "fraction jet pt leading track ";
-  char* hname1 = "hjetptfrpre";
-  char* hname2 = "hjetptfrfinal";
+  char* atitle = "number of tracks ";
+  char* hname1 = "hntrkpre";
+  char* hname2 = "hntrkfinal";
   char* lgd1 = "after preselection";
   char* lgd2 = "after final selection";
 
-  TFile *f1 = new TFile("SumHistsQCD.root");
+  //TFile *f1 = new TFile("SumHistsQCD.root");
   //TFile *f1 = new TFile("SumHistsDebug.root");
-  //TFile *f1 = new TFile("SumHistsQQCD.root");
+  TFile *f1 = new TFile("SumHistsQQCD.root");
   //TFile *f1 = new TFile("SumHistsWMCtSkim.root");  
   //TFile *f1 = new TFile("SumHistsWSkim.root");  
   //TFile *f1 = new TFile("SumHists80.root");
