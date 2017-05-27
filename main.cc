@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
     // for signal models A.  mediat mass is 1000
     const int anbin=1; 
     float axsec[anbin]={18.45}; // fb 
-    int anfiles[anbin]={30}; 
+    int anfiles[anbin]={31}; 
     //int anfiles[anbin]={5}; 
     std::string abinnames[anbin]={"modelA"};
     std::string aaname_a[anbin]={"configs/ModelA_80X_config.txt"};

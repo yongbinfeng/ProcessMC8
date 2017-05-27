@@ -4,16 +4,17 @@
 #include "TH1.h"
 #include "TH1F.h"
 
-int dolog=1;
+int dolog=0;
 void Overlay2() 
 { 
-  char* atitle = "pv z ";
-  char* hname1 = "hpvpre";
-  char* hname2 = "hpvfinal";
+  char* atitle = "fraction jet pt leading track ";
+  char* hname1 = "hjetptfrpre";
+  char* hname2 = "hjetptfrfinal";
   char* lgd1 = "after preselection";
   char* lgd2 = "after final selection";
 
   TFile *f1 = new TFile("SumHistsQCD.root");
+  //TFile *f1 = new TFile("SumHistsDebug.root");
   //TFile *f1 = new TFile("SumHistsQQCD.root");
   //TFile *f1 = new TFile("SumHistsWMCtSkim.root");  
   //TFile *f1 = new TFile("SumHistsWSkim.root");  
@@ -81,17 +82,17 @@ void Overlay2()
   
   int n_ = 2;
   
-  float x1_l = 1.2;
+  float x1_l = 1.0;
   //  float x1_l = 0.75;
   float y1_l = 0.90;
   
-  float dx_l = 0.60;
+  float dx_l = 0.30;
   float dy_l = 0.1;
   float x0_l = x1_l-dx_l;
   float y0_l = y1_l-dy_l;
   
  TLegend *lgd = new TLegend(x0_l,y0_l,x1_l, y1_l); 
-  lgd->SetBorderSize(0); lgd->SetTextSize(0.04); lgd->SetTextFont(62); lgd->SetFillColor(0);
+  lgd->SetBorderSize(0); lgd->SetTextSize(0.04); lgd->SetTextFont(32); lgd->SetFillColor(0);
 
 
   std::cout<<"getting first"<<std::endl;
