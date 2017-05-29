@@ -576,7 +576,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       int iptmaxtrk=0;
       float ptmaxtrk=0.;
       for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
+	if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)
+	   && (fabs(pv_z-track_ref_zs[itrack])<1.5)
+) {
 	  tracks_srczero += 1.0;
 	  if(track_pts[itrack]>ptmaxtrk) {
 	    ptmaxtrk=track_pts[itrack];
@@ -682,6 +684,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
         vector<int> track_sources = track_source->at(ij);
         vector<int> track_qualitys = track_quality->at(ij);
       vector<float> track_pvWeights = track_pvWeight->at(ij);
+      vector<float> track_ref_zs = track_ref_z->at(ij);
 	if(otfile) hjetcut->Fill(0.5);
 
 	if(fabs(jet_eta->at(ij))<jetacut) { // jet eta cut
@@ -745,7 +748,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		          if(otfile) hmeanipXYEJ->Fill(jet_meanip[ij]);
 		          if(jet_meanip[ij]>r0[ij]) std::cout<<"DANGER DANGER"<<std::endl;
                           for (unsigned itrack=0; itrack<track_ipXYs.size(); itrack++) {
-	                    if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
+	                    if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<1.5)) {
 		              if(otfile) hipXYEJ->Fill(track_ipXYs[itrack]);
 		              if(otfile) hipXYSigEJ->Fill(track_ipXYSigs[itrack]);
 		              if(otfile) htvwEJ->Fill(track_pvWeights[itrack]);
@@ -764,7 +767,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	  if(otfile) hmaxipXYnEJ->Fill(r0[ij]);
 	  if(otfile) hmeanipXYnEJ->Fill(jet_meanip[ij]);
                 for (unsigned itrack=0; itrack<track_ipXYs.size(); itrack++) {
-	          if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
+	          if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<1.5)) {
 		    if(otfile) hipXYnEJ->Fill(track_ipXYs[itrack]);
 		    if(otfile) hipXYSignEJ->Fill(track_ipXYSigs[itrack]);
 	           }
@@ -926,7 +929,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
         vector<int> track_sources = track_source->at(i);
         vector<int> track_qualitys = track_quality->at(i);
       vector<float> track_pvWeights = track_pvWeight->at(i);
-
+      vector<float> track_ref_zs = track_ref_z->at(i);
 
 
 	
@@ -1023,7 +1026,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      hdkjetmaxip->Fill(r0[i]);
 	      
               for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	        if((track_sources[itrack]==0)&((track_qualitys[itrack]&4)>0)) {
+	        if((track_sources[itrack]==0)&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<1.5)) {
 		  hdkjettrkip->Fill(track_ipXYs[itrack]);
 		  hdkjettrkips->Fill(track_ipXYSigs[itrack]);
 		  hdkjettrkw->Fill(track_pvWeights[itrack]);
@@ -1077,7 +1080,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      hdjetmaxip->Fill(r0[i]);
 	      
               for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	        if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
+	        if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<1.5)) {
 		  hdjettrkip->Fill(track_ipXYs[itrack]);
 		  hdjettrkips->Fill(track_ipXYSigs[itrack]);
 		  hdjettrkw->Fill(track_pvWeights[itrack]);
@@ -1170,8 +1173,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
             vector<int> track_nMissInnerPxlLayerss = track_nMissInnerPxlLayers->at(i);
             vector<int> track_nPxlLayerss = track_nPxlLayers->at(i);
             vector<int> track_nHitss = track_nHits->at(i);
+      vector<float> track_ref_zs = track_ref_z->at(i);
             for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	      if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
+	      if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<1.5)) {
 		if(iDBG>2) {
 			std::cout<<"    track pt is "<<track_pts[itrack]
 			 <<" ipxy is "<<track_ipXYs[itrack]
@@ -1341,7 +1345,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
         vector<int> track_qualitys = track_quality->at(i);
         vector<float> track_ref_zs = track_ref_z->at(i);
         for (unsigned itrack=0; itrack<track_ref_zs.size(); itrack++) {
-	  if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
+	  if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<1.5)) {
 	    hdzpre->Fill(pv_z-track_ref_zs[itrack]);
 	  }
 	}
@@ -1415,7 +1419,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
                   vector<int> track_qualitys = track_quality->at(i);
                   vector<float> track_ref_zs = track_ref_z->at(i);
                   for (unsigned itrack=0; itrack<track_ref_zs.size(); itrack++) {
-	            if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
+	            if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<1.5)) {
 	              hdzfinal->Fill(pv_z-track_ref_zs[itrack]);
 	            }
 		  }
@@ -1473,7 +1477,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       vector<float> track_ref_ys = track_ref_y->at(i);
       vector<float> track_ref_zs = track_ref_z->at(i);
       for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
+	if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<1.5)) {
 	    std::cout
 <<itrack
 <<std::setw(8)<<std::setprecision(3)<<track_pts[itrack]
