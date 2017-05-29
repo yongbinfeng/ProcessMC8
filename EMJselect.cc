@@ -570,15 +570,16 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       double sumpile=0.;
       double sumptallf=0.;
       double sumptall=0.;
+      double sumptallnz=0.;
       double sumpt2D=0.;
       double sumpt2Df=0.;
       float tracks_srczero = 0.; // for counting number of tracks src 0
       int iptmaxtrk=0;
       float ptmaxtrk=0.;
       for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)
-	   && (fabs(pv_z-track_ref_zs[itrack])<1.5)
-) {
+	if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
+	  sumptallnz+=track_pts[itrack];
+	  if (fabs(pv_z-track_ref_zs[itrack])<1.5) {
 	  tracks_srczero += 1.0;
 	  if(track_pts[itrack]>ptmaxtrk) {
 	    ptmaxtrk=track_pts[itrack];
@@ -621,10 +622,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		     <<std::endl;
 	  }
 
-	}
+	  }}
       }
       if(sumptall>0) AM[j]=sumpt/sumptall;
-      if(sumptall>0) jet_fpile[j]=sumpile/sumptall;
+      if(sumptallnz>0) jet_fpile[j]=sumpile/sumptallnz;
       jet_fpt[j]=ptmaxtrk/jet_pt->at(j);
       if(sumptall>0) amaxbyhand[j]=sumpt/sumptall;
       if(sumptall>0) amax2D[j]=sumpt2D/sumptall;
