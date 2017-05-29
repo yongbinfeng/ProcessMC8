@@ -21,7 +21,8 @@ Int_t           fCurrent; //!current Tree number in a TChain
 
 
 int iDBG=1;
-
+float pilecut=5000.;
+float pilecut2=1.5;
 
 float DeltaR(float eta1, float phi1, float eta2, float phi2) {
 
@@ -579,7 +580,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
 	if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
 	  sumptallnz+=track_pts[itrack];
-	  if (fabs(pv_z-track_ref_zs[itrack])<1.5) {
+	  if (fabs(pv_z-track_ref_zs[itrack])<pilecut) {
 	  tracks_srczero += 1.0;
 	  if(track_pts[itrack]>ptmaxtrk) {
 	    ptmaxtrk=track_pts[itrack];
@@ -597,7 +598,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	  sumptall+=track_pts[itrack];
 	  sumptallf+=track_pts[itrack];
 	  if(fabs(track_ipXYSigs[itrack])<3) sumpt2Df+=track_pts[itrack];
-	  if(fabs(pv_z-track_ref_zs[itrack])<1.5) sumpile+=track_pts[itrack];
+	  if(fabs(pv_z-track_ref_zs[itrack])<pilecut2) sumpile+=track_pts[itrack];
 	    //}
  	  if(track_pvWeights[itrack]>0) sumpt+=track_pts[itrack];
 	  if(fabs(track_ipXYs[itrack])<0.08) sumpt2D+=track_pts[itrack];
@@ -749,7 +750,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		          if(otfile) hmeanipXYEJ->Fill(jet_meanip[ij]);
 		          if(jet_meanip[ij]>r0[ij]) std::cout<<"DANGER DANGER"<<std::endl;
                           for (unsigned itrack=0; itrack<track_ipXYs.size(); itrack++) {
-	                    if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<1.5)) {
+	                    if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
 		              if(otfile) hipXYEJ->Fill(track_ipXYs[itrack]);
 		              if(otfile) hipXYSigEJ->Fill(track_ipXYSigs[itrack]);
 		              if(otfile) htvwEJ->Fill(track_pvWeights[itrack]);
@@ -768,7 +769,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	  if(otfile) hmaxipXYnEJ->Fill(r0[ij]);
 	  if(otfile) hmeanipXYnEJ->Fill(jet_meanip[ij]);
                 for (unsigned itrack=0; itrack<track_ipXYs.size(); itrack++) {
-	          if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<1.5)) {
+	          if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
 		    if(otfile) hipXYnEJ->Fill(track_ipXYs[itrack]);
 		    if(otfile) hipXYSignEJ->Fill(track_ipXYSigs[itrack]);
 	           }
@@ -1027,7 +1028,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      hdkjetmaxip->Fill(r0[i]);
 	      
               for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	        if((track_sources[itrack]==0)&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<1.5)) {
+	        if((track_sources[itrack]==0)&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
 		  hdkjettrkip->Fill(track_ipXYs[itrack]);
 		  hdkjettrkips->Fill(track_ipXYSigs[itrack]);
 		  hdkjettrkw->Fill(track_pvWeights[itrack]);
@@ -1081,7 +1082,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      hdjetmaxip->Fill(r0[i]);
 	      
               for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	        if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<1.5)) {
+	        if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
 		  hdjettrkip->Fill(track_ipXYs[itrack]);
 		  hdjettrkips->Fill(track_ipXYSigs[itrack]);
 		  hdjettrkw->Fill(track_pvWeights[itrack]);
@@ -1176,7 +1177,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
             vector<int> track_nHitss = track_nHits->at(i);
       vector<float> track_ref_zs = track_ref_z->at(i);
             for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	      if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<1.5)) {
+	      if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
 		if(iDBG>2) {
 			std::cout<<"    track pt is "<<track_pts[itrack]
 			 <<" ipxy is "<<track_ipXYs[itrack]
@@ -1346,7 +1347,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
         vector<int> track_qualitys = track_quality->at(i);
         vector<float> track_ref_zs = track_ref_z->at(i);
         for (unsigned itrack=0; itrack<track_ref_zs.size(); itrack++) {
-	  if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<1.5)) {
+	  if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
 	    hdzpre->Fill(pv_z-track_ref_zs[itrack]);
 	  }
 	}
@@ -1420,7 +1421,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
                   vector<int> track_qualitys = track_quality->at(i);
                   vector<float> track_ref_zs = track_ref_z->at(i);
                   for (unsigned itrack=0; itrack<track_ref_zs.size(); itrack++) {
-	            if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<1.5)) {
+	            if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
 	              hdzfinal->Fill(pv_z-track_ref_zs[itrack]);
 	            }
 		  }
@@ -1479,7 +1480,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       vector<float> track_ref_ys = track_ref_y->at(i);
       vector<float> track_ref_zs = track_ref_z->at(i);
       for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<1.5)) {
+	if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
 	    std::cout
 <<itrack
 <<std::setw(8)<<std::setprecision(3)<<track_pts[itrack]
