@@ -1434,7 +1434,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    if(iDBG>0) std::cout<<" pv ntracks is "<<nTracks<<std::endl;
 	    if(iDBG>0) std::cout<<" number of vertices is "<<nVtx<<std::endl;
 
-	    if(iDBG>0) std::cout<<"     pt eta phi   nef cfe ntrkpt1 alphamax r0 amax2d amax2df meanz  jet_fr"<<std::endl;
+	    if(iDBG>0) std::cout<<"     pt eta phi   nef cfe ntrkpt1 alphamax r0 amax2d amax2df meanz  jet_fr  jet_fpile"<<std::endl;
 	    for(int i=0;i<4;i++) {
 	      if(AM[i]<0.002&&iDBG>0) std::cout<<"BAD BAD CAT"<<std::endl; 
 	      if(iDBG>0) std::cout
@@ -1450,6 +1450,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 				  <<std::setw(8)<<std::setprecision(3)<<amax2Df[i]
 				  <<std::setw(8)<<std::setprecision(3)<<jet_meanz[i]
 				  <<std::setw(8)<<std::setprecision(3)<<jet_fpt[i]
+				  <<std::setw(8)<<std::setprecision(3)<<jet_fpile[i]
 				  <<std::endl;
 	    }  
 	    if(iDBG>0) {
