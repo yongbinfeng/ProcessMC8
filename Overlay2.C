@@ -7,15 +7,17 @@
 int dolog=0;
 void Overlay2() 
 { 
-  char* atitle = "number of tracks ";
-  char* hname1 = "hntrkpre";
-  char* hname2 = "hntrkfinal";
-  char* lgd1 = "after preselection";
-  char* lgd2 = "after final selection";
+  char* atitle = "jet mean z ";
+  char* hname1 = "hmeanzpa";
+  char* hname2 = "hmeanzfa"
+    //  char* lgd1 = "after preselection";
+    //char* lgd2 = "after final selection";
+  char* lgd1 = "passing almostemerging <4";
+  char* lgd2 = "failing almostemerging<4";
 
-  //TFile *f1 = new TFile("SumHistsQCD.root");
+  TFile *f1 = new TFile("SumHistsQCD.root");
   //TFile *f1 = new TFile("SumHistsDebug.root");
-  TFile *f1 = new TFile("SumHistsQQCD.root");
+  //TFile *f1 = new TFile("SumHistsQQCD.root");
   //TFile *f1 = new TFile("SumHistsWMCtSkim.root");  
   //TFile *f1 = new TFile("SumHistsWSkim.root");  
   //TFile *f1 = new TFile("SumHists80.root");
@@ -98,6 +100,7 @@ void Overlay2()
   std::cout<<"getting first"<<std::endl;
   TH1F *A_pt = static_cast<TH1F*>(f1->Get(hname1)->Clone());
  A_pt->SetDirectory(0);
+  A_pt->Rebin(5);
   double aaA = A_pt->Integral();
 std::cout<<" first entries is "<<aaA<<std::endl;
   A_pt->Scale(1./aaA);
@@ -107,7 +110,7 @@ std::cout<<" first entries is "<<aaA<<std::endl;
   TH1F *B_pt = static_cast<TH1F*>(f1->Get(hname2)->Clone());
   std::cout<<"ha"<<std::endl;
   B_pt->SetDirectory(0);
-  //  B_pt->Rebin(25);
+  B_pt->Rebin(5);
   double aaB = B_pt->Integral();
 std::cout<<" second entries is "<<aaB<<std::endl;
   B_pt->Scale(1/aaB);
