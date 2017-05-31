@@ -514,7 +514,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     vector<float> amax2D((*jet_index).size());
     vector<float> amax2Df((*jet_index).size());
     vector<float> jet_meanz((*jet_index).size());
-
+    vector<int> jet_pid_maxEt((*jet_index).size());
+    vector<float> jet_maxET_part((*jet_index).size());
 
     if(otfile) hnjet->Fill((*jet_index).size()+0.5);
     int NNNjet = (*jet_index).size();
@@ -535,7 +536,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 
 
-      //      calculate  number of tracks with pt > 1
+      //      calculate  track variable associated with jet
       jet_ntrkpt1[j]=0;
       jet_ntrkpt1zm[j]=0;
       AM[j]=0;
@@ -660,6 +661,28 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       if(iDBG>2) {
 	std::cout<<"   jet "<<j<<" "<<jet_pt->at(j)<<" "<<jet_eta->at(j)<<" "<<jet_phi->at(j)<<" "<<AM[j]<<" "<<r0[j]<<" "<<AM[j]<<" "<<amax2D[j]<<" "<<amax2Df[j]<<std::endl;
       }
+
+      // calculate some gen particle information for jet
+      int NNNgp = (*gp_index).size();
+      int igenmax=-1;
+      float etgenmax=0.;
+      for(Int_t igen=1; igen<NNNgp; igen++) {
+        if((abs(gp_pdgId->at(igen))<6)||(abs(gp_pdgId->at(igen))==21)) {  // quark or gluon
+	  if(DeltaR(jet_eta->at(j),jet_phi->at(j),gp_eta->at(igen),gp_phi->at(igen))<0.4) {
+	    if(gp_pt->at(igen)>etgenmax) {
+	      igenmax=igen;
+	      etgenmax=gp_pt->at(igen);
+	    }
+	  }
+	}
+      }
+      jet_pid_maxEt[j]=0;
+      jet_maxET_part[j]=0;
+      if(igenmax>-1) {
+	jet_pid_maxEt[j]=gp_pdgId->at(igenmax);
+	jet_maxET_part[j] = etgenmax;
+      }
+
 
 
      }  // end of loop over jets
@@ -1435,7 +1458,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    if(iDBG>0) std::cout<<" pv ntracks is "<<nTracks<<std::endl;
 	    if(iDBG>0) std::cout<<" number of vertices is "<<nVtx<<std::endl;
 
-	    if(iDBG>0) std::cout<<"     pt eta phi   nef cfe ntrkpt1 alphamax r0 amax2d amax2df meanz  jet_fr  jet_fpile"<<std::endl;
+	    if(iDBG>0) std::cout<<"     pt eta phi   nef cfe ntrkpt1 alphamax r0 amax2d amax2df meanz  jet_fr  jet_fpile pid partet"<<std::endl;
 	    for(int i=0;i<4;i++) {
 	      if(AM[i]<0.002&&iDBG>0) std::cout<<"BAD BAD CAT"<<std::endl; 
 	      if(iDBG>0) std::cout
@@ -1452,6 +1475,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 				  <<std::setw(8)<<std::setprecision(3)<<jet_meanz[i]
 				  <<std::setw(8)<<std::setprecision(3)<<jet_fpt[i]
 				  <<std::setw(8)<<std::setprecision(3)<<jet_fpile[i]
+				  <<std::setw(8)<<std::setprecision(3)<<jet_pid_maxEt[i]
+				  <<std::setw(8)<<std::setprecision(3)<<jet_maxET_part[i]
 				  <<std::endl;
 	    }  
 	    if(iDBG>0) {
