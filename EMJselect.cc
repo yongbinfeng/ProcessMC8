@@ -21,6 +21,7 @@ Int_t           fCurrent; //!current Tree number in a TChain
 
 
 int iDBG=1;
+int iSDBG=1;
 float pilecut=5000.;
 float pilecut2=1.5;
 
@@ -576,8 +577,11 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       double sumpt2D=0.;
       double sumpt2Df=0.;
       float tracks_srczero = 0.; // for counting number of tracks src 0
+      float tracksFz=0.;
       int iptmaxtrk=0;
       float ptmaxtrk=0.;
+      vector<float> forzs;
+    if(iDBG>2) std::cout<<" for jet "<<j<<std::endl;
       for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
 	if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
 	  sumptallnz+=track_pts[itrack];
@@ -593,7 +597,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 	  if(fabs(track_ipXYs[itrack])<0.08) {
 	      jntrackip[j]++;
-	      jet_meanz[j]+=track_ref_zs[itrack];
+	      forzs.push_back(track_ref_zs[itrack]);
 	  }
 	  sort_ip.push_back(fabs(track_ipXYs[itrack]));
 	  sumptall+=track_pts[itrack];
@@ -635,8 +639,16 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       if(otfile) halpha->Fill(AM[j]);
       //float atmp = jntrack[j];
       if(jntrack[j]>0) jet_meanip[j]=jet_meanip[j]/tracks_srczero;
+
       //float atmp2 = jntrackip[j];
-      if(jntrackip[j]>0) jet_meanz[j]=jet_meanz[j]/tracks_srczero;
+      //if(tracksFz>0) jet_meanz[j]=jet_meanz[j]/tracksFz;
+      int itmp = forzs.size();
+      if(itmp>0) {
+	std::sort(forzs.begin(),forzs.end());
+	int itmp2=itmp/2;
+	jet_meanz[j]=forzs[itmp2];
+      }
+
       std::sort(sort_ip.begin(), sort_ip.end());
       std::reverse(sort_ip.begin(),sort_ip.end());
       if(sort_ip.size()>0) r0[j]=sort_ip[0];
@@ -653,6 +665,30 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      rmed[j] = (sort_ip[(thesize)/2]);
 	    }
 	}
+
+
+      // recalculate jetmeanz throwing out outlyers
+      /*
+      float atmp = jet_meanz[j];
+      if(iDBG>0) std::cout<<"atmp is "<<atmp<<std::endl;
+      jet_meanz[j]=0.;
+      tracksFz=0.;
+      for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
+	if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)) {
+	  if(fabs(track_ref_zs[itrack]-atmp)<5) {
+	  if(fabs(track_ipXYs[itrack])<0.08) {
+	    //jet_meanz[j]+=(track_pts[itrack])*track_ref_zs[itrack];
+	    //tracksFz+=track_pts[itrack];
+	      jet_meanz[j]+=track_ref_zs[itrack];
+	      tracksFz+=1;
+	      if(iDBG>2) std::cout<<"itrack meanz tracksFz "<<itrack<<" "<<jet_meanz[j]<<" "<<tracksFz<<std::endl;
+	  }
+	}
+	}
+      }
+      if(tracksFz>0) jet_meanz[j]=jet_meanz[j]/tracksFz;
+      */
+
       if(iDBG>2) {
 	std::cout<<"mean max are "<<jet_meanip[j]<<" "<<r0[j]<<std::endl;
 	std::cout<<"   jet "<<j<<" "<<jet_pt->at(j)<<" "<<jet_eta->at(j)<<" "<<jet_phi->at(j)<<" "<<AM[j]<<std::endl;
