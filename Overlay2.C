@@ -7,9 +7,9 @@
 int dolog=0;
 void Overlay2() 
 { 
-  char* atitle = "jet median z - pv_z ";
-  char* hname1 = "hmeanzpa";
-  char* hname2 = "hmeanzfa";
+  char* atitle = "max diff median z 4 jets ";
+  char* hname1 = "hdzjpre";
+  char* hname2 = "hdzjfinal";
     //  char* lgd1 = "after preselection";
     //char* lgd2 = "after final selection";
   char* lgd1 = "passing almostemerging <4";

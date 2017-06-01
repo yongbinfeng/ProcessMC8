@@ -756,15 +756,18 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     if(iDBG>2) std::cout<<" in event "<<event<<" number of jets is "<<NNNjet<<std::endl;
     vector<bool> emerging(NNNjet);
     vector<bool> almostemerging(NNNjet);
+    vector<bool> almostemerging2(NNNjet);
     vector<bool> basicjet(NNNjet);
       for( int i=0;i<4;i++) {
 	  emerging[i]=false;
 	  almostemerging[i]=false;
+	  almostemerging2[i]=false;
 	  basicjet[i]=false;
 	}
       int nbasicjet=0.;
       int nemerging=0;
       int nalmostemerging=0;
+      int nalmostemerging2=0;
       for(int ij=0;ij<NNNjet;ij++) {
 	
         vector<float> track_ipXYs = track_ipXY->at(ij);
@@ -808,7 +811,6 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	              if(otfile) hacut_alphamax->Fill(AM[ij]);
 	              if(otfile) hjetcut->Fill(6.5);
 		      almostemerging[ij]=true;
-		  
 		      if(ij<4) nalmostemerging=nalmostemerging+1;
 		      if(iDBG>2) {
 		        if(ij<4) {
@@ -817,6 +819,14 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		          std::cout<<" and pt of "<<jet_pt->at(ij)<<std::endl;
 		        }
 		      }
+
+		    }
+
+		    if(amax2Df[ij]<0.3) {
+		      almostemerging2[ij]=true;
+		      if(ij<4) nalmostemerging2=nalmostemerging2+1;
+
+
 	              if(otfile) hbcut_maxip->Fill(r0[ij]);
 		      if(rmed[ij]>maxIPcut) { // max IP cut
                         if(otfile) hjetcut->Fill(7.5);
@@ -864,7 +874,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
                 }
 
 	}
-	if(iDBG>2) std::cout<<"event pt alphaM cef nef ntrkpt1 r0 emerging  almost "<<event<<" "<<jet_pt->at(ij)<<" "<<AM[ij]<<" "<<jet_cef->at(ij)<<" "<<jet_nef->at(ij)<<" "<<jet_ntrkpt1[ij]<<" "<<r0[ij]<<" "<<emerging[ij]<<" "<<almostemerging[ij]<<std::endl;
+	if(iDBG>2) std::cout<<"event pt alphaM cef nef ntrkpt1 r0 emerging  almost almost2"<<event<<" "<<jet_pt->at(ij)<<" "<<AM[ij]<<" "<<jet_cef->at(ij)<<" "<<jet_nef->at(ij)<<" "<<jet_ntrkpt1[ij]<<" "<<r0[ij]<<" "<<emerging[ij]<<" "<<almostemerging[ij]<<" "<<almostemerging2[ij]<<std::endl;
       }
       if(otfile) h_nemg->Fill(nemerging);
 
@@ -920,10 +930,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     bool Cnem = true;
     if(nemerging<NemergingCut) Cnem=false;
 
-    //    if(nalmostemerging>=4) Cnem=false;
+    // almost emerging
     bool Canem =true;
     if(nalmostemerging>=4) Canem=false;
-
+    
      
      double amass=-1;
      if(NNNjet>3) {
@@ -1103,7 +1113,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      aMbh2Ddk->Fill(AM[i],amax2D[i]);
 	      float why1=jet_meanz[i]-pv_z;
 	      aMmzdk->Fill(AM[i],fabs(why1));
-	      if(almostemerging[i]) {
+	      if(almostemerging2[i]) {
 		hmzamd->Fill(why1);
 		h2damd->Fill(amax2D[i]);
 	      } else {
@@ -1329,9 +1339,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 
 
-    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&nalmostemerging>=2) {
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&nalmostemerging2>=2) {
       for(int i=0;i<4;i++) {
-	if(almostemerging[i]) {
+	if(almostemerging2[i]) {
 	  if((AM[i]<alphaMaxcut)) {
 	    hnmaxipnm1->Fill(r0[i]);
 	  }
@@ -1339,9 +1349,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       }
     }
 
-    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&nalmostemerging>=1) {
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&nalmostemerging2>=1) {
       for(int i=0;i<4;i++) {
-	if(almostemerging[i]) {
+	if(almostemerging2[i]) {
 	  if((AM[i]<alphaMaxcut)) {
 	    hn2maxipnm1->Fill(r0[i]);
 	  }
@@ -1359,7 +1369,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       for(Int_t j=0; j<NNNjet; j++) {
 	if(basicjet[j]) {
 	  hjptfrb->Fill(jet_pt->at(j));
-	  if(almostemerging[j]){
+	  if(almostemerging2[j]){
 	    hjptfra1->Fill(jet_pt->at(j));
 	    if(emerging[j]) {
 	      hjptfra2->Fill(jet_pt->at(j));
@@ -1373,7 +1383,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       for(Int_t j=0; j<NNNjet; j++) {
 	if(basicjet[j]) {
 	  hjptfrbc->Fill(jet_pt->at(j));
-	  if(almostemerging[j]){
+	  if(almostemerging2[j]){
 	    hjptfra1c->Fill(jet_pt->at(j));
 	    if(emerging[j]) {
 	      hjptfra2c->Fill(jet_pt->at(j));
@@ -1607,7 +1617,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	  
 
           if(iDBG>0) std::cout<<"npass  event is "<<npass<<" "<<event<<std::endl;
-          if(iDBG>0) std::cout<<"nemerging nalmostemerging "<<nemerging<<" "<<nalmostemerging<<std::endl;
+          if(iDBG>0) std::cout<<"nemerging nalmostemerging almostemerging2"<<nemerging<<" "<<nalmostemerging<<" "<<nalmostemerging2<<std::endl;
 
 	  }}}}}}}}}}}}
 
