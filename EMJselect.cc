@@ -197,7 +197,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
   // create a histograms
   TH1F *acount,*count,*hjetcut,*hjetchf,*h_nemg,*hnjet,*hpt,*heta,*heta2,*halpha,*H_T,*H_T2,*H_T3,*H_T4,*hbcut_ntrkpt1,*hacut_ntrkpt1,*hbcut_nef,*hacut_nef,*hbcut_cef,*hacut_cef,*hbcut_alphamax,*hacut_alphamax,*hbcut_theta2d,*hbcut_maxip,*hmetnm1,*hmassnm1,*htheta2D1nm1,*htheta2D2nm1,*htheta2D3nm1,*htheta2D4nm1,*hHTnm1,*hnHitsnm1,*hntrk1nm1,*hmaxipnm1,*hpt1nm1,*hpt2nm1,*hpt3nm1,*hpt4nm1,*halphanm1,*hnemnm1,*hpt1,*hpt2,*hpt3,*hpt4,*hipXYEJ,*hipXYnEJ,*htvw,*htvwEJ,*hnmaxipnm1,*hn2maxipnm1,*hjptfrb,*hjptfra1,*hjptfra2,*hjptfrbc,*hjptfra1c,*hjptfra2c,*hjptb,*hjpta,*haMgj,*hHTko,*hpt1ko,*hpt2ko,*hpt3ko,*hpt4ko,*hipXYSigEJ,*hipXYSignEJ,*hmaxipXYEJ,*hmaxipXYnEJ,*hmeanipXYEJ,*hmeanipXYnEJ,*hmass,
-    *hdkjetam,*hdkjetmeanip,*hdkjetntr,*hdkjetmaxip,*hdkjettrkip,*hdkjettrkips,*hdkjettrkw,*hdkjettrgip,*hdkjettrkdr,*ham2dfd,*ham2dfdk,*hdkjetamo,*hdjetamo,
+    *hdkjetam,*hdkjetmeanip,*hdkjetntr,*hdkjetmaxip,*hdkjettrkip,*hdkjettrkips,*hdkjettrkw,*hdkjettrgip,*hdkjettrkdr,*ham2dfd,*ham2dfdk,*hdkjetamo,*hdjetamo,*hdzjpre,*hdzjfinal,
     *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr,*hdjetam2d,*hdkjetam2d,*hmeanz,*hmeanzfa,*hmeanzpa,*hmeanzdk,*hmeanzd,*h2dpa,*h2dfa,*hntrkpt1zmpa,*hntrkpt1zmfa,*hbigb,*hpvpre,*hpvfinal,*hdzpre,*hdzfinal,
     *hnvtxpre,*hnvtxfinal,*hntrkpre,*hntrkfinal,*hjetptfrpre,*hjetptfrfinal,
     *hjntrkpre,*hjntrkfinal,*hfpilepre,*hfpilefinal
@@ -315,8 +315,13 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hmeanz = new TH1F("hmeanz","diff pvz and mean jet z",100,-20.,20.);
   hmeanzd = new TH1F("hmeanzd","diff pvz and mean jet z down quarks",100,-20.,20.);
   hmeanzdk = new TH1F("hmeanzdk","diff pvz and mean jet z dark quarks",100,-20.,20.);
-  hmeanzfa = new TH1F("hmeanzfa","diff pvz and mean jet z failling almost emerging",100,-20.,20.);
-  hmeanzpa = new TH1F("hmeanzpa","diff pvz and mean jet z pass almost emerging",100,-20.,20.);
+
+  hmeanzfa = new TH1F("hmeanzfa","diff pvz and mean jet z failling almost emerging",500,-20.,20.);
+  hmeanzpa = new TH1F("hmeanzpa","diff pvz and mean jet z pass almost emerging",500,-20.,20.);
+
+  hdzjpre = new TH1F("hdzjpre","max diff median z 4 jets preselection",250,0.,20.);
+  hdzjfinal = new TH1F("hdzjfinal","max diff median z 4 jets final selection" ,250,0.,20.);
+
   hntrkpt1zmpa = new TH1F("hntrkpt1zmpa","number tracks in jet matching pv pass almost",30,0.,30.);
   hntrkpt1zmfa = new TH1F("hntrkpt1zmfa","number tracks in jet matching pv failing almost",30,0.,30.);
 
@@ -1422,6 +1427,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       hpvpre->Fill(pv_z);
       hnvtxpre->Fill(nVtx);
       hntrkpre->Fill(nTracks);
+      float aab=0.;
       for(int i=0;i<4;i++) {
 	hjetptfrpre->Fill(std::min(jet_fpt[i],1.2));
 	hjntrkpre->Fill(jet_ntrkpt1[i]);
@@ -1434,8 +1440,13 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    hdzpre->Fill(pv_z-track_ref_zs[itrack]);
 	  }
 	}
-
-      }			
+	for(int j=i+1;j<4;j++) {
+	  if(fabs(jet_meanz[i]-jet_meanz[j])>aab) {
+	    aab=fabs(jet_meanz[i]-jet_meanz[j]);
+	  }
+	} 
+      }
+      hdzjpre->Fill(aab);
     }
       // require at least N emerging jets
 
@@ -1496,6 +1507,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      hpvfinal->Fill(pv_z);
               hnvtxfinal->Fill(nVtx);
               hntrkfinal->Fill(nTracks);
+	      float aab=0.;
 	      for(int i=0;i<4;i++) {
 		if(emerging[i]) {
 		  hjetptfrfinal->Fill(std::min(jet_fpt[i],1.2));
@@ -1510,8 +1522,14 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	            }
 		  }
 	        }
+	        for(int j=i+1;j<4;j++) {
+	          if(fabs(jet_meanz[i]-jet_meanz[j])>aab) {
+	            aab=fabs(jet_meanz[i]-jet_meanz[j]);
+	          }
+	        } 
+              }
+              hdzjfinal->Fill(aab);
 
-	      }
 	    }
 
 	    if(iDBG>0) std::cout<<"passing run lumi event filename is "<<run<<" "<<lumi<<" "<<event<<" "<<inputfilename<<std::endl;
@@ -1733,6 +1751,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     hdzfinal->Write();
     hfpilepre->Write();
     hfpilefinal->Write();
+
+    hdzjpre->Write();
+    hdzjfinal->Write();
 
     //2d
     aMip->Write();
