@@ -676,6 +676,28 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	  }
 	}
       }
+      // fix glue to bbbar
+      if(igenmax>0) {
+	if(abs(gp_pdgId->at(igenmax)==21)) {
+	  float igenmax2=-1;
+	  float etgenmax2=0.;
+          for(Int_t igen=1; igen<NNNgp; igen++) {
+            if((abs(gp_pdgId->at(igen))==5)&&(gp_pt->at(igen)>10.)) {  // b
+	      if(DeltaR(jet_eta->at(j),jet_phi->at(j),gp_eta->at(igen),gp_phi->at(igen))<0.4) {
+	        if(gp_pt->at(igen)>etgenmax2) {
+	          igenmax2=igen;
+	          etgenmax2=gp_pt->at(igen);
+	        }
+	      }
+	    }
+	  }
+	  if(igenmax2>0) {
+	    igenmax=igenmax2;
+	    etgenmax=etgenmax2;
+	  }
+	}
+      }
+
       jet_pid_maxEt[j]=0;
       jet_maxET_part[j]=0;
       if(igenmax>-1) {
@@ -738,8 +760,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	 	    basicjet[ij]=true;
 		    if(ij<4) nbasicjet+=1;
 
+
 	            if(otfile) hbcut_alphamax->Fill(AM[ij]);
-	            if(AM[ij]<alphaMaxcut) { // alpha max
+		    if(AM[ij]<alphaMaxcut) { // alpha max
+
 	              if(otfile) hacut_alphamax->Fill(AM[ij]);
 	              if(otfile) hjetcut->Fill(6.5);
 		      almostemerging[ij]=true;
@@ -1393,7 +1417,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
       if(otfile) count->Fill("emerging",1);
       if(otfile) acount->Fill(9.5);
-      if(Canem) {
+      //      if(Canem) {
+      if(true) {
 	if(iDBG>2) std::cout<<"PASS with almost"<<std::endl;
 
         if(otfile) count->Fill("almostemerging",1);
@@ -1419,7 +1444,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		    float bdr=1000.;
 	            for(int k=0;k<bigbs.size();k++) {
 		      float bdt = DeltaR(jet_eta->at(i),jet_phi->at(i),gp_eta->at(bigbs[k]),gp_phi->at(bigbs[k]));
-		      if(iDBG>0) std::cout<<"i k bdt are "<<i<<" "<<k<<" "<<bdt<<std::endl;
+		      if(iDBG>1) std::cout<<"i k bdt are "<<i<<" "<<k<<" "<<bdt<<std::endl;
 		      if(bdt<bdr) bdr=bdt;
 		    }
 		    if(bdr>10) bdr=-1;
@@ -1454,11 +1479,14 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    }
 
 	    if(iDBG>0) std::cout<<"passing run lumi event filename is "<<run<<" "<<lumi<<" "<<event<<" "<<inputfilename<<std::endl;
+	    if(iDBG>0) {
+	      if(!Canem) std::cout<<"FAILS ALMOST EMERGING"<<std::endl;
+	    }
 	    if(iDBG>0) std::cout<<"pv position is "<<pv_x<<","<<pv_y<<","<<pv_z<<std::endl;
 	    if(iDBG>0) std::cout<<" pv ntracks is "<<nTracks<<std::endl;
 	    if(iDBG>0) std::cout<<" number of vertices is "<<nVtx<<std::endl;
 
-	    if(iDBG>0) std::cout<<"     pt eta phi   nef cfe ntrkpt1 alphamax r0 amax2d amax2df meanz  jet_fr  jet_fpile pid partet"<<std::endl;
+	    if(iDBG>0) std::cout<<"     pt    eta    phi   nef    cfe   ntrkpt1 alphamax    r0    amax2d    amax2df    meanz   jet_fr   jet_fpile    pid   partet"<<std::endl;
 	    for(int i=0;i<4;i++) {
 	      if(AM[i]<0.002&&iDBG>0) std::cout<<"BAD BAD CAT"<<std::endl; 
 	      if(iDBG>0) std::cout
