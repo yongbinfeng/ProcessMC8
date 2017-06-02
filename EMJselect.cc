@@ -621,7 +621,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    sumptallf+=track_pts[itrack];
 	    sumallf+=1.;
 	    if(fabs(track_ipXYSigs[itrack])<3) sumpt2Df+=track_pts[itrack];
-	    if(fabs(track_ipXYSigs[itrack])<3) sum2Df+=1.;
+	    if(fabs(track_ipXYSigs[itrack])<2) sum2Df+=1.;
 	    if(fabs(pv_z-track_ref_zs[itrack])<pilecut2) sumpile+=track_pts[itrack];
  	    if(track_pvWeights[itrack]>0) sumpt+=track_pts[itrack];
 	    if(fabs(track_ipXYs[itrack])<0.08) sumpt2D+=track_pts[itrack];
@@ -815,7 +815,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	        if(otfile) hjetcut->Fill(5.5);
 
 		//if(jet_fnpile[ij]>-1.) {
-		if(jet_fnpile[ij]>0.2) {
+		if(jet_fnpile[ij]>0.4) {
 
 	 	    basicjet[ij]=true;
 		    if(ij<4) nbasicjet+=1;
@@ -839,6 +839,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		    }
 
 		    if(amax2Df[ij]<0.3) {
+		    if(amax2Df2[ij]<0.3) {
 		      almostemerging2[ij]=true;
 		      if(ij<4) nalmostemerging2=nalmostemerging2+1;
 
@@ -872,7 +873,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 			  }  // 
 			} //theta 2D
 		      }//mean ip
-		    } //alpha
+		    }} //alpha
 		  }  //end of basic jet selection
 		}
 	      }
@@ -1573,7 +1574,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    if(iDBG>0) std::cout<<" pv ntracks is "<<nTracks<<std::endl;
 	    if(iDBG>0) std::cout<<" number of vertices is "<<nVtx<<std::endl;
 
-	    if(iDBG>0) std::cout<<"     pt    eta    phi   nef    cfe   ntrkpt1 alphamax    r0    amax2d    amax2df    meanz   jet_fpt   jet_fnpile    pid   partet"<<std::endl;
+	    if(iDBG>0) std::cout<<"     pt    eta    phi   nef    cfe   ntrkpt1 alphamax    r0    amax2d    amax2df  meanz jet_fpt jet_fnpile  2dipfrac  pid   partet"<<std::endl;
 	    for(int i=0;i<4;i++) {
 	      if(AM[i]<0.002&&iDBG>0) std::cout<<"BAD BAD CAT"<<std::endl; 
 	      if(iDBG>0) std::cout
@@ -1590,6 +1591,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 				  <<std::setw(8)<<std::setprecision(3)<<jet_meanz[i]
 				  <<std::setw(8)<<std::setprecision(3)<<jet_fpt[i]
 				  <<std::setw(8)<<std::setprecision(3)<<jet_fnpile[i]
+				  <<std::setw(8)<<std::setprecision(3)<<amax2Df2[i]
 				  <<std::setw(8)<<std::setprecision(3)<<jet_pid_maxEt[i]
 				  <<std::setw(8)<<std::setprecision(3)<<jet_maxET_part[i]
 				  <<std::endl;

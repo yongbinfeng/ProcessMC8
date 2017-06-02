@@ -7,7 +7,7 @@
 int dolog=0;
 void Overlay2() 
 { 
-  char* atitle = "fraction tracks ipsig>3 ";
+  char* atitle = "fraction tracks ipsig<3 ";
   char* hname1 = "hsum2Dfd";
   char* hname2 = "hsum2Dfdk";
     //  char* lgd1 = "after preselection";

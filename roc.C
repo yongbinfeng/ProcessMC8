@@ -63,8 +63,8 @@ void roc()
   //TFile *f1 = new TFile("SumHistsWMCtSkim.root");  
   //TFile *f1 = new TFile("SumHistsWSkim.root");  
   //TFile *f1 = new TFile("SumHists80.root");
-  //TFile *f1 = new TFile("SumHistsModelA.root");  
-  TFile *f1 = new TFile("SumHistsModelB.root");  
+  TFile *f1 = new TFile("SumHistsModelA.root");  
+  //TFile *f1 = new TFile("SumHistsModelB.root");  
   //TFile *f1 = new TFile("SumHistsDATA.root");  
   //TFile *f1 = new TFile("SumHists80.root");  
 
@@ -79,8 +79,8 @@ void roc()
 
 
   
-  char* aa1 = "hdkjetam2d";
-  char* bb1 = "hdjetam2d";
+  char* aa1 = "hsum2Dfdk";
+  char* bb1 = "hsum2Dfd";
   TGraph* gr1 = makegraph(f1,aa1,bb1);
   gr1->SetMarkerStyle(21);
   gr1->SetMarkerColor(0);
@@ -112,7 +112,7 @@ void roc()
   t->SetTextAlign(12);
 
   t->SetTextColor(0);
-  t->DrawLatex(0.5,0.5,"2D");
+  t->DrawLatex(0.5,0.5,"fraction tracks ipsig<3");
   t->SetTextColor(1);
   t->DrawLatex(0.5,0.3,"alphaMax origin");
   t->SetTextColor(2);
