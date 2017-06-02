@@ -7,21 +7,21 @@
 int dolog=0;
 void Overlay2() 
 { 
-  char* atitle = "max diff median z 4 jets ";
-  char* hname1 = "hdzjpre";
-  char* hname2 = "hdzjfinal";
+  char* atitle = "fraction tracks ipsig>3 ";
+  char* hname1 = "hsum2Dfd";
+  char* hname2 = "hsum2Dfdk";
     //  char* lgd1 = "after preselection";
     //char* lgd2 = "after final selection";
-  char* lgd1 = "passing almostemerging <4";
-  char* lgd2 = "failing almostemerging<4";
+  char* lgd1 = "down quarks";
+  char* lgd2 = "dark quarts";
 
   //TFile *f1 = new TFile("SumHistsQCD.root");
   //TFile *f1 = new TFile("SumHistsDebug.root");
-  TFile *f1 = new TFile("SumHistsQQCD.root");
+  //TFile *f1 = new TFile("SumHistsQQCD.root");
   //TFile *f1 = new TFile("SumHistsWMCtSkim.root");  
   //TFile *f1 = new TFile("SumHistsWSkim.root");  
   //TFile *f1 = new TFile("SumHists80.root");
-  //TFile *f1 = new TFile("SumHistsModelA.root");  
+  TFile *f1 = new TFile("SumHistsModelA.root");  
   //TFile *f1 = new TFile("SumHistsModelB.root");  
   //TFile *f1 = new TFile("SumHistsDATA.root");  
   //TFile *f1 = new TFile("SumHists80.root");  
