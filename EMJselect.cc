@@ -620,7 +620,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	    sumptall+=track_pts[itrack];
 	    sumptallf+=track_pts[itrack];
 	    sumallf+=1.;
-	    if(fabs(track_ipXYSigs[itrack])<3) sumpt2Df+=track_pts[itrack];
+	    if(fabs(track_ipXYSigs[itrack])<4) sumpt2Df+=track_pts[itrack];
 	    if(fabs(track_ipXYSigs[itrack])<2) sum2Df+=1.;
 	    if(fabs(pv_z-track_ref_zs[itrack])<pilecut2) sumpile+=track_pts[itrack];
  	    if(track_pvWeights[itrack]>0) sumpt+=track_pts[itrack];
