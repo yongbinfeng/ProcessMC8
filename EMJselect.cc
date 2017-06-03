@@ -203,6 +203,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     *hjntrkpre,*hjntrkfinal,*hfpilepre,*hfpilefinal,*hptmaxpre,*hptmaxfinal,*hsum2Dfpre,*hsum2Dffinal,*hsum2Dfd,*hsum2Dfdk,
     *hptallpre,*hptudpre,*hptcpre,*hptspre,*hptgbbpre,*hptbpre,*hptgpre,
     *hptallfinal,*hptudfinal,*hptcfinal,*hptsfinal,*hptgbbfinal,*hptbfinal,*hptgfinal,
+    *hptallfinal2,*hptudfinal2,*hptcfinal2,*hptsfinal2,*hptgbbfinal2,*hptbfinal2,*hptgfinal2,
     *hptallpree,*hptudpree,*hptcpree,*hptspree,*hptgbbpree,*hptbpree,*hptgpree,
     *hptallfinale,*hptudfinale,*hptcfinale,*hptsfinale,*hptgbbfinale,*hptbfinale,*hptgfinale
 ;
@@ -387,21 +388,29 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hptgbbpree = new TH1F("hptgbbpree","pt gbb emerging jets passing preselection",500,0.,1500.);
 
 
-  hptallfinal = new TH1F("hptallfinal","pt all jets passing preselection",500,0.,1500.);
-  hptudfinal = new TH1F("hptudfinal","pt ud jets passing preselection",500,0.,1500.);
-  hptsfinal = new TH1F("hptsfinal","pt s jets passing preselection",500,0.,1500.);
-  hptcfinal = new TH1F("hptcfinal","pt c jets passing preselection",500,0.,1500.);
-  hptbfinal = new TH1F("hptbfinal","pt b jets passing preselection",500,0.,1500.);
-  hptgfinal = new TH1F("hptgfinal","pt g jets passing preselection",500,0.,1500.);
-  hptgbbfinal = new TH1F("hptgbbfinal","pt gbb jets passing preselection",500,0.,1500.);
+  hptallfinal = new TH1F("hptallfinal","pt all jets passing 1 emerging",500,0.,1500.);
+  hptudfinal = new TH1F("hptudfinal","pt ud jets passing 1 emerging",500,0.,1500.);
+  hptsfinal = new TH1F("hptsfinal","pt s jets passing 1 emerging",500,0.,1500.);
+  hptcfinal = new TH1F("hptcfinal","pt c jets passing 1 emerging",500,0.,1500.);
+  hptbfinal = new TH1F("hptbfinal","pt b jets passing 1 emerging",500,0.,1500.);
+  hptgfinal = new TH1F("hptgfinal","pt g jets passing 1 emerging",500,0.,1500.);
+  hptgbbfinal = new TH1F("hptgbbfinal","pt gbb jets 1 emerging",500,0.,1500.);
 
-  hptallfinale = new TH1F("hptallfinale","pt allemerging jets passing preselection",500,0.,1500.);
-  hptudfinale = new TH1F("hptudfinale","pt ud emerging jets passing preselection",500,0.,1500.);
-  hptsfinale = new TH1F("hptsfinale","pt s emerging jets passing preselection",500,0.,1500.);
-  hptcfinale = new TH1F("hptcfinale","pt c emerging jets passing preselection",500,0.,1500.);
-  hptbfinale = new TH1F("hptbfinale","pt b emerging jets passing preselection",500,0.,1500.);
-  hptgfinale = new TH1F("hptgfinale","pt g emerging jets passing preselection",500,0.,1500.);
-  hptgbbfinale = new TH1F("hptgbbfinale","pt gbb emerging jets passing preselection",500,0.,1500.);
+  hptallfinal2 = new TH1F("hptallfinal2","pt all jets passing 2 emerging",500,0.,1500.);
+  hptudfinal2 = new TH1F("hptudfinal2","pt ud jets passing 2 emerging",500,0.,1500.);
+  hptsfinal2 = new TH1F("hptsfinal2","pt s jets passing 2 emerging",500,0.,1500.);
+  hptcfinal2 = new TH1F("hptcfinal2","pt c jets passing 2 emerging",500,0.,1500.);
+  hptbfinal2 = new TH1F("hptbfinal2","pt b jets passing 2 emerging",500,0.,1500.);
+  hptgfinal2 = new TH1F("hptgfinal2","pt g jets passing 2 emerging",500,0.,1500.);
+  hptgbbfinal2 = new TH1F("hptgbbfinal2","pt gbb jets passing 2 emerging",500,0.,1500.);
+
+  hptallfinale = new TH1F("hptallfinale","pt allemerging jets passing 1 emerging",500,0.,1500.);
+  hptudfinale = new TH1F("hptudfinale","pt ud emerging jets passing 1 emerging",500,0.,1500.);
+  hptsfinale = new TH1F("hptsfinale","pt s emerging jets passing 1 emerging",500,0.,1500.);
+  hptcfinale = new TH1F("hptcfinale","pt c emerging jets passing 1 emerging",500,0.,1500.);
+  hptbfinale = new TH1F("hptbfinale","pt b emerging jets passing 1 emerging",500,0.,1500.);
+  hptgfinale = new TH1F("hptgfinale","pt g emerging jets passing 1 emerging",500,0.,1500.);
+  hptgbbfinale = new TH1F("hptgbbfinale","pt gbb emerging jets passing 1 emerging",500,0.,1500.);
 
 
   //2d
@@ -1502,9 +1511,23 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	  }
 	}
 
+	if(nemerging>1) {
+	  for(int i=0;i<4;i++) {
+	    hptallfinal2->Fill(jet_pt->at(i));
+	    if(jet_pid_maxEt[i]==1) hptudfinal2->Fill(jet_pt->at(i));
+	    if(jet_pid_maxEt[i]==2) hptudfinal2->Fill(jet_pt->at(i));
+	    if(jet_pid_maxEt[i]==3) hptsfinal2->Fill(jet_pt->at(i));
+	    if(jet_pid_maxEt[i]==4) hptcfinal2->Fill(jet_pt->at(i));
+	    if(jet_pid_maxEt[i]==5) hptbfinal2->Fill(jet_pt->at(i));
+	    if(jet_pid_maxEt[i]==7) hptgfinal2->Fill(jet_pt->at(i));
+	    if(jet_pid_maxEt[i]==8) hptgbbfinal2->Fill(jet_pt->at(i));
+	  }
+	}
 
 	if(iDBG>0) std::cout<<"HAS 1 EMERGING"<<std::endl;
 	if(iDBG>0) if(nemerging>1) std::cout<<"HAS 2 EMERGING"<<std::endl;
+
+	// see if matches a ba
 	for(int i=0;i<4;i++) {
 	  if(emerging[i]) {
 	    float bdr=1000.;
@@ -1522,35 +1545,6 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	  }  //end emerging
 	}  //end loop over jets
 
-	H_T3->Fill(HT);   
-	hmass->Fill(amass);
-	hpvfinal->Fill(pv_z);
-        hnvtxfinal->Fill(nVtx);
-        hntrkfinal->Fill(nTracks);
-	float aab=0.;
-	for(int i=0;i<4;i++) {
-	  if(emerging[i]) {
-	    hjetptfrfinal->Fill(std::min(jet_fpt[i],1.2));
-	    hsum2Dffinal->Fill(amax2Df2[i]);
-	    hjntrkfinal->Fill(jet_ntrkpt1[i]);
-	    hfpilefinal->Fill(jet_fnpile[i]);
-	    hptmaxfinal->Fill(std::min(jet_ptmax[i],149.5));
-            vector<int> track_sources = track_source->at(i);
-            vector<int> track_qualitys = track_quality->at(i);
-            vector<float> track_ref_zs = track_ref_z->at(i);
-            for (unsigned itrack=0; itrack<track_ref_zs.size(); itrack++) {
-	      if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
-	        hdzfinal->Fill(pv_z-track_ref_zs[itrack]);
-	      }
-	    }
-	  }  // end emerging
-	  for(int j=i+1;j<4;j++) {
-	    if(fabs(jet_meanz[i]-jet_meanz[j])>aab) {
-	      aab=fabs(jet_meanz[i]-jet_meanz[j]);
-	    }
-	  } 
-        } //end loop over jets
-        hdzjfinal->Fill(aab);
 
 
 	if(iDBG>0) {
@@ -1630,11 +1624,46 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	  }  // loop over jets
 	} // iDBG
 
+	// some plots for events that pass all cuts
+	if(nemerging>NemergingCut) {
+	  H_T3->Fill(HT);   
+	  hmass->Fill(amass);
+	  hpvfinal->Fill(pv_z);
+          hnvtxfinal->Fill(nVtx);
+          hntrkfinal->Fill(nTracks);
+	  float aab=0.;
+	  for(int i=0;i<4;i++) {
+	    if(emerging[i]) {
+	      hjetptfrfinal->Fill(std::min(jet_fpt[i],1.2));
+	      hsum2Dffinal->Fill(amax2Df2[i]);
+	      hjntrkfinal->Fill(jet_ntrkpt1[i]);
+	      hfpilefinal->Fill(jet_fnpile[i]);
+	      hptmaxfinal->Fill(std::min(jet_ptmax[i],149.5));
+              vector<int> track_sources = track_source->at(i);
+              vector<int> track_qualitys = track_quality->at(i);
+              vector<float> track_ref_zs = track_ref_z->at(i);
+              for (unsigned itrack=0; itrack<track_ref_zs.size(); itrack++) {
+	        if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
+	          hdzfinal->Fill(pv_z-track_ref_zs[itrack]);
+	        }
+	      }
+	    }  // end emerging
+	    for(int j=i+1;j<4;j++) {
+	      if(fabs(jet_meanz[i]-jet_meanz[j])>aab) {
+	        aab=fabs(jet_meanz[i]-jet_meanz[j]);
+	      }
+	    } 
+          } //end loop over jets
+          hdzjfinal->Fill(aab);
         if(iDBG>0) std::cout<<"npass  event is "<<npass<<" "<<event<<std::endl;
         if(iDBG>0) std::cout<<"nemerging nalmostemerging almostemerging2 "<<nemerging<<" "<<nalmostemerging<<" "<<nalmostemerging2<<std::endl;
 
+	}  //end nemerging > nemerging cut
+
+
+
       }  // nemerging>0
-    }  //selection
+    }  //selection besides on nemerging
 
       // make plots for fake rate studes
     if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem) {
@@ -1902,6 +1931,14 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     hptbfinal->Write();
     hptgfinal->Write();
     hptgbbfinal->Write();
+    hptallfinal2->Write();
+    hptudfinal2->Write();
+    hptsfinal2->Write();
+    hptcfinal2->Write();
+    hptbfinal2->Write();
+    hptgfinal2->Write();
+    hptgbbfinal2->Write();
+
     hptallfinale->Write();
     hptudfinale->Write();
     hptsfinale->Write();
