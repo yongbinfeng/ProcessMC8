@@ -57,7 +57,7 @@ for(int i=0;i<nbin;i++) {
 
 
 
-void fractions() 
+void fractions2() 
 { 
 
   //TFile *f1 = new TFile("SumHistsQCD.root");
@@ -82,8 +82,8 @@ void fractions()
 
 
   
-  char* aa1 = "hptgpre";
-  char* bb1 = "hptallpre";
+  char* aa1 = "hptgfinal";
+  char* bb1 = "hptallfinal";
   TGraph* gr1 = makegraph(f1,aa1,bb1);
   gr1->SetMarkerStyle(21);
   gr1->SetMarkerColor(1);
@@ -93,8 +93,8 @@ void fractions()
   gr1->Draw("AP");
 
   
-  char* aa2 = "hptudpre";
-  char* bb2 = "hptallpre";
+  char* aa2 = "hptudfinal";
+  char* bb2 = "hptallfinal";
   TGraph* gr2 = makegraph(f1,aa2,bb2);
   gr2->SetMarkerStyle(21);
   gr2->SetMarkerColor(2);
@@ -102,24 +102,24 @@ void fractions()
   
 
 
-  char* aa3 = "hptbpre";
-  char* bb3 = "hptallpre";
+  char* aa3 = "hptbfinal";
+  char* bb3 = "hptallfinal";
   TGraph* gr3 = makegraph(f1,aa3,bb3);
   gr3->SetMarkerStyle(21);
   gr3->SetMarkerColor(3);
   gr3->Draw("psame");
 
 
-  char* aa4 = "hptgbbpre";
-  char* bb4 = "hptallpre";
+  char* aa4 = "hptgbbfinal";
+  char* bb4 = "hptallfinal";
   TGraph* gr4 = makegraph(f1,aa4,bb4);
   gr4->SetMarkerStyle(21);
   gr4->SetMarkerColor(4);
   gr4->Draw("psame");
 
 
-  char* aa5 = "hptspre";
-  char* bb5 = "hptallpre";
+  char* aa5 = "hptsfinal";
+  char* bb5 = "hptallfinal";
   TGraph* gr5 = makegraph(f1,aa5,bb5);
   gr5->SetMarkerStyle(21);
   gr5->SetMarkerColor(5);
@@ -142,17 +142,17 @@ void fractions()
   t->SetTextAlign(12);
 
   t->SetTextColor(1);
-  t->DrawLatex(10,0.5,"g ");
+  t->DrawLatex(-80,0.5,"g ");
   t->SetTextColor(2);
-  t->DrawLatex(10,0.45,"ud ");
+  t->DrawLatex(-80,0.45,"ud ");
   t->SetTextColor(3);
-  t->DrawLatex(10,0.40,"b ");
+  t->DrawLatex(-80,0.40,"b ");
   t->SetTextColor(4);
-  t->DrawLatex(10,0.35,"g to b ");
+  t->DrawLatex(-80,0.35,"g to b ");
   t->SetTextColor(5);
-  t->DrawLatex(10,0.30,"s ");
+  t->DrawLatex(-80,0.30,"s ");
   t->SetTextColor(6);
-  t->DrawLatex(10,0.25,"c ");
+  t->DrawLatex(-80,0.25,"c ");
   
 
 
