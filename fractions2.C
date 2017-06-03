@@ -87,6 +87,7 @@ void fractions2()
   TGraph* gr1 = makegraph(f1,aa1,bb1);
   gr1->SetMarkerStyle(21);
   gr1->SetMarkerColor(1);
+  gr1->GetYaxis()->SetRangeUser(0.,1.);
   gr1->SetTitle("fraction");
   gr1->GetXaxis()->SetTitle("jet pt");
   gr1->GetYaxis()->SetTitle("flavor fraction");
@@ -127,8 +128,8 @@ void fractions2()
   
   
 
-  char* aa6 = "hptcpre";
-  char* bb6 = "hptallpre";
+  char* aa6 = "hptcfinal";
+  char* bb6 = "hptallfinal";
   TGraph* gr6 = makegraph(f1,aa6,bb6);
   gr6->SetMarkerStyle(21);
   gr6->SetMarkerColor(6);
