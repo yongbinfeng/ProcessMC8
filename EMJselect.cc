@@ -205,7 +205,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     *hptallfinal,*hptudfinal,*hptcfinal,*hptsfinal,*hptgbbfinal,*hptbfinal,*hptgfinal,
     *hptallfinal2,*hptudfinal2,*hptcfinal2,*hptsfinal2,*hptgbbfinal2,*hptbfinal2,*hptgfinal2,
     *hptallpree,*hptudpree,*hptcpree,*hptspree,*hptgbbpree,*hptbpree,*hptgpree,
-    *hptallfinale,*hptudfinale,*hptcfinale,*hptsfinale,*hptgbbfinale,*hptbfinale,*hptgfinale
+    *hptallfinale,*hptudfinale,*hptcfinale,*hptsfinale,*hptgbbfinale,*hptbfinale,*hptgfinale,
+    *ham2dfb,*ham2dfgbb,*ham2dfg,*ham2dfud
 ;
 
   TH1F *hmzamd,*hmznamd,*h2damd,*h2dnamd;
@@ -297,6 +298,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hdjetamo = new TH1F("hdjetamo","old alphamax down quark jets ",100,0.,1.);
   hdkjetam2d = new TH1F("hdkjetam2d","alphamax2d dark quark jets ",100,0.,1.);
   ham2dfd = new TH1F("ham2dfd","alpha2d sig down quark jets ",100,0.,1.);
+  ham2dfb = new TH1F("ham2dfb","alpha2d sig b quark jets ",100,0.,1.);
+  ham2dfgbb = new TH1F("ham2dfgbb","alpha2d sig glue to bb quark jets ",100,0.,1.);
+  ham2dfg = new TH1F("ham2dfg","alpha2d sig  glu jets ",100,0.,1.);
+  ham2dfud = new TH1F("ham2dfud","alpha2d sig u,d quark jets ",100,0.,1.);
   ham2dfdk = new TH1F("ham2dfdk","alpha2d sig dark quark jets ",100,0.,1.);
   hdkjetmeanip = new TH1F("hdkjetmeanip","mean ip dark quark jets",100,0.,10.);
   hdkjetmaxip = new TH1F("hdkjetmaxip","max ip dark quark jets",100,0.,30.);
@@ -1451,6 +1456,13 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	if(jet_pid_maxEt[i]==5) hptbpre->Fill(jet_pt->at(i));
 	if(jet_pid_maxEt[i]==7) hptgpre->Fill(jet_pt->at(i));
 	if(jet_pid_maxEt[i]==8) hptgbbpre->Fill(jet_pt->at(i));
+
+	if(jet_pid_maxEt[i]==5) ham2dfb->Fill(amax2Df[i]);
+	if(jet_pid_maxEt[i]==8) ham2dfgbb->Fill(amax2Df[i]);
+	if(jet_pid_maxEt[i]==7) ham2dfg->Fill(amax2Df[i]);
+	if(jet_pid_maxEt[i]==1) ham2dfud->Fill(amax2Df[i]);
+	if(jet_pid_maxEt[i]==2) ham2dfud->Fill(amax2Df[i]);
+
 	if(emerging[i]) {
 	  hptallpree->Fill(jet_pt->at(i));
 	  if(jet_pid_maxEt[i]==1) hptudpree->Fill(jet_pt->at(i));
@@ -1858,6 +1870,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     hdkjettrkdr->Write();
     ham2dfd->Write();
     ham2dfdk->Write();
+    ham2dfb->Write();
+    ham2dfgbb->Write();
+    ham2dfg->Write();
+    ham2dfud->Write();
 
 
     hdjetam->Write();
