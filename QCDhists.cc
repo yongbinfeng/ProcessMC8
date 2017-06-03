@@ -56,7 +56,7 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
     float DmaxIPcut=-1;
     float Djetacut = 2.;
     // dont forget there is a hidden cut nalmostemergin<4!!!!!!!!!!!!!!!!!
-    int Dnemcut=1;
+    int Dnemcut=2;
     int Dntrk1=0;
     
     float Dmetcut=-1;
@@ -126,7 +126,7 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
 
     //make and  output summed and renormalized histograms
     std::cout<<"normalizing histograms"<<std::endl;
-    const int nhist=143; 
+    const int nhist=171; 
     std::vector<TH1F*> vv(nhist);
     std::string histnames[nhist]={
         "count","acount","hjetcut","hjetchf","h_nemg",
@@ -153,7 +153,11 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
 	"hbigb","hpvpre","hpvfinal","hnvtxpre","hnvtxfinal","hntrkpre","hntrkfinal",
 	"hjetptfrpre","hjetptfrfinal","hjntrkpre","hjntrkfinal","hdzpre","hdzfinal",
 	"hfpilepre","hfpilefinal","hdzjpre","hdzjfinal","hptmaxpre","hptmaxfinal",
-	"hsum2Dfpre","hsum2Dffinal","hsum2Dfd","hsum2Dfdk"
+	"hsum2Dfpre","hsum2Dffinal","hsum2Dfd","hsum2Dfdk",
+	"hptallpre","hptudpre","hptspre","hptcpre","hptbpre","hptgpre","hptgbbpre",
+	"hptallpree","hptudpree","hptspree","hptcpree","hptbpree","hptgpree","hptgbbpree",
+	"hptallfinal","hptudfinal","hptsfinal","hptcfinal","hptbfinal","hptgfinal","hptgbbfinal"
+	"hptallfinale","hptudfinale","hptsfinale","hptcfinale","hptbfinale","hptgfinale","hptgbbfinale"
     };
     vector<double> outnorm(nbin);
     for(int i=0;i<nhist;i++) {

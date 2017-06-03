@@ -22,7 +22,7 @@ Int_t           fCurrent; //!current Tree number in a TChain
 
 int iDBG=1;
 int iSDBG=1;
-float pilecut=5000.;
+float pilecut=1.5;
 float pilecut2=1.5;
 
 float DeltaR(float eta1, float phi1, float eta2, float phi2) {
@@ -200,7 +200,11 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     *hdkjetam,*hdkjetmeanip,*hdkjetntr,*hdkjetmaxip,*hdkjettrkip,*hdkjettrkips,*hdkjettrkw,*hdkjettrgip,*hdkjettrkdr,*ham2dfd,*ham2dfdk,*hdkjetamo,*hdjetamo,*hdzjpre,*hdzjfinal,
     *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr,*hdjetam2d,*hdkjetam2d,*hmeanz,*hmeanzfa,*hmeanzpa,*hmeanzdk,*hmeanzd,*h2dpa,*h2dfa,*hntrkpt1zmpa,*hntrkpt1zmfa,*hbigb,*hpvpre,*hpvfinal,*hdzpre,*hdzfinal,
     *hnvtxpre,*hnvtxfinal,*hntrkpre,*hntrkfinal,*hjetptfrpre,*hjetptfrfinal,
-    *hjntrkpre,*hjntrkfinal,*hfpilepre,*hfpilefinal,*hptmaxpre,*hptmaxfinal,*hsum2Dfpre,*hsum2Dffinal,*hsum2Dfd,*hsum2Dfdk
+    *hjntrkpre,*hjntrkfinal,*hfpilepre,*hfpilefinal,*hptmaxpre,*hptmaxfinal,*hsum2Dfpre,*hsum2Dffinal,*hsum2Dfd,*hsum2Dfdk,
+    *hptallpre,*hptudpre,*hptcpre,*hptspre,*hptgbbpre,*hptbpre,*hptgpre,
+    *hptallfinal,*hptudfinal,*hptcfinal,*hptsfinal,*hptgbbfinal,*hptbfinal,*hptgfinal,
+    *hptallpree,*hptudpree,*hptcpree,*hptspree,*hptgbbpree,*hptbpree,*hptgpree,
+    *hptallfinale,*hptudfinale,*hptcfinale,*hptsfinale,*hptgbbfinale,*hptbfinale,*hptgfinale
 ;
 
   TH1F *hmzamd,*hmznamd,*h2damd,*h2dnamd;
@@ -365,6 +369,40 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
   hptmaxpre = new TH1F("hptmaxpre","pt highest pt track preselection",150,0.,150.);
   hptmaxfinal = new TH1F("hptmaxfinal","pt highest pt track final selection",150,0.,150.);
+
+  hptallpre = new TH1F("hptallpre","pt all jets passing preselection",500,0.,1500.);
+  hptudpre = new TH1F("hptudpre","pt ud jets passing preselection",500,0.,1500.);
+  hptspre = new TH1F("hptspre","pt s jets passing preselection",500,0.,1500.);
+  hptcpre = new TH1F("hptcpre","pt c jets passing preselection",500,0.,1500.);
+  hptbpre = new TH1F("hptbpre","pt b jets passing preselection",500,0.,1500.);
+  hptgpre = new TH1F("hptgpre","pt g jets passing preselection",500,0.,1500.);
+  hptgbbpre = new TH1F("hptgbbpre","pt gbb jets passing preselection",500,0.,1500.);
+
+  hptallpree = new TH1F("hptallpree","pt allemerging jets passing preselection",500,0.,1500.);
+  hptudpree = new TH1F("hptudpree","pt ud emerging jets passing preselection",500,0.,1500.);
+  hptspree = new TH1F("hptspree","pt s emerging jets passing preselection",500,0.,1500.);
+  hptcpree = new TH1F("hptcpree","pt c emerging jets passing preselection",500,0.,1500.);
+  hptbpree = new TH1F("hptbpree","pt b emerging jets passing preselection",500,0.,1500.);
+  hptgpree = new TH1F("hptgpree","pt g emerging jets passing preselection",500,0.,1500.);
+  hptgbbpree = new TH1F("hptgbbpree","pt gbb emerging jets passing preselection",500,0.,1500.);
+
+
+  hptallfinal = new TH1F("hptallfinal","pt all jets passing preselection",500,0.,1500.);
+  hptudfinal = new TH1F("hptudfinal","pt ud jets passing preselection",500,0.,1500.);
+  hptsfinal = new TH1F("hptsfinal","pt s jets passing preselection",500,0.,1500.);
+  hptcfinal = new TH1F("hptcfinal","pt c jets passing preselection",500,0.,1500.);
+  hptbfinal = new TH1F("hptbfinal","pt b jets passing preselection",500,0.,1500.);
+  hptgfinal = new TH1F("hptgfinal","pt g jets passing preselection",500,0.,1500.);
+  hptgbbfinal = new TH1F("hptgbbfinal","pt gbb jets passing preselection",500,0.,1500.);
+
+  hptallfinale = new TH1F("hptallfinale","pt allemerging jets passing preselection",500,0.,1500.);
+  hptudfinale = new TH1F("hptudfinale","pt ud emerging jets passing preselection",500,0.,1500.);
+  hptsfinale = new TH1F("hptsfinale","pt s emerging jets passing preselection",500,0.,1500.);
+  hptcfinale = new TH1F("hptcfinale","pt c emerging jets passing preselection",500,0.,1500.);
+  hptbfinale = new TH1F("hptbfinale","pt b emerging jets passing preselection",500,0.,1500.);
+  hptgfinale = new TH1F("hptgfinale","pt g emerging jets passing preselection",500,0.,1500.);
+  hptgbbfinale = new TH1F("hptgbbfinale","pt gbb emerging jets passing preselection",500,0.,1500.);
+
 
   //2d
   aMip = new TH2F("aMip"," alpha Max versus max IP n-1 plot",100,0.,1.,100,0.,10.);
@@ -733,23 +771,19 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	}
       }
       // fix glue to bbbar
+      float igenmax2=-1;
+      float etgenmax2=0.;
       if(igenmax>0) {
 	if(abs(gp_pdgId->at(igenmax)==21)) {
-	  float igenmax2=-1;
-	  float etgenmax2=0.;
           for(Int_t igen=1; igen<NNNgp; igen++) {
             if((abs(gp_pdgId->at(igen))==5)&&(gp_pt->at(igen)>10.)) {  // b
 	      if(DeltaR(jet_eta->at(j),jet_phi->at(j),gp_eta->at(igen),gp_phi->at(igen))<0.4) {
 	        if(gp_pt->at(igen)>etgenmax2) {
-	          igenmax2=igen;
+	          igenmax2=1;
 	          etgenmax2=gp_pt->at(igen);
 	        }
 	      }
 	    }
-	  }
-	  if(igenmax2>0) {
-	    igenmax=igenmax2;
-	    etgenmax=etgenmax2;
 	  }
 	}
       }
@@ -757,8 +791,20 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       jet_pid_maxEt[j]=0;
       jet_maxET_part[j]=0;
       if(igenmax>-1) {
-	jet_pid_maxEt[j]=gp_pdgId->at(igenmax);
-	jet_maxET_part[j] = etgenmax;
+	int ipid = gp_pdgId->at(igenmax);
+	if(abs(ipid)<6) {
+	  jet_pid_maxEt[j]=gp_pdgId->at(igenmax);
+	  jet_maxET_part[j] = etgenmax;
+	} else {
+	  if(igenmax2==-1) {
+	    jet_pid_maxEt[j]=7;
+	    jet_maxET_part[j] = etgenmax;
+	  } else {
+	    jet_pid_maxEt[j]=8;
+	    jet_maxET_part[j] = etgenmax;
+
+	  }
+	}
       }
 
 
@@ -1045,8 +1091,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
         vector<float> track_ipXYSigs = track_ipXYSig->at(i);
         vector<int> track_sources = track_source->at(i);
         vector<int> track_qualitys = track_quality->at(i);
-      vector<float> track_pvWeights = track_pvWeight->at(i);
-      vector<float> track_ref_zs = track_ref_z->at(i);
+        vector<float> track_pvWeights = track_pvWeight->at(i);
+        vector<float> track_ref_zs = track_ref_z->at(i);
 
 
 	
@@ -1244,58 +1290,58 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       }
 
       //N-1 plots
-    if(PVZ&&PVPT0&&C4jet&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hHTnm1->Fill(HT);
-    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hpt1nm1->Fill(jet_pt->at(0));
-    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hpt2nm1->Fill(jet_pt->at(1));
-    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hpt3nm1->Fill(jet_pt->at(2));
-    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cnem&&Canem&&Cmass&&Cmet) hpt4nm1->Fill(jet_pt->at(3));
-    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem&&Cmass&&Cmet) hnemnm1->Fill(nemerging);
-    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmet) hmassnm1->Fill(amass);
-    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass) hmetnm1->Fill(met_pt);
-    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet)
-      {
-	htheta2D1nm1->Fill(log10(jet_theta2D->at(0)));
-	htheta2D2nm1->Fill(log10(jet_theta2D->at(1)));
-	htheta2D3nm1->Fill(log10(jet_theta2D->at(2)));
-	htheta2D4nm1->Fill(log10(jet_theta2D->at(3)));
-      }
+      if(PVZ&&PVPT0&&C4jet&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hHTnm1->Fill(HT);
+      if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hpt1nm1->Fill(jet_pt->at(0));
+      if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hpt2nm1->Fill(jet_pt->at(1));
+      if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet) hpt3nm1->Fill(jet_pt->at(2));
+      if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cnem&&Canem&&Cmass&&Cmet) hpt4nm1->Fill(jet_pt->at(3));
+      if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem&&Cmass&&Cmet) hnemnm1->Fill(nemerging);
+      if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmet) hmassnm1->Fill(amass);
+      if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass) hmetnm1->Fill(met_pt);
+      if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&Canem&&Cmass&&Cmet)
+        {
+	  htheta2D1nm1->Fill(log10(jet_theta2D->at(0)));
+	  htheta2D2nm1->Fill(log10(jet_theta2D->at(1)));
+	  htheta2D3nm1->Fill(log10(jet_theta2D->at(2)));
+	  htheta2D4nm1->Fill(log10(jet_theta2D->at(3)));
+        }
 
 
-    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem&&Cmass&&Cmet) {
-      for(int i=0;i<4;i++) {
-	if(basicjet[i]) {
-	  halphanm1->Fill(AM[i]);
-	  aMip->Fill(AM[i],r0[i]);
-	  hntrk1nm1->Fill(jet_ntrkpt1[i]);
-	  if((AM[i]<alphaMaxcut)) {
-	    hmaxipnm1->Fill(r0[i]);
+      if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem&&Cmass&&Cmet) {
+        for(int i=0;i<4;i++) {
+	  if(basicjet[i]) {
+	    halphanm1->Fill(AM[i]);
+	    aMip->Fill(AM[i],r0[i]);
+	    hntrk1nm1->Fill(jet_ntrkpt1[i]);
+	    if((AM[i]<alphaMaxcut)) {
+	      hmaxipnm1->Fill(r0[i]);
 
-	    if(iDBG>2) {
-            std::cout<<" almost emerging"<<std::endl;
-	    if(r0[i]<0.05) std::cout<<"DANGER DANGER"<<std::endl;
-            std::cout<<" jet pt is "<<jet_pt->at(i)
+	      if(iDBG>2) {
+              std::cout<<" almost emerging"<<std::endl;
+	      if(r0[i]<0.05) std::cout<<"DANGER DANGER"<<std::endl;
+                std::cout<<" jet pt is "<<jet_pt->at(i)
 	    	     <<" ntrkpt1 is "<<jet_ntrkpt1[i]
 	    	     <<" meanip is "<<jet_meanip[i]
 	    	     <<" ip max is "<<r0[i]
 	    	     <<" second largest ip is "<<r1[i]
 	    	     <<" alpha max is "<<AM[i]
-            <<std::endl;
-	    }
-            vector<float> track_pts = track_pt->at(i);
-            vector<int> track_sources = track_source->at(i);
-            vector<int> track_qualitys = track_quality->at(i);
-            vector<float> track_ipXYs = track_ipXY->at(i);
-            vector<float> track_ipZs = track_ipZ->at(i);
-            vector<float> track_ipXYSigs = track_ipXYSig->at(i);
-      vector<float> track_pvWeights = track_pvWeight->at(i);
-            vector<int> track_nMissInnerHitss = track_nMissInnerHits->at(i);
-            vector<int> track_nMissInnerPxlLayerss = track_nMissInnerPxlLayers->at(i);
-            vector<int> track_nPxlLayerss = track_nPxlLayers->at(i);
-            vector<int> track_nHitss = track_nHits->at(i);
-      vector<float> track_ref_zs = track_ref_z->at(i);
-            for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	      if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
-		if(iDBG>2) {
+                <<std::endl;
+	      }
+              vector<float> track_pts = track_pt->at(i);
+              vector<int> track_sources = track_source->at(i);
+              vector<int> track_qualitys = track_quality->at(i);
+              vector<float> track_ipXYs = track_ipXY->at(i);
+              vector<float> track_ipZs = track_ipZ->at(i);
+              vector<float> track_ipXYSigs = track_ipXYSig->at(i);
+              vector<float> track_pvWeights = track_pvWeight->at(i);
+              vector<int> track_nMissInnerHitss = track_nMissInnerHits->at(i);
+              vector<int> track_nMissInnerPxlLayerss = track_nMissInnerPxlLayers->at(i);
+              vector<int> track_nPxlLayerss = track_nPxlLayers->at(i);
+              vector<int> track_nHitss = track_nHits->at(i);
+              vector<float> track_ref_zs = track_ref_z->at(i);
+              for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
+	        if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
+		  if(iDBG>2) {
 			std::cout<<"    track pt is "<<track_pts[itrack]
 			 <<" ipxy is "<<track_ipXYs[itrack]
 			 <<" ipZ is "<<track_ipZs[itrack]
@@ -1306,28 +1352,24 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 			 <<" pxllayers is "<<track_nPxlLayerss[itrack]
 			 <<" nHits is "<<track_nHitss[itrack]
 			 <<std::endl;
-		}
-		if(otfile) hnHitsnm1->Fill(track_nHitss[itrack]);
-	      }
-            }
-	    
+		  }
+		  if(otfile) hnHitsnm1->Fill(track_nHitss[itrack]);
+	        }
+              }
+	    }  // alphamax cuut
+	  }  //basic jet
+	}//loop over jets
+      } // select events
 
 
-	  }
-	}
-      }
-    }
-
-
-    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4) {
-      for(int i=0;i<4;i++) {
+      if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4) {
+        for(int i=0;i<4;i++) {
 	    aMbh2D->Fill(amax2D[i],amaxbyhand[i]);
 	    hmeanz->Fill(jet_meanz[i]-pv_z);
+        }
       }
-    }
 
-
-    //    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&(!Canem)&&Cmass&&Cmet) {
+      // plots for events that fail almost energing
     if(C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&(!Canem)) {
       for(int i=0;i<4;i++) {
 	    aMbh2Daem->Fill(amax2D[i],amaxbyhand[i]);
@@ -1343,9 +1385,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	aMbh2Daem->Fill(amax2D[i],amaxbyhand[i]);
       }
 
-    }
+    }  // end plots for events that fail almost emerging
 
-
+    // similar plots for those that pass almost enmering
     if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Cnem&&(Canem)&&Cmass&&Cmet) {
       for(int i=0;i<4;i++) {
 	    hmeanzpa->Fill(jet_meanz[i]-pv_z);
@@ -1355,10 +1397,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	      std::cout<<" jet meanz pvz are "<<jet_meanz[i]<<" "<<pv_z<<std::endl;
 	      if(fabs(jet_meanz[i]-pv_z)>5) std::cout<<"danger"<<std::endl;
 	    }
-      }
+        }
     }
-
-
 
     if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&nalmostemerging2>=2) {
       for(int i=0;i<4;i++) {
@@ -1382,8 +1422,219 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 
 
 
-    }  // close if (otfile)
 
+    // debug spew
+    if(iDBG>2) std::cout<<"pvz pvpt0 c4jet cht cpt1 cpt2 cpt3 cpt4 cnem "<<PVZ<<" "<<PVPT0<<" "<<C4jet<<" "<<CHT<<" "<<Cpt1<<" "<<Cpt2<<" "<<Cpt3<<" "<<Cpt4<<" "<<Cnem<<std::endl;
+
+    // preselection plots
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4) {
+      hpvpre->Fill(pv_z);
+      hnvtxpre->Fill(nVtx);
+      hntrkpre->Fill(nTracks);
+      float aab=0.;
+      for(int i=0;i<4;i++) {
+	hjetptfrpre->Fill(std::min(jet_fpt[i],1.2));
+	hptallpre->Fill(jet_pt->at(i));
+	if(jet_pid_maxEt[i]==1) hptudpre->Fill(jet_pt->at(i));
+	if(jet_pid_maxEt[i]==2) hptudpre->Fill(jet_pt->at(i));
+	if(jet_pid_maxEt[i]==3) hptspre->Fill(jet_pt->at(i));
+	if(jet_pid_maxEt[i]==4) hptcpre->Fill(jet_pt->at(i));
+	if(jet_pid_maxEt[i]==5) hptbpre->Fill(jet_pt->at(i));
+	if(jet_pid_maxEt[i]==7) hptgpre->Fill(jet_pt->at(i));
+	if(jet_pid_maxEt[i]==8) hptgbbpre->Fill(jet_pt->at(i));
+	if(emerging[i]) {
+	  hptallpree->Fill(jet_pt->at(i));
+	  if(jet_pid_maxEt[i]==1) hptudpree->Fill(jet_pt->at(i));
+	  if(jet_pid_maxEt[i]==2) hptudpree->Fill(jet_pt->at(i));
+	  if(jet_pid_maxEt[i]==3) hptspree->Fill(jet_pt->at(i));
+	  if(jet_pid_maxEt[i]==4) hptcpree->Fill(jet_pt->at(i));
+	  if(jet_pid_maxEt[i]==5) hptbpree->Fill(jet_pt->at(i));
+	  if(jet_pid_maxEt[i]==7) hptgpree->Fill(jet_pt->at(i));
+	  if(jet_pid_maxEt[i]==8) hptgbbpree->Fill(jet_pt->at(i));
+	}
+
+	hsum2Dfpre->Fill(amax2Df2[i]);
+	hjntrkpre->Fill(jet_ntrkpt1[i]);
+	hfpilepre->Fill(jet_fnpile[i]);
+	hptmaxpre->Fill(std::min(jet_ptmax[i],149.5));
+        vector<int> track_sources = track_source->at(i);
+        vector<int> track_qualitys = track_quality->at(i);
+        vector<float> track_ref_zs = track_ref_z->at(i);
+        for (unsigned itrack=0; itrack<track_ref_zs.size(); itrack++) {
+	  if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
+	    hdzpre->Fill(pv_z-track_ref_zs[itrack]);
+	  }
+	}
+	for(int j=i+1;j<4;j++) {
+	  if(fabs(jet_meanz[i]-jet_meanz[j])>aab) {
+	    aab=fabs(jet_meanz[i]-jet_meanz[j]);
+	  }
+	} 
+      }
+      hdzjpre->Fill(aab);
+
+    }  //end preselection plots
+
+
+    //final selection spew for debug  all cuts except nemerging, separate spew
+    // for 1 and 2 emerging
+    if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem&&Cmass&&Cmet) {
+      if(nemerging>0) {  // some debug spew, not a cut
+
+	for(int i=0;i<4;i++) {
+	  hptallfinal->Fill(jet_pt->at(i));
+	  if(jet_pid_maxEt[i]==1) hptudfinal->Fill(jet_pt->at(i));
+	  if(jet_pid_maxEt[i]==2) hptudfinal->Fill(jet_pt->at(i));
+	  if(jet_pid_maxEt[i]==3) hptsfinal->Fill(jet_pt->at(i));
+	  if(jet_pid_maxEt[i]==4) hptcfinal->Fill(jet_pt->at(i));
+	  if(jet_pid_maxEt[i]==5) hptbfinal->Fill(jet_pt->at(i));
+	  if(jet_pid_maxEt[i]==7) hptgfinal->Fill(jet_pt->at(i));
+	  if(jet_pid_maxEt[i]==8) hptgbbfinal->Fill(jet_pt->at(i));
+	  if(emerging[i]) {
+	    hptallfinale->Fill(jet_pt->at(i));
+	    if(jet_pid_maxEt[i]==1) hptudfinale->Fill(jet_pt->at(i));
+	    if(jet_pid_maxEt[i]==2) hptudfinale->Fill(jet_pt->at(i));
+	    if(jet_pid_maxEt[i]==3) hptsfinale->Fill(jet_pt->at(i));
+	    if(jet_pid_maxEt[i]==4) hptcfinale->Fill(jet_pt->at(i));
+	    if(jet_pid_maxEt[i]==5) hptbfinale->Fill(jet_pt->at(i));
+	    if(jet_pid_maxEt[i]==7) hptgfinale->Fill(jet_pt->at(i));
+	    if(jet_pid_maxEt[i]==8) hptgbbfinale->Fill(jet_pt->at(i));
+	  }
+	}
+
+
+	if(iDBG>0) std::cout<<"HAS 1 EMERGING"<<std::endl;
+	if(iDBG>0) if(nemerging>1) std::cout<<"HAS 2 EMERGING"<<std::endl;
+	for(int i=0;i<4;i++) {
+	  if(emerging[i]) {
+	    float bdr=1000.;
+	    for(int k=0;k<bigbs.size();k++) {
+	      float bdt = DeltaR(jet_eta->at(i),jet_phi->at(i),gp_eta->at(bigbs[k]),gp_phi->at(bigbs[k]));
+	      if(iDBG>1) std::cout<<"i k bdt are "<<i<<" "<<k<<" "<<bdt<<std::endl;
+	      if(bdt<bdr) bdr=bdt;
+	    }
+	    if(bdr>10) bdr=-1;
+	    hbigb->Fill(bdr);
+	    if(iDBG>0) {
+	      std::cout<<"bdr is "<<bdr<<std::endl;
+	      if(abs(bdr)<0.4) std::cout<<" jet "<<i<<" tagged as b"<<std::endl;
+	    }
+	  }  //end emerging
+	}  //end loop over jets
+
+	H_T3->Fill(HT);   
+	hmass->Fill(amass);
+	hpvfinal->Fill(pv_z);
+        hnvtxfinal->Fill(nVtx);
+        hntrkfinal->Fill(nTracks);
+	float aab=0.;
+	for(int i=0;i<4;i++) {
+	  if(emerging[i]) {
+	    hjetptfrfinal->Fill(std::min(jet_fpt[i],1.2));
+	    hsum2Dffinal->Fill(amax2Df2[i]);
+	    hjntrkfinal->Fill(jet_ntrkpt1[i]);
+	    hfpilefinal->Fill(jet_fnpile[i]);
+	    hptmaxfinal->Fill(std::min(jet_ptmax[i],149.5));
+            vector<int> track_sources = track_source->at(i);
+            vector<int> track_qualitys = track_quality->at(i);
+            vector<float> track_ref_zs = track_ref_z->at(i);
+            for (unsigned itrack=0; itrack<track_ref_zs.size(); itrack++) {
+	      if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
+	        hdzfinal->Fill(pv_z-track_ref_zs[itrack]);
+	      }
+	    }
+	  }  // end emerging
+	  for(int j=i+1;j<4;j++) {
+	    if(fabs(jet_meanz[i]-jet_meanz[j])>aab) {
+	      aab=fabs(jet_meanz[i]-jet_meanz[j]);
+	    }
+	  } 
+        } //end loop over jets
+        hdzjfinal->Fill(aab);
+
+
+	if(iDBG>0) {
+	  if(nemerging>1) std::cout<<"passing2 run lumi event filename is "<<run<<" "<<lumi<<" "<<event<<" "<<inputfilename<<std::endl;
+	  else  std::cout<<"passing1 run lumi event filename is "<<run<<" "<<lumi<<" "<<event<<" "<<inputfilename<<std::endl;
+	}
+	if(iDBG>0) {
+	  if(!Canem) std::cout<<"FAILS ALMOST EMERGING"<<std::endl;
+	}
+	if(iDBG>0) std::cout<<"pv position is "<<pv_x<<","<<pv_y<<","<<pv_z<<std::endl;
+	if(iDBG>0) std::cout<<" pv ntracks is "<<nTracks<<std::endl;
+	if(iDBG>0) std::cout<<" number of vertices is "<<nVtx<<std::endl;
+
+	if(iDBG>0) std::cout<<"     pt    eta    phi   nef    cfe   ntrkpt1 alphamax    r0    amax2d    amax2df  meanz jet_fpt jet_fnpile  2dipfrac  pid   partet"<<std::endl;
+	for(int i=0;i<4;i++) {
+	  if(AM[i]<0.002&&iDBG>0) std::cout<<"BAD BAD CAT"<<std::endl; 
+	  if(iDBG>0) std::cout
+            <<std::setw(8)<<std::setprecision(3)<<jet_pt->at(i)
+            <<std::setw(8)<<std::setprecision(3)<<jet_eta->at(i)
+            <<std::setw(8)<<std::setprecision(3)<<jet_phi->at(i)
+            <<std::setw(8)<<std::setprecision(3)<<jet_nef->at(i)
+	    <<std::setw(8)<<std::setprecision(3)<<jet_cef->at(i)
+	    <<std::setw(8)<<std::setprecision(3)<<jet_ntrkpt1[i]
+	    <<std::setw(8)<<std::setprecision(3)<<AM[i]
+	    <<std::setw(8)<<std::setprecision(3)<<r0[i]
+	    <<std::setw(8)<<std::setprecision(3)<<amax2D[i]
+	    <<std::setw(8)<<std::setprecision(3)<<amax2Df[i]
+	    <<std::setw(8)<<std::setprecision(3)<<jet_meanz[i]
+	    <<std::setw(8)<<std::setprecision(3)<<jet_fpt[i]
+	    <<std::setw(8)<<std::setprecision(3)<<jet_fnpile[i]
+	    <<std::setw(8)<<std::setprecision(3)<<amax2Df2[i]
+	    <<std::setw(8)<<std::setprecision(3)<<jet_pid_maxEt[i]
+	    <<std::setw(8)<<std::setprecision(3)<<jet_maxET_part[i]
+	    <<std::endl;
+	}  
+	if(iDBG>0) {
+	  std::cout<<"this event has "<<bigbs.size()<<" big bs"<<std::endl;
+	      	      std::cout<<"this event has "<<ts.size()<<" topss"<<std::endl;
+	  for(int k=0;k<bigbs.size();k++) {
+	    std::cout<<"b pt eta phi "<<gp_pt->at(bigbs[k])<<" "<<gp_eta->at(bigbs[k])<<" "<<gp_phi->at(bigbs[k])<<std::endl;
+	  }
+	}
+	    
+	if(iDBG>0) {
+	  for(int i=0;i<4;i++) {
+	    std::cout<<" for jet "<<i<<std::endl;
+            std::cout<<"  with tracks "<<std::endl;
+            std::cout<<" #     pt     eta   phi    weight  ipxy    ipxysig  refx    refy    refz   "<<std::endl;
+            vector<float> track_pts = track_pt->at(i);
+            vector<float> track_etas = track_eta->at(i);
+            vector<float> track_phis = track_phi->at(i);
+            vector<float> track_pvWeights = track_pvWeight->at(i);
+            vector<int> track_sources = track_source->at(i);
+            vector<int> track_qualitys = track_quality->at(i);
+            vector<float> track_ipXYs = track_ipXY->at(i);
+            vector<float> track_ipZs = track_ipZ->at(i);
+            vector<float> track_ipXYSigs = track_ipXYSig->at(i);
+            vector<float> track_ref_xs = track_ref_x->at(i);
+            vector<float> track_ref_ys = track_ref_y->at(i);
+            vector<float> track_ref_zs = track_ref_z->at(i);
+            for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
+	      if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
+	        std::cout
+                <<itrack
+                <<std::setw(8)<<std::setprecision(3)<<track_pts[itrack]
+                <<std::setw(8)<<std::setprecision(3)<<track_etas[itrack]
+                <<std::setw(8)<<std::setprecision(3)<<track_phis[itrack]
+                <<std::setw(8)<<std::setprecision(3)<<track_pvWeights[itrack]
+                <<std::setw(9)<<std::setprecision(3)<<track_ipXYs[itrack]
+                <<std::setw(8)<<std::setprecision(3)<<track_ipXYSigs[itrack]
+                <<std::setw(8)<<std::setprecision(3)<<track_ref_xs[itrack]
+                <<std::setw(8)<<std::setprecision(3)<<track_ref_ys[itrack]
+                <<std::setw(8)<<std::setprecision(3)<<track_ref_zs[itrack]
+		     <<std::endl;
+	      }
+	    }// loop over tracks
+	  }  // loop over jets
+	} // iDBG
+
+        if(iDBG>0) std::cout<<"npass  event is "<<npass<<" "<<event<<std::endl;
+        if(iDBG>0) std::cout<<"nemerging nalmostemerging almostemerging2 "<<nemerging<<" "<<nalmostemerging<<" "<<nalmostemerging2<<std::endl;
+
+      }  // nemerging>0
+    }  //selection
 
       // make plots for fake rate studes
     if(PVZ&&PVPT0&&C4jet&&CHT&&Cpt1&&Cpt2&&Cpt3&&Cpt4&&Canem) {
@@ -1414,10 +1665,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       }
     }
 
-
+    }  // close if (otfile)
     // apply cuts sequentially
 
-    if(iDBG>2) std::cout<<"pvz pvpt0 c4jet cht cpt1 cpt2 cpt3 cpt4 cnem "<<PVZ<<" "<<PVPT0<<" "<<C4jet<<" "<<CHT<<" "<<Cpt1<<" "<<Cpt2<<" "<<Cpt3<<" "<<Cpt4<<" "<<Cnem<<std::endl;
 
 
     if(C4jet) {
@@ -1454,197 +1704,31 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     if(otfile) count->Fill("pv 0",1);
     if(otfile) acount->Fill(7.5);
 
-    if(otfile) {
-      hpvpre->Fill(pv_z);
-      hnvtxpre->Fill(nVtx);
-      hntrkpre->Fill(nTracks);
-      float aab=0.;
-      for(int i=0;i<4;i++) {
-	hjetptfrpre->Fill(std::min(jet_fpt[i],1.2));
-	hsum2Dfpre->Fill(amax2Df2[i]);
-	hjntrkpre->Fill(jet_ntrkpt1[i]);
-	hfpilepre->Fill(jet_fnpile[i]);
-	hptmaxpre->Fill(std::min(jet_ptmax[i],149.5));
-        vector<int> track_sources = track_source->at(i);
-        vector<int> track_qualitys = track_quality->at(i);
-        vector<float> track_ref_zs = track_ref_z->at(i);
-        for (unsigned itrack=0; itrack<track_ref_zs.size(); itrack++) {
-	  if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
-	    hdzpre->Fill(pv_z-track_ref_zs[itrack]);
-	  }
-	}
-	for(int j=i+1;j<4;j++) {
-	  if(fabs(jet_meanz[i]-jet_meanz[j])>aab) {
-	    aab=fabs(jet_meanz[i]-jet_meanz[j]);
-	  }
-	} 
-      }
-      hdzjpre->Fill(aab);
-    }
-      // require at least N emerging jets
 
     if(PVZ) {
     if(otfile) count->Fill("pv z",1);
     if(otfile) acount->Fill(8.5);
 
 
-    if(Cnem) {
-      if(iDBG>2) std::cout<<"PASS without almost"<<std::endl;
-      if(iDBG>2) std::cout<<"n emerging nealmost emergin is "<<nemerging<<" "<<nalmostemerging<<std::endl;
-      if(iDBG>2) std::cout<<Canem<<std::endl;
+    if(Cmet) {
+    if(otfile) count->Fill("MET",1);
+    if(otfile) acount->Fill(9.5);
 
+    if(Cmass) {
+    if(otfile) count->Fill("mass",1);
+    if(otfile) acount->Fill(10.5);
 
+    if(Canem) {   // almost emerging
+    if(otfile) count->Fill("almostemerging",1);
+    if(otfile) acount->Fill(11.5);
 
-      if(otfile) count->Fill("emerging",1);
-      if(otfile) acount->Fill(9.5);
-      if(Canem) {
-	if(iDBG>2) std::cout<<"PASS with almost"<<std::endl;
-
-        if(otfile) count->Fill("almostemerging",1);
-        if(otfile) acount->Fill(10.5);
-
-
-	if(Cmet) {
-          if(otfile) count->Fill("MET",1);
-          if(otfile) acount->Fill(11.5);
-
-	  if(Cmass) {
-            if(otfile) count->Fill("mass",1);
-            if(otfile) acount->Fill(12.5);
-
+    if(Cnem) {  // emerging
+    if(otfile) count->Fill("emerging",1);
+    if(otfile) acount->Fill(12.5);
 
             npass+=1;
 
-            if(otfile) {
-	        H_T3->Fill(HT);   
-	        hmass->Fill(amass);
-		for(int i=0;i<4;i++) {
-		  if(emerging[i]) {
-		    float bdr=1000.;
-	            for(int k=0;k<bigbs.size();k++) {
-		      float bdt = DeltaR(jet_eta->at(i),jet_phi->at(i),gp_eta->at(bigbs[k]),gp_phi->at(bigbs[k]));
-		      if(iDBG>1) std::cout<<"i k bdt are "<<i<<" "<<k<<" "<<bdt<<std::endl;
-		      if(bdt<bdr) bdr=bdt;
-		    }
-		    if(bdr>10) bdr=-1;
-		    hbigb->Fill(bdr);
-		    if(iDBG>0) {
-		      std::cout<<"bdr is "<<bdr<<std::endl;
-		      if(abs(bdr)<0.4) std::cout<<" jet "<<i<<" tagged as b"<<std::endl;
-		    }
-		  }
-		}
-	    }
-	    if(otfile) {
-	      hpvfinal->Fill(pv_z);
-              hnvtxfinal->Fill(nVtx);
-              hntrkfinal->Fill(nTracks);
-	      float aab=0.;
-	      for(int i=0;i<4;i++) {
-		if(emerging[i]) {
-		  hjetptfrfinal->Fill(std::min(jet_fpt[i],1.2));
-		  hsum2Dffinal->Fill(amax2Df2[i]);
-	          hjntrkfinal->Fill(jet_ntrkpt1[i]);
-		  hfpilefinal->Fill(jet_fnpile[i]);
-	          hptmaxfinal->Fill(std::min(jet_ptmax[i],149.5));
-                  vector<int> track_sources = track_source->at(i);
-                  vector<int> track_qualitys = track_quality->at(i);
-                  vector<float> track_ref_zs = track_ref_z->at(i);
-                  for (unsigned itrack=0; itrack<track_ref_zs.size(); itrack++) {
-	            if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
-	              hdzfinal->Fill(pv_z-track_ref_zs[itrack]);
-	            }
-		  }
-	        }
-	        for(int j=i+1;j<4;j++) {
-	          if(fabs(jet_meanz[i]-jet_meanz[j])>aab) {
-	            aab=fabs(jet_meanz[i]-jet_meanz[j]);
-	          }
-	        } 
-              }
-              hdzjfinal->Fill(aab);
-
-	    }
-
-	    if(iDBG>0) std::cout<<"passing run lumi event filename is "<<run<<" "<<lumi<<" "<<event<<" "<<inputfilename<<std::endl;
-	    if(iDBG>0) {
-	      if(!Canem) std::cout<<"FAILS ALMOST EMERGING"<<std::endl;
-	    }
-	    if(iDBG>0) std::cout<<"pv position is "<<pv_x<<","<<pv_y<<","<<pv_z<<std::endl;
-	    if(iDBG>0) std::cout<<" pv ntracks is "<<nTracks<<std::endl;
-	    if(iDBG>0) std::cout<<" number of vertices is "<<nVtx<<std::endl;
-
-	    if(iDBG>0) std::cout<<"     pt    eta    phi   nef    cfe   ntrkpt1 alphamax    r0    amax2d    amax2df  meanz jet_fpt jet_fnpile  2dipfrac  pid   partet"<<std::endl;
-	    for(int i=0;i<4;i++) {
-	      if(AM[i]<0.002&&iDBG>0) std::cout<<"BAD BAD CAT"<<std::endl; 
-	      if(iDBG>0) std::cout
-<<std::setw(8)<<std::setprecision(3)<<jet_pt->at(i)
-<<std::setw(8)<<std::setprecision(3)<<jet_eta->at(i)
-<<std::setw(8)<<std::setprecision(3)<<jet_phi->at(i)
-<<std::setw(8)<<std::setprecision(3)<<jet_nef->at(i)
-				  <<std::setw(8)<<std::setprecision(3)<<jet_cef->at(i)
-				  <<std::setw(8)<<std::setprecision(3)<<jet_ntrkpt1[i]
-				  <<std::setw(8)<<std::setprecision(3)<<AM[i]
-				  <<std::setw(8)<<std::setprecision(3)<<r0[i]
-				  <<std::setw(8)<<std::setprecision(3)<<amax2D[i]
-				  <<std::setw(8)<<std::setprecision(3)<<amax2Df[i]
-				  <<std::setw(8)<<std::setprecision(3)<<jet_meanz[i]
-				  <<std::setw(8)<<std::setprecision(3)<<jet_fpt[i]
-				  <<std::setw(8)<<std::setprecision(3)<<jet_fnpile[i]
-				  <<std::setw(8)<<std::setprecision(3)<<amax2Df2[i]
-				  <<std::setw(8)<<std::setprecision(3)<<jet_pid_maxEt[i]
-				  <<std::setw(8)<<std::setprecision(3)<<jet_maxET_part[i]
-				  <<std::endl;
-	    }  
-	    if(iDBG>0) {
-	      std::cout<<"this event has "<<bigbs.size()<<" big bs"<<std::endl;
-	      	      std::cout<<"this event has "<<ts.size()<<" topss"<<std::endl;
-	      for(int k=0;k<bigbs.size();k++) {
-		std::cout<<"b pt eta phi "<<gp_pt->at(bigbs[k])<<" "<<gp_eta->at(bigbs[k])<<" "<<gp_phi->at(bigbs[k])<<std::endl;
-	      }
-	    }
-	    
-	    if(iDBG>0) {
-	    for(int i=0;i<4;i++) {
-	      std::cout<<" for jet "<<i<<std::endl;
-                std::cout<<"  with tracks "<<std::endl;
-                std::cout<<" #     pt     eta   phi    weight  ipxy    ipxysig  refx    refy    refz   "<<std::endl;
-      vector<float> track_pts = track_pt->at(i);
-      vector<float> track_etas = track_eta->at(i);
-      vector<float> track_phis = track_phi->at(i);
-      vector<float> track_pvWeights = track_pvWeight->at(i);
-      vector<int> track_sources = track_source->at(i);
-      vector<int> track_qualitys = track_quality->at(i);
-      vector<float> track_ipXYs = track_ipXY->at(i);
-      vector<float> track_ipZs = track_ipZ->at(i);
-      vector<float> track_ipXYSigs = track_ipXYSig->at(i);
-      vector<float> track_ref_xs = track_ref_x->at(i);
-      vector<float> track_ref_ys = track_ref_y->at(i);
-      vector<float> track_ref_zs = track_ref_z->at(i);
-      for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
-	if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
-	    std::cout
-<<itrack
-<<std::setw(8)<<std::setprecision(3)<<track_pts[itrack]
-<<std::setw(8)<<std::setprecision(3)<<track_etas[itrack]
-<<std::setw(8)<<std::setprecision(3)<<track_phis[itrack]
-<<std::setw(8)<<std::setprecision(3)<<track_pvWeights[itrack]
-<<std::setw(9)<<std::setprecision(3)<<track_ipXYs[itrack]
-<<std::setw(8)<<std::setprecision(3)<<track_ipXYSigs[itrack]
-<<std::setw(8)<<std::setprecision(3)<<track_ref_xs[itrack]
-<<std::setw(8)<<std::setprecision(3)<<track_ref_ys[itrack]
-<<std::setw(8)<<std::setprecision(3)<<track_ref_zs[itrack]
-		     <<std::endl;
-	}}
-	    }
-	    }
-
-	  
-
-          if(iDBG>0) std::cout<<"npass  event is "<<npass<<" "<<event<<std::endl;
-          if(iDBG>0) std::cout<<"nemerging nalmostemerging almostemerging2 "<<nemerging<<" "<<nalmostemerging<<" "<<nalmostemerging2<<std::endl;
-
-	  }}}}}}}}}}}}
+    }}}}}}}}}}}}
 
 
 
@@ -1794,6 +1878,37 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     hsum2Dffinal->Write();
     hsum2Dfd->Write();
     hsum2Dfdk->Write();
+
+    hptallpre->Write();
+    hptudpre->Write();
+    hptspre->Write();
+    hptcpre->Write();
+    hptbpre->Write();
+    hptgpre->Write();
+    hptgbbpre->Write();
+    hptallpree->Write();
+    hptudpree->Write();
+    hptspree->Write();
+    hptcpree->Write();
+    hptbpree->Write();
+    hptgpree->Write();
+    hptgbbpree->Write();
+
+
+    hptallfinal->Write();
+    hptudfinal->Write();
+    hptsfinal->Write();
+    hptcfinal->Write();
+    hptbfinal->Write();
+    hptgfinal->Write();
+    hptgbbfinal->Write();
+    hptallfinale->Write();
+    hptudfinale->Write();
+    hptsfinale->Write();
+    hptcfinale->Write();
+    hptbfinale->Write();
+    hptgfinale->Write();
+    hptgbbfinale->Write();
 
     //2d
     aMip->Write();
