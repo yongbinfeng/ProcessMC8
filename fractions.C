@@ -15,11 +15,12 @@ TGraph* makegraph(TFile* f1, char* name1, char* name2) {
  std::cout<<"getting first"<<std::endl;
  TH1F *A_pt = static_cast<TH1F*>(f1->Get(name1)->Clone());
  A_pt->SetDirectory(0);
- A_pt->Rebin(nrebin);
+ //A_pt->Rebin(nrebin);
+ const int nbin = A_pt->GetNbinsX();
  double aaA = A_pt->Integral();
  std::cout<<" first entries is "<<aaA<<std::endl;
  Double_t num[nbin];
- Doube_t abin[nbin];
+ Double_t abin[nbin];
  for(int i=0;i<nbin;i++) {
    abin[i]= A_pt->GetBinCenter(i);
    num[i]=A_pt->GetBinContent(i);
@@ -28,7 +29,7 @@ TGraph* makegraph(TFile* f1, char* name1, char* name2) {
  std::cout<<"getting second"<<std::endl;
  TH1F *B_pt = static_cast<TH1F*>(f1->Get(name2)->Clone());
  B_pt->SetDirectory(0);
- B_pt->Rebin(nrebin);
+ //B_pt->Rebin(nrebin);
  double aaB = B_pt->Integral();
  std::cout<<" second entries is "<<aaB<<std::endl;
 
@@ -41,6 +42,7 @@ for(int i=0;i<nbin;i++) {
 for(int i=0;i<nbin;i++) {
   eff[i]=0.;
   if(denom[i]>0) eff[i]=num[i]/denom[i];
+  std::cout<<abin[i]<<" "<<num[i]<<" "<<denom[i]<<" "<<eff[i]<<std::endl;
 }
 
 
@@ -59,10 +61,12 @@ void fractions()
 { 
 
   //TFile *f1 = new TFile("SumHistsQCD.root");
+  TFile *f1 = new TFile("SumHistsQQCD.root");
   //TFile *f1 = new TFile("SumHistsWMCtSkim.root");  
   //TFile *f1 = new TFile("SumHistsWSkim.root");  
   //TFile *f1 = new TFile("SumHists80.root");
-  TFile *f1 = new TFile("SumHistsModelA.root");  
+  //TFile *f1 = new TFile("SumHistsModelA.root");  
+  //TFile *f1 = new TFile("save.root");  
   //TFile *f1 = new TFile("SumHistsModelB.root");  
   //TFile *f1 = new TFile("SumHistsDATA.root");  
   //TFile *f1 = new TFile("SumHists80.root");  
@@ -78,8 +82,8 @@ void fractions()
 
 
   
-  char* aa1 = "hsum2Dfdk";
-  char* bb1 = "hsum2Dfd";
+  char* aa1 = "hptallpree";
+  char* bb1 = "hptallpre";
   TGraph* gr1 = makegraph(f1,aa1,bb1);
   gr1->SetMarkerStyle(21);
   gr1->SetMarkerColor(0);
@@ -101,7 +105,7 @@ void fractions()
   TLatex *t = new TLatex();
   t->SetTextFont(32);
 
-  t->SetTextSize(0.1);
+  t->SetTextSize(0.01);
   t->SetTextAlign(12);
 
   t->SetTextColor(0);
