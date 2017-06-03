@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
     // quick background
     const int qnbin=1; // 500-700,700-1000,1000-1500,1500-2000,200toInf
     float qxsec[qnbin]={25420}; // fb 
-    int qnfiles[qnbin]={10};
+    int qnfiles[qnbin]={100};
     std::string qbinnames[qnbin]={"QCD_HT2000toInf_short"};
     std::string aaname_q[qnbin]={"configs/QCD_HT2000toInf_80X_config_short.txt"};
 

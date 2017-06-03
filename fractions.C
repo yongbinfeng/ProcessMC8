@@ -8,14 +8,14 @@
 #include "TLatex.h"
 #include "TFrame.h"
 
-int nrebin=4;
+int nrebin=10;
 
 TGraph* makegraph(TFile* f1, char* name1, char* name2) {
 
  std::cout<<"getting first"<<std::endl;
  TH1F *A_pt = static_cast<TH1F*>(f1->Get(name1)->Clone());
  A_pt->SetDirectory(0);
- //A_pt->Rebin(nrebin);
+ A_pt->Rebin(nrebin);
  const int nbin = A_pt->GetNbinsX();
  double aaA = A_pt->Integral();
  std::cout<<" first entries is "<<aaA<<std::endl;
@@ -29,13 +29,13 @@ TGraph* makegraph(TFile* f1, char* name1, char* name2) {
  std::cout<<"getting second"<<std::endl;
  TH1F *B_pt = static_cast<TH1F*>(f1->Get(name2)->Clone());
  B_pt->SetDirectory(0);
- //B_pt->Rebin(nrebin);
+ B_pt->Rebin(nrebin);
  double aaB = B_pt->Integral();
  std::cout<<" second entries is "<<aaB<<std::endl;
 
 Double_t denom[nbin];
 for(int i=0;i<nbin;i++) {
-  denom[i]=A_pt->GetBinContent(i);
+  denom[i]=B_pt->GetBinContent(i);
 }
 
  Double_t eff[nbin];
