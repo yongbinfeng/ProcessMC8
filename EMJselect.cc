@@ -206,7 +206,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     *hptallfinal2,*hptudfinal2,*hptcfinal2,*hptsfinal2,*hptgbbfinal2,*hptbfinal2,*hptgfinal2,
     *hptallpree,*hptudpree,*hptcpree,*hptspree,*hptgbbpree,*hptbpree,*hptgpree,
     *hptallfinale,*hptudfinale,*hptcfinale,*hptsfinale,*hptgbbfinale,*hptbfinale,*hptgfinale,
-    *ham2dfb,*ham2dfgbb,*ham2dfg,*ham2dfud
+    *ham2dfb,*ham2dfgbb,*ham2dfg,*ham2dfud,
+    *ham2dfbpt1,*ham2dfbpt2,*ham2dfbpt3,
+    *ham2dfudpt1,*ham2dfudpt2,*ham2dfudpt3
 ;
 
   TH1F *hmzamd,*hmznamd,*h2damd,*h2dnamd;
@@ -303,6 +305,14 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   ham2dfg = new TH1F("ham2dfg","alpha2d sig  glu jets ",100,0.,1.);
   ham2dfud = new TH1F("ham2dfud","alpha2d sig u,d quark jets ",100,0.,1.);
   ham2dfdk = new TH1F("ham2dfdk","alpha2d sig dark quark jets ",100,0.,1.);
+
+  ham2dfbpt1 = new TH1F("ham2dfbpt1","alpha2d sig b quark jets pt 50-100 ",100,0.,1.);
+  ham2dfbpt2 = new TH1F("ham2dfbpt2","alpha2d sig b quark jets pt 100-600 ",100,0.,1.);
+  ham2dfbpt3 = new TH1F("ham2dfbpt3","alpha2d sig b quark jets pt >600 ",100,0.,1.);
+  ham2dfudpt1 = new TH1F("ham2dfudpt1","alpha2d sig ud quark jets pt 50-100 ",100,0.,1.);
+  ham2dfudpt2 = new TH1F("ham2dfudpt2","alpha2d sig ud quark jets pt 100-600 ",100,0.,1.);
+  ham2dfudpt3 = new TH1F("ham2dfudpt3","alpha2d sig ud quark jets pt >600 ",100,0.,1.);
+
   hdkjetmeanip = new TH1F("hdkjetmeanip","mean ip dark quark jets",100,0.,10.);
   hdkjetmaxip = new TH1F("hdkjetmaxip","max ip dark quark jets",100,0.,30.);
   hdkjetntr = new TH1F("hdkjetntr","number tracks pt>1 dark quark jets",100,0.,50.);
@@ -1463,6 +1473,19 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	if(jet_pid_maxEt[i]==1) ham2dfud->Fill(amax2Df[i]);
 	if(jet_pid_maxEt[i]==2) ham2dfud->Fill(amax2Df[i]);
 
+	if(jet_pid_maxEt[i]==5) {
+	  if((jet_pt->at(i)>50)&&(jet_pt->at(i)<100)) ham2dfbpt1->Fill(amax2Df[i]);
+	  if((jet_pt->at(i)>100)&&(jet_pt->at(i)<600)) ham2dfbpt2->Fill(amax2Df[i]);
+	  if((jet_pt->at(i)>600)) ham2dfbpt3->Fill(amax2Df[i]);
+	}
+
+	if((jet_pid_maxEt[i]==1)||(jet_pid_maxEt[i]==2)) {
+	  if((jet_pt->at(i)>50)&&(jet_pt->at(i)<100)) ham2dfudpt1->Fill(amax2Df[i]);
+	  if((jet_pt->at(i)>100)&&(jet_pt->at(i)<600)) ham2dfudpt2->Fill(amax2Df[i]);
+	  if((jet_pt->at(i)>600)) ham2dfudpt3->Fill(amax2Df[i]);
+	}
+
+
 	if(emerging[i]) {
 	  hptallpree->Fill(jet_pt->at(i));
 	  if(jet_pid_maxEt[i]==1) hptudpree->Fill(jet_pt->at(i));
@@ -1874,7 +1897,12 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     ham2dfgbb->Write();
     ham2dfg->Write();
     ham2dfud->Write();
-
+    ham2dfbpt1->Write();
+    ham2dfbpt2->Write();
+    ham2dfbpt3->Write();
+    ham2dfudpt1->Write();
+    ham2dfudpt2->Write();
+    ham2dfudpt3->Write();
 
     hdjetam->Write();
     hdjetam2d->Write();

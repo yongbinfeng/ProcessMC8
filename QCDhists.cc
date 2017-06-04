@@ -126,7 +126,7 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
 
     //make and  output summed and renormalized histograms
     std::cout<<"normalizing histograms"<<std::endl;
-    const int nhist=182; 
+    const int nhist=188; 
     std::vector<TH1F*> vv(nhist);
     std::string histnames[nhist]={
         "count","acount","hjetcut","hjetchf","h_nemg",
@@ -151,6 +151,8 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
 	"hdjetam","hdjetmeanip","hdjetntr","hdjetmaxip","hdjettrkip","hdjettrkips","hdjettrgip","hdjettrkdr","hdjetam2d","hdkjetam2d",
 	"hdjettrkw","hmeanz","hmeanzfa","hmeanzpa","hmeanzd","hmeanzdk","hmzamd","hmznamd","h2damd","h2dnamd","h2dpa","h2dfa","hntrkpt1zmpa","hntrkpt1zmfa","ham2dfd","ham2dfdk",
         "ham2dfb","ham2dfgbb","ham2dfg","ham2dfud",
+	"ham2dfbpt1","ham2dfbpt2","ham2dfbpt3",
+	"ham2dfudpt1","ham2dfudpt2","ham2dfudpt3",
 	"hbigb","hpvpre","hpvfinal","hnvtxpre","hnvtxfinal","hntrkpre","hntrkfinal",
 	"hjetptfrpre","hjetptfrfinal","hjntrkpre","hjntrkfinal","hdzpre","hdzfinal",
 	"hfpilepre","hfpilefinal","hdzjpre","hdzjfinal","hptmaxpre","hptmaxfinal",
