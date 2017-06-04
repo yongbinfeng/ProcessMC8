@@ -306,11 +306,11 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   ham2dfud = new TH1F("ham2dfud","alpha2d sig u,d quark jets ",100,0.,1.);
   ham2dfdk = new TH1F("ham2dfdk","alpha2d sig dark quark jets ",100,0.,1.);
 
-  ham2dfbpt1 = new TH1F("ham2dfbpt1","alpha2d sig b quark jets pt 50-100 ",100,0.,1.);
-  ham2dfbpt2 = new TH1F("ham2dfbpt2","alpha2d sig b quark jets pt 100-600 ",100,0.,1.);
+  ham2dfbpt1 = new TH1F("ham2dfbpt1","alpha2d sig b quark jets pt 100-300 ",100,0.,1.);
+  ham2dfbpt2 = new TH1F("ham2dfbpt2","alpha2d sig b quark jets pt 300-600 ",100,0.,1.);
   ham2dfbpt3 = new TH1F("ham2dfbpt3","alpha2d sig b quark jets pt >600 ",100,0.,1.);
-  ham2dfudpt1 = new TH1F("ham2dfudpt1","alpha2d sig ud quark jets pt 50-100 ",100,0.,1.);
-  ham2dfudpt2 = new TH1F("ham2dfudpt2","alpha2d sig ud quark jets pt 100-600 ",100,0.,1.);
+  ham2dfudpt1 = new TH1F("ham2dfudpt1","alpha2d sig ud quark jets pt 100-300 ",100,0.,1.);
+  ham2dfudpt2 = new TH1F("ham2dfudpt2","alpha2d sig ud quark jets pt 300-600 ",100,0.,1.);
   ham2dfudpt3 = new TH1F("ham2dfudpt3","alpha2d sig ud quark jets pt >600 ",100,0.,1.);
 
   hdkjetmeanip = new TH1F("hdkjetmeanip","mean ip dark quark jets",100,0.,10.);
@@ -1474,14 +1474,14 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	if(jet_pid_maxEt[i]==2) ham2dfud->Fill(amax2Df[i]);
 
 	if(jet_pid_maxEt[i]==5) {
-	  if((jet_pt->at(i)>50)&&(jet_pt->at(i)<100)) ham2dfbpt1->Fill(amax2Df[i]);
-	  if((jet_pt->at(i)>100)&&(jet_pt->at(i)<600)) ham2dfbpt2->Fill(amax2Df[i]);
+	  if((jet_pt->at(i)>100)&&(jet_pt->at(i)<300)) ham2dfbpt1->Fill(amax2Df[i]);
+	  if((jet_pt->at(i)>300)&&(jet_pt->at(i)<600)) ham2dfbpt2->Fill(amax2Df[i]);
 	  if((jet_pt->at(i)>600)) ham2dfbpt3->Fill(amax2Df[i]);
 	}
 
 	if((jet_pid_maxEt[i]==1)||(jet_pid_maxEt[i]==2)) {
-	  if((jet_pt->at(i)>50)&&(jet_pt->at(i)<100)) ham2dfudpt1->Fill(amax2Df[i]);
-	  if((jet_pt->at(i)>100)&&(jet_pt->at(i)<600)) ham2dfudpt2->Fill(amax2Df[i]);
+	  if((jet_pt->at(i)>100)&&(jet_pt->at(i)<300)) ham2dfudpt1->Fill(amax2Df[i]);
+	  if((jet_pt->at(i)>300)&&(jet_pt->at(i)<600)) ham2dfudpt2->Fill(amax2Df[i]);
 	  if((jet_pt->at(i)>600)) ham2dfudpt3->Fill(amax2Df[i]);
 	}
 
