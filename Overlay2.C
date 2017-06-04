@@ -7,21 +7,23 @@
 int dolog=0;
 void Overlay2() 
 { 
-  char* atitle = "fraction tracks ipsig<3 ";
-  char* hname1 = "hsum2Dfd";
-  char* hname2 = "hsum2Dfdk";
+  char* atitle = "fraction tracks ipsig<4 ";
+  char* hname1 = "ham2dfbpt1";
+  char* hname2 = "ham2dfbpt2";
+  char* hname3 = "ham2dfbpt3";
     //  char* lgd1 = "after preselection";
     //char* lgd2 = "after final selection";
-  char* lgd1 = "down quarks";
-  char* lgd2 = "dark quarts";
+  char* lgd1 = "b quarks 50<pt<100";
+  char* lgd2 = "100<pt<600";
+  char* lgd3 = "pt>600";
 
   //TFile *f1 = new TFile("SumHistsQCD.root");
   //TFile *f1 = new TFile("SumHistsDebug.root");
-  //TFile *f1 = new TFile("SumHistsQQCD.root");
+  TFile *f1 = new TFile("SumHistsQQCD.root");
   //TFile *f1 = new TFile("SumHistsWMCtSkim.root");  
   //TFile *f1 = new TFile("SumHistsWSkim.root");  
   //TFile *f1 = new TFile("SumHists80.root");
-  TFile *f1 = new TFile("SumHistsModelA.root");  
+  //TFile *f1 = new TFile("SumHistsModelA.root");  
   //TFile *f1 = new TFile("SumHistsModelB.root");  
   //TFile *f1 = new TFile("SumHistsDATA.root");  
   //TFile *f1 = new TFile("SumHists80.root");  
@@ -116,7 +118,18 @@ std::cout<<" second entries is "<<aaB<<std::endl;
   B_pt->Scale(1/aaB);
 
 
-  float max = std::max(A_pt->GetMaximum(),B_pt->GetMaximum());
+  std::cout<<"getting third"<<std::endl;
+  TH1F *C_pt = static_cast<TH1F*>(f1->Get(hname3)->Clone());
+  std::cout<<"ha"<<std::endl;
+  C_pt->SetDirectory(0);
+  //C_pt->Rebin(5);
+  double aaC = C_pt->Integral();
+std::cout<<" third entries is "<<aaC<<std::endl;
+  C_pt->Scale(1/aaC);
+
+
+  double max = std::max(A_pt->GetMaximum(),B_pt->GetMaximum());
+  max = std::max(max,C_pt->GetMaximum());
   A_pt->SetMaximum(max*1.3);
 
   A_pt->GetYaxis()->SetTitle(" percent  ");  
@@ -136,9 +149,17 @@ std::cout<<" second entries is "<<aaB<<std::endl;
   B_pt->SetLineColor(2);
   B_pt->SetLineWidth(3);
   B_pt->SetStats(0);
+  B_pt->Draw("same");
+
+
+  C_pt->SetLineColor(3);
+  C_pt->SetLineWidth(3);
+  C_pt->SetStats(0);
+  C_pt->Draw("same");
+
   
   //B_pt->Draw("esame");
-  B_pt->Draw("same");
+
   /*  
   std::cout<<"getting third"<<std::endl;
   TH1F *C_pt = static_cast<TH1F*>(f3->Get("haMgj")->Clone());
@@ -164,6 +185,7 @@ C_pt->Scale(1/aaC);
 
   lgd->AddEntry(A_pt, lgd1, "l");
   lgd->AddEntry(B_pt, lgd2, "l");
+  lgd->AddEntry(C_pt, lgd3, "l");
   //lgd->AddEntry(C_pt, "ModelBx500", "l");
 
  lgd->Draw();
