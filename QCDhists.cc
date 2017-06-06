@@ -57,7 +57,7 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
     float Djetacut = 2.;
     // dont forget there is a hidden cut nalmostemergin<4!!!!!!!!!!!!!!!!!
     int Dnemcut=2;
-    int Dntrk1=0;
+    int Dntrk1=4;
     
     float Dmetcut=-1;
     float Dmass=themass;
@@ -126,7 +126,7 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
 
     //make and  output summed and renormalized histograms
     std::cout<<"normalizing histograms"<<std::endl;
-    const int nhist=188; 
+    const int nhist=190; 
     std::vector<TH1F*> vv(nhist);
     std::string histnames[nhist]={
         "count","acount","hjetcut","hjetchf","h_nemg",
@@ -162,7 +162,7 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
 	"hptallfinal","hptudfinal","hptsfinal","hptcfinal","hptbfinal","hptgfinal","hptgbbfinal",
 	"hptallfinale","hptudfinale","hptsfinale","hptcfinale","hptbfinale","hptgfinale","hptgbbfinale",
 	"hptallfinal2","hptudfinal2","hptsfinal2","hptcfinal2","hptbfinal2","hptgfinal2","hptgbbfinal2",
-
+	"hmeanzpre","hmeanzfinal"
     };
     vector<double> outnorm(nbin);
     for(int i=0;i<nhist;i++) {

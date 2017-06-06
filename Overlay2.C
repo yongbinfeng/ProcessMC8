@@ -13,9 +13,10 @@ void Overlay2()
   char* hname3 = "ham2dfbpt3";
     //  char* lgd1 = "after preselection";
     //char* lgd2 = "after final selection";
-  char* lgd1 = "b quarks 50<pt<100";
-  char* lgd2 = "100<pt<600";
-  char* lgd3 = "pt>600";
+  char* lgd1 = "b quarks 100<pt<300";
+  char* lgd2 = "b quarks 300<pt<400";
+  char* lgd3 = "b quarks pt>600";
+  //char* lgd3 = "pt>600";
 
   //TFile *f1 = new TFile("SumHistsQCD.root");
   //TFile *f1 = new TFile("SumHistsDebug.root");
@@ -86,7 +87,7 @@ void Overlay2()
   
   int n_ = 2;
   
-  float x1_l = 1.0;
+  float x1_l = 0.8;
   //  float x1_l = 0.75;
   float y1_l = 0.90;
   
@@ -117,7 +118,7 @@ std::cout<<" first entries is "<<aaA<<std::endl;
 std::cout<<" second entries is "<<aaB<<std::endl;
   B_pt->Scale(1/aaB);
 
-
+  
   std::cout<<"getting third"<<std::endl;
   TH1F *C_pt = static_cast<TH1F*>(f1->Get(hname3)->Clone());
   std::cout<<"ha"<<std::endl;
@@ -126,10 +127,10 @@ std::cout<<" second entries is "<<aaB<<std::endl;
   double aaC = C_pt->Integral();
 std::cout<<" third entries is "<<aaC<<std::endl;
   C_pt->Scale(1/aaC);
-
+  
 
   double max = std::max(A_pt->GetMaximum(),B_pt->GetMaximum());
-  max = std::max(max,C_pt->GetMaximum());
+  //  max = std::max(max,C_pt->GetMaximum());
   A_pt->SetMaximum(max*1.3);
 
   A_pt->GetYaxis()->SetTitle(" percent  ");  
@@ -139,7 +140,7 @@ std::cout<<" third entries is "<<aaC<<std::endl;
 
 
 
-  A_pt->SetLineColor(3);
+  A_pt->SetLineColor(1);
   A_pt->SetLineWidth(3);
   A_pt->SetStats(0);
   A_pt->Draw("");
@@ -151,36 +152,13 @@ std::cout<<" third entries is "<<aaC<<std::endl;
   B_pt->SetStats(0);
   B_pt->Draw("same");
 
-
+  
   C_pt->SetLineColor(3);
   C_pt->SetLineWidth(3);
   C_pt->SetStats(0);
   C_pt->Draw("same");
-
   
-  //B_pt->Draw("esame");
-
-  /*  
-  std::cout<<"getting third"<<std::endl;
-  TH1F *C_pt = static_cast<TH1F*>(f3->Get("haMgj")->Clone());
-  C_pt->SetDirectory(0);
-  double aaC = C_pt->Integral();
-std::cout<<" third entries is "<<aaC<<std::endl;
-C_pt->Scale(1/aaC);
   
-
-  C_pt->SetLineColor(4);
-  C_pt->SetLineWidth(3);
-  C_pt->SetStats(0);
-  
-  C_pt->Draw("same");
-  */
-
-
- 
-  //lgd->AddEntry(A_pt, "Monte Carlo QCD", "l");
-  //lgd->AddEntry(B_pt, "Monte Carlo W to mu", "l");
- // lgd->AddEntry(C_pt, "data W to mu", "l");
 
 
   lgd->AddEntry(A_pt, lgd1, "l");

@@ -116,9 +116,12 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   vector<vector<float> > *track_ref_y =0;
   vector<vector<float> > *track_ref_z =0;
   vector<vector<int> > *track_nMissInnerHits = 0;
+  vector<vector<int> > *track_nMissInnerTrkLayers = 0;
+  vector<vector<int> > *track_nMissOuterTrkLayers = 0;
   vector<vector<int> > *track_nMissInnerPxlLayers = 0;
   vector<vector<int> > *track_nPxlLayers = 0;
   vector<vector<int> > *track_nHits = 0;
+
 
   
   
@@ -187,6 +190,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   tt->SetBranchAddress("track_ipXYSig",&track_ipXYSig);
   tt->SetBranchAddress("track_nMissInnerHits",&track_nMissInnerHits);
   tt->SetBranchAddress("track_nMissInnerPxlLayers",&track_nMissInnerPxlLayers);
+  tt->SetBranchAddress("track_nMissOuterTrkLayers",&track_nMissOuterTrkLayers);
+  tt->SetBranchAddress("track_nMissInnerTrkLayers",&track_nMissInnerTrkLayers);
   tt->SetBranchAddress("track_nPxlLayers",&track_nPxlLayers);
   tt->SetBranchAddress("track_nHits",&track_nHits);
   tt->SetBranchAddress("track_ipZ",&track_ipZ);
@@ -198,7 +203,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   // create a histograms
   TH1F *acount,*count,*hjetcut,*hjetchf,*h_nemg,*hnjet,*hpt,*heta,*heta2,*halpha,*H_T,*H_T2,*H_T3,*H_T4,*hbcut_ntrkpt1,*hacut_ntrkpt1,*hbcut_nef,*hacut_nef,*hbcut_cef,*hacut_cef,*hbcut_alphamax,*hacut_alphamax,*hbcut_theta2d,*hbcut_maxip,*hmetnm1,*hmassnm1,*htheta2D1nm1,*htheta2D2nm1,*htheta2D3nm1,*htheta2D4nm1,*hHTnm1,*hnHitsnm1,*hntrk1nm1,*hmaxipnm1,*hpt1nm1,*hpt2nm1,*hpt3nm1,*hpt4nm1,*halphanm1,*hnemnm1,*hpt1,*hpt2,*hpt3,*hpt4,*hipXYEJ,*hipXYnEJ,*htvw,*htvwEJ,*hnmaxipnm1,*hn2maxipnm1,*hjptfrb,*hjptfra1,*hjptfra2,*hjptfrbc,*hjptfra1c,*hjptfra2c,*hjptb,*hjpta,*haMgj,*hHTko,*hpt1ko,*hpt2ko,*hpt3ko,*hpt4ko,*hipXYSigEJ,*hipXYSignEJ,*hmaxipXYEJ,*hmaxipXYnEJ,*hmeanipXYEJ,*hmeanipXYnEJ,*hmass,
     *hdkjetam,*hdkjetmeanip,*hdkjetntr,*hdkjetmaxip,*hdkjettrkip,*hdkjettrkips,*hdkjettrkw,*hdkjettrgip,*hdkjettrkdr,*ham2dfd,*ham2dfdk,*hdkjetamo,*hdjetamo,*hdzjpre,*hdzjfinal,
-    *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr,*hdjetam2d,*hdkjetam2d,*hmeanz,*hmeanzfa,*hmeanzpa,*hmeanzdk,*hmeanzd,*h2dpa,*h2dfa,*hntrkpt1zmpa,*hntrkpt1zmfa,*hbigb,*hpvpre,*hpvfinal,*hdzpre,*hdzfinal,
+    *hdjetam,*hdjetmeanip,*hdjetntr,*hdjetmaxip,*hdjettrkip,*hdjettrkips,*hdjettrkw,*hdjettrgip,*hdjettrkdr,*hdjetam2d,*hdkjetam2d,*hmeanz,*hmeanzfa,*hmeanzpa,*hmeanzdk,*hmeanzd,*h2dpa,*h2dfa,*hntrkpt1zmpa,*hntrkpt1zmfa,*hbigb,*hpvpre,*hpvfinal,*hdzpre,*hdzfinal,*hmeanzpre,*hmeanzfinal,
     *hnvtxpre,*hnvtxfinal,*hntrkpre,*hntrkfinal,*hjetptfrpre,*hjetptfrfinal,
     *hjntrkpre,*hjntrkfinal,*hfpilepre,*hfpilefinal,*hptmaxpre,*hptmaxfinal,*hsum2Dfpre,*hsum2Dffinal,*hsum2Dfd,*hsum2Dfdk,
     *hptallpre,*hptudpre,*hptcpre,*hptspre,*hptgbbpre,*hptbpre,*hptgpre,
@@ -332,12 +337,16 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hdjettrkw = new TH1F("hdjettrkw","track pv weight in down quark jets",100,-1.2,1.2);
   hdjettrgip = new TH1F("hdjettrgip","gen r0 charged part in down quark jets",100,0.,5.);
   hdjettrkdr = new TH1F("hdjettrkdr","gen trk dr charged part in down quark jets",100,0.,1.);
-  hmeanz = new TH1F("hmeanz","diff pvz and mean jet z",100,-20.,20.);
-  hmeanzd = new TH1F("hmeanzd","diff pvz and mean jet z down quarks",100,-20.,20.);
-  hmeanzdk = new TH1F("hmeanzdk","diff pvz and mean jet z dark quarks",100,-20.,20.);
+  hmeanz = new TH1F("hmeanz","diff pvz and mean jet z",100,-5.,5.);
+  hmeanzd = new TH1F("hmeanzd","diff pvz and mean jet z down quarks",100,-5.,5.);
+  hmeanzdk = new TH1F("hmeanzdk","diff pvz and mean jet z dark quarks",100,-5.,5.);
 
-  hmeanzfa = new TH1F("hmeanzfa","diff pvz and mean jet z failling almost emerging",500,-20.,20.);
-  hmeanzpa = new TH1F("hmeanzpa","diff pvz and mean jet z pass almost emerging",500,-20.,20.);
+  hmeanzfa = new TH1F("hmeanzfa","diff pvz and mean jet z failling almost emerging",500,-5.,5.);
+  hmeanzpa = new TH1F("hmeanzpa","diff pvz and mean jet z pass almost emerging",500,-5.,5.);
+
+
+  hmeanzpre = new TH1F("hmeanzpre","diff pvz and mean jet z preselection",500,-5.,5.);
+  hmeanzfinal = new TH1F("hmeanzfinal","diff pvz and mean jet z pass final selection",500,-5.,5.);
 
   hdzjpre = new TH1F("hdzjpre","max diff median z 4 jets preselection",250,0.,20.);
   hdzjfinal = new TH1F("hdzjfinal","max diff median z 4 jets final selection" ,250,0.,20.);
@@ -383,8 +392,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
   hfpilefinal = new TH1F("hfpilefinal","fract jet pt pileup  final selection",100,0.,1.5);
 
 
-  hptmaxpre = new TH1F("hptmaxpre","pt highest pt track preselection",150,0.,150.);
-  hptmaxfinal = new TH1F("hptmaxfinal","pt highest pt track final selection",150,0.,150.);
+  hptmaxpre = new TH1F("hptmaxpre","pt highest pt track preselection",400,0.,400.);
+  hptmaxfinal = new TH1F("hptmaxfinal","pt highest pt track final selection",400,0.,400.);
 
   hptallpre = new TH1F("hptallpre","pt all jets passing preselection",500,0.,1500.);
   hptudpre = new TH1F("hptudpre","pt ud jets passing preselection",500,0.,1500.);
@@ -887,6 +896,8 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 		//if(jet_fnpile[ij]>-1.) {
 		if(jet_fnpile[ij]>0.4) {
 
+		  if(jet_ptmax[ij]<10000) {
+
 	 	    basicjet[ij]=true;
 		    if(ij<4) nbasicjet+=1;
 
@@ -944,7 +955,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 			} //theta 2D
 		      }//mean ip
 		    }} //alpha
-		  }  //end of basic jet selection
+		    }}  //end of basic jet selection
 		}
 	      }
 	    }
@@ -1459,6 +1470,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
       for(int i=0;i<4;i++) {
 	hjetptfrpre->Fill(std::min(jet_fpt[i],1.2));
 	hptallpre->Fill(jet_pt->at(i));
+	hmeanzpre->Fill(jet_meanz[i]-pv_z);
 	if(jet_pid_maxEt[i]==1) hptudpre->Fill(jet_pt->at(i));
 	if(jet_pid_maxEt[i]==2) hptudpre->Fill(jet_pt->at(i));
 	if(jet_pid_maxEt[i]==3) hptspre->Fill(jet_pt->at(i));
@@ -1500,7 +1512,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	hsum2Dfpre->Fill(amax2Df2[i]);
 	hjntrkpre->Fill(jet_ntrkpt1[i]);
 	hfpilepre->Fill(jet_fnpile[i]);
-	hptmaxpre->Fill(std::min(jet_ptmax[i],149.5));
+	hptmaxpre->Fill(std::min(jet_ptmax[i],399.5));
         vector<int> track_sources = track_source->at(i);
         vector<int> track_qualitys = track_quality->at(i);
         vector<float> track_ref_zs = track_ref_z->at(i);
@@ -1559,8 +1571,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	  }
 	}
 
-	if(iDBG>0) std::cout<<"HAS 1 EMERGING"<<std::endl;
-	if(iDBG>0) if(nemerging>1) std::cout<<"HAS 2 EMERGING"<<std::endl;
+	if(iDBG>0) if(nemerging>1) std::cout<<"HAS "<<nemerging<<"  EMERGING"<<std::endl;
 
 	// see if matches a ba
 	for(int i=0;i<4;i++) {
@@ -1627,7 +1638,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	  for(int i=0;i<4;i++) {
 	    std::cout<<" for jet "<<i<<std::endl;
             std::cout<<"  with tracks "<<std::endl;
-            std::cout<<" #     pt     eta   phi    weight  ipxy    ipxysig  refx    refy    refz   "<<std::endl;
+            std::cout<<" #     pt     eta   phi    weight  ipxy    ipxysig  refx    refy    refz   quality  algo nmissinner nmissouter"<<std::endl;
             vector<float> track_pts = track_pt->at(i);
             vector<float> track_etas = track_eta->at(i);
             vector<float> track_phis = track_phi->at(i);
@@ -1640,6 +1651,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
             vector<float> track_ref_xs = track_ref_x->at(i);
             vector<float> track_ref_ys = track_ref_y->at(i);
             vector<float> track_ref_zs = track_ref_z->at(i);
+            vector<int> track_algos = track_algo->at(i);
+	    vector<int> track_nMissInnerTrkLayerss = track_nMissInnerTrkLayers->at(i);
+	    vector<int> track_nMissOuterTrkLayerss = track_nMissOuterTrkLayers->at(i);
+
             for (unsigned itrack=0; itrack<track_pts.size(); itrack++) {
 	      if((track_sources[itrack]==0)&&((track_qualitys[itrack]&4)>0)&& (fabs(pv_z-track_ref_zs[itrack])<pilecut)) {
 	        std::cout
@@ -1653,6 +1668,10 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
                 <<std::setw(8)<<std::setprecision(3)<<track_ref_xs[itrack]
                 <<std::setw(8)<<std::setprecision(3)<<track_ref_ys[itrack]
                 <<std::setw(8)<<std::setprecision(3)<<track_ref_zs[itrack]
+                <<std::setw(8)<<std::setprecision(3)<<track_qualitys[itrack]
+                <<std::setw(8)<<std::setprecision(3)<<track_algos[itrack]
+                <<std::setw(8)<<std::setprecision(3)<<track_nMissInnerTrkLayerss[itrack]
+                <<std::setw(8)<<std::setprecision(3)<<track_nMissOuterTrkLayerss[itrack]
 		     <<std::endl;
 	      }
 	    }// loop over tracks
@@ -1660,7 +1679,7 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	} // iDBG
 
 	// some plots for events that pass all cuts
-	if(nemerging>NemergingCut) {
+	if(nemerging>=NemergingCut) {
 	  H_T3->Fill(HT);   
 	  hmass->Fill(amass);
 	  hpvfinal->Fill(pv_z);
@@ -1669,11 +1688,12 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
 	  float aab=0.;
 	  for(int i=0;i<4;i++) {
 	    if(emerging[i]) {
+	      hmeanzfinal->Fill(jet_meanz[i]-pv_z);
 	      hjetptfrfinal->Fill(std::min(jet_fpt[i],1.2));
 	      hsum2Dffinal->Fill(amax2Df2[i]);
 	      hjntrkfinal->Fill(jet_ntrkpt1[i]);
 	      hfpilefinal->Fill(jet_fnpile[i]);
-	      hptmaxfinal->Fill(std::min(jet_ptmax[i],149.5));
+	      hptmaxfinal->Fill(std::min(jet_ptmax[i],399.5));
               vector<int> track_sources = track_source->at(i);
               vector<int> track_qualitys = track_quality->at(i);
               vector<float> track_ref_zs = track_ref_z->at(i);
@@ -1990,6 +2010,9 @@ int EMJselect(bool otfile, bool hasPre, const char* inputfilename,const char* ou
     hptbfinale->Write();
     hptgfinale->Write();
     hptgbbfinale->Write();
+
+    hmeanzpre->Write();
+    hmeanzfinal->Write();
 
     //2d
     aMip->Write();
