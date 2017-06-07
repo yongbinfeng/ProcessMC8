@@ -58,11 +58,18 @@ int main(int argc, char *argv[])
 
     // for background 
 
+    const int nbin=2; // 1500-2000,200toInf
+    float xsec[nbin]={121500,25420}; // fb 
+    int nfiles[nbin]={675, 266};
+    std::string binnames[nbin]={"QCD_HT1500to2000","QCD_HT2000toInf"};
+    std::string aaname[nbin]={"configs/QCD_HT1500to2000_80X_config.txt", "configs/QCD_HT2000toInf_80X_config.txt"};
+    /*
     const int nbin=3; // 1000-1500,1500-2000,200toInf
     float xsec[nbin]={1064000,121500,25420}; // fb 
     int nfiles[nbin]={761, 675, 266};
     std::string binnames[nbin]={"QCD_HT1000to1500","QCD_HT1500to2000","QCD_HT2000toInf"};
     std::string aaname[nbin]={"configs/QCD_HT1000to1500_80X_config.txt", "configs/QCD_HT1500to2000_80X_config.txt", "configs/QCD_HT2000toInf_80X_config.txt"};
+    */
 
     /*
     const int nbin=5; // 500-700,700-1000,1000-1500,1500-2000,200toInf

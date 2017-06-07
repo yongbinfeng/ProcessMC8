@@ -16,8 +16,24 @@ using std::vector;
 #include <TStyle.h>
 #include <TCanvas.h>
 
-
-vector<float> Decode(int cutindex, int ncut,vector<int> nstep, vector<float> stepsize);
+  
+    // cuts
+float DHTcut=1000;
+float Dpt1cut=400;
+float Dpt2cut=200;
+float Dpt3cut=200;
+float Dpt4cut=100;
+float Dalphacut=0.04;
+float DmaxIPcut=-1;
+float Djetacut = 2.;
+    // dont forget there is a hidden cut nalmostemergin<4!!!!!!!!!!!!!!!!!
+int Dnemcut=2;
+int Dntrk1=4;
+    
+float Dmetcut=-1;
+float Dmasscut=3000000000;
+float Dtheta2dcut=-1;
+  
 
 int EMJ16003(bool otfile, bool hasPre, const char* inputfilename,const char* outputfilename);
 
@@ -34,101 +50,9 @@ TH2F* HistMan2(float goalintlum,std::string thisHIST,vector<double>& histnorm, v
 
 std::string bbname = "./";
 
+const int nhist=190; 
 
-
-
-//void QCDhists() 
-void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* binnames,std::string* aaname,std::string ohname, bool hasPre,bool donorm, bool blind, bool b16003,float themass) 
-{
-
-    std::string inputfile;
-    std::string outputfile;
-
-
-  
-    // opt
-    float DHTcut=1000;
-    float Dpt1cut=400;
-    float Dpt2cut=200;
-    float Dpt3cut=200;
-    float Dpt4cut=100;
-    float Dalphacut=0.04;
-    float DmaxIPcut=-1;
-    float Djetacut = 2.;
-    // dont forget there is a hidden cut nalmostemergin<4!!!!!!!!!!!!!!!!!
-    int Dnemcut=2;
-    int Dntrk1=4;
-    
-    float Dmetcut=-1;
-    float Dmass=themass;
-    float Dmasscut=3000000000;
-    float Dtheta2dcut=-1;
-  
-
-
-  
-
-    // first make histograms for each file in each bin for the qcd sample
-
-    std::cout<<"making histograms for each file in each bin"<<std::endl;
-    for(int i=0;i<nbin;i++) {  // for each bin
-
-      std::ifstream inputconfig(aaname[i]);
-      std::cout<<"input config file is: "<<aaname[i]<<std::endl;
-      int linecounter = 0;
-      while(std::getline(inputconfig,inputfile))
-        {
-	  std::cout<<"input file is "<<inputfile<<std::endl;
-          outputfile=bbname+"histos"+binnames[i]+"_"+std::to_string(linecounter)+".root";
-          std::cout<<"output file is "<<outputfile<<std::endl;
-
-	  //        for(int j=0;j<nfiles[i];j++) { //for each file for that bin
-            //inputfile=aaname+binnames[i]+"/"+binnames[i]+"_"+std::to_string(j+1)+"_0.ntpl.root";
-            //inputfile=aaname+binnames[i]+"/"+binnames[i]+"_"+std::to_string(j+1)+"_0.histo.root";
-            //std::cout<<"input file is "<<inputfile<<std::endl;
-            //outputfile=bbname+"histos"+binnames[i]+"_"+std::to_string(j)+".root";
-
-            int itmp;
-            if(!b16003) {
-	      itmp = EMJselect(true,hasPre,inputfile.c_str(),outputfile.c_str(),DHTcut, Dpt1cut,Dpt2cut,Dpt3cut,Dpt4cut,Djetacut,Dalphacut,DmaxIPcut,0.9,0.9,Dntrk1,Dnemcut,blind,
-			       Dmetcut,Dmass,Dmasscut,Dtheta2dcut
-);
-            } else {
-                itmp = EMJ16003(true,hasPre,inputfile.c_str(),outputfile.c_str());
-            }
-	    linecounter +=1;
-        }
-    }
-
-
-
-    // get normalization
-    //  double norm[nbin];
-    vector<double> norm(nbin);
-    if(donorm) {
-        HistNorm(norm,nbin,xsec,nfiles,binnames);  // this gives the total number of events in each bin before all selections using the eventCountPreTrigger histogram
-    } else{
-        for(int i=0;i<nbin;i++) norm[i]=1.;
-    }
-    for(int i=0;i<nbin;i++) {
-        std::cout<<"total number events in bin "<<i<<" is "<<norm[i]<<std::endl;
-    }
-    TH1F* countclone = new TH1F("countclone","unnormalized count",20,0,20);
-    for(int i=0;i<nbin;i++){
-        countclone->AddBinContent(i+1,norm[i]);
-    }
-  
-    TH1F* normhst = new TH1F("normhst","counts pretrigger by bin",nbin,0.,nbin);
-    for(int i=0;i<nbin;i++){
-        normhst->AddBinContent(i+1,norm[i]);
-    }
-
-
-    //make and  output summed and renormalized histograms
-    std::cout<<"normalizing histograms"<<std::endl;
-    const int nhist=190; 
-    std::vector<TH1F*> vv(nhist);
-    std::string histnames[nhist]={
+std::string histnames[nhist]={
         "count","acount","hjetcut","hjetchf","h_nemg",
         "hnjet","hpt","heta","heta2","halpha",
         "H_T","H_T2","hpt1","hpt2","hpt3",
@@ -164,46 +88,108 @@ void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* 
 	"hptallfinal2","hptudfinal2","hptsfinal2","hptcfinal2","hptbfinal2","hptgfinal2","hptgbbfinal2",
 	"hmeanzpre","hmeanzfinal"
     };
-    vector<double> outnorm(nbin);
-    for(int i=0;i<nhist;i++) {
-        std::cout<<" enering Histman with i = "<<i<<": "<<histnames[i]<<std::endl;
-        vv[i]=HistMan(goalintlum,histnames[i],norm,outnorm,nbin,xsec,nfiles,binnames,donorm);
-    }
 
-    const int nhist2=19;
-    std::vector<TH2F*> vv2(nhist2);
-    std::string histnames2[nhist2]={
+  const int nhist2=19;
+  std::string histnames2[nhist2]={
       "aMip","haMvjpt","haMvHT","haMvnvtx","aMbh","adkwvd0","adwvd0",
       "adkwviz","adwviz","adk2Dr0","ad2Dr0","hdkipphi","hdipphi","aMbh2D","aMbh2Daem","aMbh2Dd","aMbh2Ddk","aMmzd","aMmzdk"
     };
-    vector<double> outnorm2(nbin);
-    for(int i=0;i<nhist2;i++) {
-        std::cout<<" enering Histman2 with i = "<<i<<": "<<histnames[i]<<std::endl;
-        vv2[i]=HistMan2(goalintlum,histnames2[i],norm,outnorm2,nbin,xsec,nfiles,binnames,donorm);
-    }
+
+
+
+void QCDhists(float goalintlum,int nbin, float* xsec, int* nfiles, std::string* binnames,std::string* aaname,std::string ohname, bool hasPre,bool donorm, bool blind, bool b16003,float themass) {
+
+  std::string inputfile;
+  std::string outputfile;
+
+    // first make histograms for each file in each bin for the qcd sample
+
+  std::cout<<"making histograms for each file in each bin"<<std::endl;
+  for(int i=0;i<nbin;i++) {  // for each bin
+
+    std::ifstream inputconfig(aaname[i]);
+    std::cout<<"input config file is: "<<aaname[i]<<std::endl;
+    int linecounter = 0;
+    while(std::getline(inputconfig,inputfile)) {
+        
+      std::cout<<"input file is "<<inputfile<<std::endl;
+      outputfile=bbname+"histos"+binnames[i]+"_"+std::to_string(linecounter)+".root";
+      std::cout<<"output file is "<<outputfile<<std::endl;
+
+      int itmp;
+      if(!b16003) {
+	itmp = EMJselect(true,hasPre,inputfile.c_str(),outputfile.c_str(),DHTcut, Dpt1cut,Dpt2cut,Dpt3cut,Dpt4cut,Djetacut,Dalphacut,DmaxIPcut,0.9,0.9,Dntrk1,Dnemcut,blind,
+			       Dmetcut,themass,Dmasscut,Dtheta2dcut
+                         );
+      } else {
+        itmp = EMJ16003(true,hasPre,inputfile.c_str(),outputfile.c_str());
+      }
+	linecounter +=1;
+    }  // end of loop over files
+  } // end of loop over bins
+
+
+
+    // get normalization
+    //  double norm[nbin];
+  vector<double> norm(nbin);
+  if(donorm) {
+    HistNorm(norm,nbin,xsec,nfiles,binnames);  // this gives the total number of events in each bin before all selections using the eventCountPreTrigger histogram
+  } else{
+    for(int i=0;i<nbin;i++) norm[i]=1.;
+  }
+  for(int i=0;i<nbin;i++) {
+    std::cout<<"total number events in bin "<<i<<" is "<<norm[i]<<std::endl;
+  }
+  TH1F* countclone = new TH1F("countclone","unnormalized count",20,0,20);
+  for(int i=0;i<nbin;i++){
+    countclone->AddBinContent(i+1,norm[i]);
+  }
+  
+  TH1F* normhst = new TH1F("normhst","counts pretrigger by bin",nbin,0.,nbin);
+  for(int i=0;i<nbin;i++){
+    normhst->AddBinContent(i+1,norm[i]);
+  }
+
+
+    //make and  output summed and renormalized histograms
+  std::cout<<"normalizing histograms"<<std::endl;
+  std::vector<TH1F*> vv(nhist);
+  vector<double> outnorm(nbin);
+  for(int i=0;i<nhist;i++) {
+    std::cout<<" enering Histman with i = "<<i<<": "<<histnames[i]<<std::endl;
+    vv[i]=HistMan(goalintlum,histnames[i],norm,outnorm,nbin,xsec,nfiles,binnames,donorm);
+  }
+
+  std::vector<TH2F*> vv2(nhist2);
+  vector<double> outnorm2(nbin);
+  for(int i=0;i<nhist2;i++) {
+    std::cout<<" enering Histman2 with i = "<<i<<": "<<histnames[i]<<std::endl;
+    vv2[i]=HistMan2(goalintlum,histnames2[i],norm,outnorm2,nbin,xsec,nfiles,binnames,donorm);
+  }
 
     // output total event count
-    std::cout<<" initial event count before and after norm is"<<std::endl;
-    double ttotal=0;
-    for(int i=0;i<nbin;i++) {
-        std::cout<<" bin "<<i<<" norm "<<norm[i]<<" times outnorm is "<<norm[i]*outnorm[i]<<std::endl;
-        ttotal = ttotal + norm[i]*outnorm[i];
-    }
-    std::cout<<"total is "<<ttotal<<std::endl;;
+  std::cout<<" initial event count before and after norm is"<<std::endl;
+  double ttotal=0;
+  for(int i=0;i<nbin;i++) {
+    std::cout<<" bin "<<i<<" norm "<<norm[i]<<" times outnorm is "<<norm[i]*outnorm[i]<<std::endl;
+    ttotal = ttotal + norm[i]*outnorm[i];
+  }
+  std::cout<<"total is "<<ttotal<<std::endl;;
 
 
 
-    std::cout<<"outputting histograms"<<std::endl;
-    outputfile=bbname+ohname;
-    TFile out(outputfile.c_str(),"RECREATE");
-    normhst->Write();
-    countclone->Write();
-    for(int i=0;i<nhist;i++) {
-        vv[i]->Write();
-    }
-    for(int i=0;i<nhist2;i++) {
-        vv2[i]->Write();
-    }
+  std::cout<<"outputting histograms"<<std::endl;
+  outputfile=bbname+ohname;
+  TFile out(outputfile.c_str(),"RECREATE");
+  normhst->Write();
+  countclone->Write();
+  for(int i=0;i<nhist;i++) {
+    vv[i]->Write();
+  }
+  for(int i=0;i<nhist2;i++) {
+    vv2[i]->Write();
+  }
 
 
     return;
